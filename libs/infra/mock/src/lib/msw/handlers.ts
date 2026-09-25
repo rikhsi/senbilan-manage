@@ -49,6 +49,21 @@ const buildSession = (user: User) => {
   });
 };
 
+const REFRESH_COOKIE = 'senbilan_refresh';
+
+const parseCookie = (header: string | null, name: string): string | null => {
+  if (!header) {
+    return null;
+  }
+  for (const part of header.split(';')) {
+    const [rawKey, ...rest] = part.trim().split('=');
+    if (rawKey === name) {
+      return decodeURIComponent(rest.join('=') || '');
+    }
+  }
+  return null;
+};
+
 const issueTokens = (userId: string) => {
   const db = getMockDb();
   const accessToken = `access.${userId}.${Date.now()}`;
@@ -57,6 +72,9 @@ const issueTokens = (userId: string) => {
   db.refreshTokens.set(refreshToken, userId);
   return { accessToken, refreshToken, expiresInSeconds: 3600 };
 };
+
+const refreshCookieHeader = (refreshToken: string): string =>
+  `${REFRESH_COOKIE}=${encodeURIComponent(refreshToken)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`;
 
 /** MSW handlers mirroring the HTTP API contract used by `infra/api`. */
 export const createMockHandlers = (apiBaseUrl: string): readonly RequestHandler[] => {
@@ -72,24 +90,53 @@ export const createMockHandlers = (apiBaseUrl: string): readonly RequestHandler[
         return error(401, 'unauthorized', 'Authentication required');
       }
       const tokens = issueTokens(user.id);
-      return envelope({
-        session: sessionToWire(buildSession(user)),
-        tokens,
-      });
+      // Production-like: refresh also as httpOnly cookie (refreshViaCookie clients).
+      // Body still includes refreshToken for mock-only / non-cookie stacks.
+      return HttpResponse.json(
+        {
+          data: {
+            session: sessionToWire(buildSession(user)),
+            tokens,
+          },
+        },
+        {
+          headers: {
+            'Set-Cookie': refreshCookieHeader(tokens.refreshToken),
+          },
+        },
+      );
     }),
 
-    http.post(`${base}/auth/logout`, () => envelope(null)),
+    http.post(`${base}/auth/logout`, () =>
+      HttpResponse.json(
+        { data: null },
+        {
+          headers: {
+            'Set-Cookie': `${REFRESH_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`,
+          },
+        },
+      ),
+    ),
 
     http.post(`${base}/auth/refresh`, async ({ request }) => {
       const body = (await request.json().catch(() => ({}))) as { refreshToken?: string };
       const db = getMockDb();
-      const token = body.refreshToken;
+      const cookieToken = parseCookie(request.headers.get('cookie'), REFRESH_COOKIE);
+      const token = cookieToken || body.refreshToken;
       if (!token || !db.refreshTokens.has(token)) {
         return error(401, 'unauthorized', 'Authentication required');
       }
       const userId = db.refreshTokens.get(token)!;
       db.refreshTokens.delete(token);
-      return envelope(issueTokens(userId));
+      const next = issueTokens(userId);
+      return HttpResponse.json(
+        { data: next },
+        {
+          headers: {
+            'Set-Cookie': refreshCookieHeader(next.refreshToken),
+          },
+        },
+      );
     }),
 
     http.get(`${base}/auth/me`, ({ request }) => {

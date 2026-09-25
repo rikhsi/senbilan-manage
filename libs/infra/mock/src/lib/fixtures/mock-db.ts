@@ -249,6 +249,8 @@ export interface MockDb {
   /** refreshToken → userId */
   refreshTokens: Map<string, string>;
   accessTokens: Map<string, string>;
+  /** Simulates httpOnly cookie value (not exposed via SessionStorage). */
+  httpOnlyRefreshCookie: string | null;
 }
 
 export const createMockDb = (): MockDb => {
@@ -261,6 +263,7 @@ export const createMockDb = (): MockDb => {
     dashboard: buildDashboard(users, roles),
     refreshTokens: new Map(),
     accessTokens: new Map(),
+    httpOnlyRefreshCookie: null,
   };
 };
 

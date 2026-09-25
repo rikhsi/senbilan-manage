@@ -2,7 +2,9 @@
 
 Any human or AI assistant editing this repository **must** follow these rules. Prefer matching existing patterns in neighboring files over inventing new ones. If a rule conflicts with a short-term shortcut, **keep the rule**.
 
-Docs of record: `docs/ARCHITECTURE.md`, `docs/DESIGN-SYSTEM.md`, `docs/I18N.md`, `docs/TESTING.md`, `docs/CONTRIBUTING.md`.
+Docs of record: `docs/ARCHITECTURE.md`, `docs/DESIGN-SYSTEM.md`, `docs/I18N.md`, `docs/TESTING.md`, `docs/CONTRIBUTING.md`, `docs/platform/*`, `docs/adr/*`.
+
+**When you implement architecture, platform hosts (Electron / Capacitor / PWA), or cross-cutting features, update those docs in the same change** so the next human or AI can follow the rules without rediscovering tribal knowledge.
 
 ---
 
@@ -186,3 +188,4 @@ Do you only need to bridge an Observable API?
 4. Styles tokenized.
 5. Tests for new domain/application logic.
 6. `nx lint` / typecheck for touched projects when feasible.
+7. **Docs**: if the change adds a host (Electron/Capacitor), auth/security rule, CI gate, generator, or ADR-worthy decision — update `docs/` (+ ADR) in the same PR. Do not leave README “plan only” text that contradicts the code.

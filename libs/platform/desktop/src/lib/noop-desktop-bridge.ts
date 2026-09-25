@@ -3,8 +3,7 @@ import { DesktopService } from '@senbilan/platform/core';
 import { type DesktopBridgeApi } from './desktop-bridge.types';
 
 /**
- * Placeholder Electron bridge matching {@link DesktopService}.
- * Replace via `provideDesktopPlatform()` when the admin-desktop shell lands.
+ * Browser / test fallback when Electron preload is absent.
  *
  * @see apps/admin-desktop/README.md
  */

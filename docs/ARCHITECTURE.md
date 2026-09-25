@@ -90,8 +90,28 @@ Adapters live in:
 | `@senbilan/infra/storage`       | Browser / Capacitor storage                |
 | `@senbilan/infra/observability` | Sentry / logging adapters                  |
 | `@senbilan/platform/mobile`     | Capacitor-specific services                |
+| `@senbilan/platform/desktop`    | Electron bridge (`provideDesktopPlatform`) |
 
 Apps choose adapters from `environment.features.mockApi` and `provideAppConfig(environment)`.
+
+Desktop shell: `apps/admin-desktop` (Electron main/preload) — see [platform/desktop.md](platform/desktop.md).
+
+## Auth refresh (httpOnly cookie)
+
+Default: `APP_CONFIG.auth.refreshViaCookie: true` ([ADR 0005](adr/0005-refresh-token-httponly.md)).
+
+- Access token → `SessionStorage` (in-memory)
+- Refresh token → httpOnly cookie (HTTP) or mock cookie jar (`MockDataStore`) — **never** mirrored into JS storage when cookie mode is on
+- Interceptor / `HttpAuthRepository.refresh()` send empty body + `withCredentials`
+
+## Documentation duty (humans & AI)
+
+When you add or change an **architectural decision**, **platform host**, or **cross-cutting feature**:
+
+1. Update the relevant doc under `docs/` (`ARCHITECTURE`, `TESTING`, `I18N`, `DESIGN-SYSTEM`, `platform/*`)
+2. Add or amend an ADR under `docs/adr/` when the choice is non-obvious or constrains future work
+3. Keep `AGENTS.md` / `.cursor/rules` in sync if a hard rule changes
+4. Do **not** leave “plan only” READMEs that contradict implemented code
 
 ## State strategy
 
@@ -107,7 +127,7 @@ See [ADR 0001](adr/0001-state-management.md).
 **Rules of thumb**
 
 - Do not put remote lists only in a SignalStore — use TanStack Query.
-- Do not put ephemeral form values in TanStack Query — use Signals / Reactive Forms.
+- Do not put ephemeral form values in TanStack Query — use Signals / Signal Forms.
 - Domain/application stay Promise-based and framework-free; Angular layers adapt.
 
 ## Public API rule
@@ -118,5 +138,7 @@ See [ADR 0001](adr/0001-state-management.md).
 ## Related
 
 - [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)
+- [TESTING.md](TESTING.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
+- [platform/desktop.md](platform/desktop.md)
 - [AGENTS.md](../AGENTS.md)

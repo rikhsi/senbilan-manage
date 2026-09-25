@@ -24,7 +24,18 @@ export class HttpAuthRepository extends AuthRepository {
         context: new HttpContext().set(SKIP_AUTH, true),
         withCredentials: true,
       })
-      .then(authResultFromDto);
+      .then((dto) => {
+        const result = authResultFromDto(dto);
+        if (!this.config.auth.refreshViaCookie) {
+          return result;
+        }
+        // Browser keeps refresh in httpOnly cookie; do not mirror into JS storage.
+        const tokens: AuthTokens = {
+          accessToken: result.tokens.accessToken,
+          expiresInSeconds: result.tokens.expiresInSeconds,
+        };
+        return { session: result.session, tokens };
+      });
   }
 
   override logout(): Promise<void> {
@@ -45,7 +56,16 @@ export class HttpAuthRepository extends AuthRepository {
         context: new HttpContext().set(SKIP_AUTH, true),
         withCredentials: true,
       })
-      .then(tokensFromDto);
+      .then((dto) => {
+        const tokens = tokensFromDto(dto);
+        if (!cookieMode) {
+          return tokens;
+        }
+        return {
+          accessToken: tokens.accessToken,
+          expiresInSeconds: tokens.expiresInSeconds,
+        };
+      });
   }
 
   override me(signal?: AbortSignal): Promise<Session> {

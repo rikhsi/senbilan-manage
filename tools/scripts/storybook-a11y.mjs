@@ -1,20 +1,63 @@
 #!/usr/bin/env node
 /**
- * Documents Storybook a11y workflow. `@storybook/addon-a11y` is already wired in
- * `libs/design-system/ui/.storybook/main.ts`. CI runs `build-storybook`.
- *
- * Automated `@storybook/test-runner` is not installed (heavy + needs a static
- * server). Use the Accessibility panel locally, or add test-runner later.
+ * Builds Storybook (if needed), serves the static build, runs @storybook/test-runner
+ * with axe-playwright checks from `.storybook/test-runner.ts`.
  */
-console.log(`
-storybook:a11y
-──────────────
-• Addon: @storybook/addon-a11y (enabled in design-system-ui .storybook/main.ts)
-• Local:  npm run storybook  → open any story → "Accessibility" panel
-• CI:     npm run build-storybook (compiles stories; addon ships with the build)
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-To add automated axe checks later:
-  npm i -D @storybook/test-runner
-  npx test-storybook --url http://127.0.0.1:6006
-`);
-process.exit(0);
+const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
+const staticDir = join(root, 'libs/design-system/ui/storybook-static');
+const port = process.env.STORYBOOK_A11Y_PORT || '6006';
+const url = `http://127.0.0.1:${port}`;
+
+const run = (command, args, opts = {}) =>
+  new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      cwd: root,
+      stdio: 'inherit',
+      shell: process.platform === 'win32',
+      ...opts,
+    });
+    child.on('exit', (code) => {
+      if (code === 0) {
+        resolve(undefined);
+      } else {
+        reject(new Error(`${command} ${args.join(' ')} exited ${code}`));
+      }
+    });
+  });
+
+const main = async () => {
+  if (!existsSync(staticDir) || process.env.STORYBOOK_A11Y_REBUILD === '1') {
+    console.log('storybook:a11y — building Storybook…');
+    await run('npx', ['nx', 'build-storybook', 'design-system-ui']);
+  }
+
+  console.log(`storybook:a11y — serving ${staticDir} on ${url}`);
+  const server = spawn('npx', ['http-server', staticDir, '-p', port, '-c-1', '--silent'], {
+    cwd: root,
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+  });
+
+  try {
+    await run('npx', ['wait-on', `${url}/index.html`]);
+    await run('npx', [
+      'test-storybook',
+      '--url',
+      url,
+      '--config-dir',
+      'libs/design-system/ui/.storybook',
+    ]);
+  } finally {
+    server.kill('SIGTERM');
+  }
+};
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exit(1);
+});

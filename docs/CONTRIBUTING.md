@@ -78,6 +78,9 @@ npx nx g @senbilan/workspace:repository order
 - [ ] `npm run lint` and `npm run typecheck` clean
 - [ ] Tests added/updated for new logic; `npm test` green
 - [ ] No boundary / depcruise violations
+- [ ] i18n keys for `ru` / `en` / `uz` when UI copy changed
+- [ ] **Docs / ADR updated** when architecture, platform, auth, or CI behavior changed
+- [ ] New DS components have Storybook stories (a11y covered by `storybook:a11y`)
 - [ ] i18n keys in **ru / en / uz** for new copy; `npm run i18n:check`
 - [ ] Styles use tokens; Stylelint clean
 - [ ] New DS components have a Storybook story

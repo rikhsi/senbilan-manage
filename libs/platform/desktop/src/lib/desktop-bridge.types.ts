@@ -1,6 +1,6 @@
 /**
- * Shape of the future preload-exposed API (`contextBridge`).
- * Kept framework-light so this lib can stay `kind:util` until Electron lands.
+ * Shape of `window.senbilanDesktop` from Electron preload (`contextBridge`).
+ * Keep framework-light so this lib stays boundary-safe.
  */
 export interface DesktopBridgeApi {
   readonly minimize: () => Promise<void>;
@@ -8,3 +8,17 @@ export interface DesktopBridgeApi {
   readonly close: () => Promise<void>;
   readonly openExternal: (url: string) => Promise<void>;
 }
+
+declare global {
+  interface Window {
+    readonly senbilanDesktop?: DesktopBridgeApi;
+  }
+}
+
+export const readDesktopBridge = (): DesktopBridgeApi | null => {
+  if (typeof globalThis === 'undefined') {
+    return null;
+  }
+  const bridge = (globalThis as Window & typeof globalThis).senbilanDesktop;
+  return bridge ?? null;
+};

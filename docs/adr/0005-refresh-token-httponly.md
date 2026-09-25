@@ -21,9 +21,10 @@ long-lived refresh credential should not be script-accessible.
 
 ## Consequences
 
-- Dev/mock stacks may still return a body refresh token for local testing;
-  production config keeps `refreshViaCookie: true`.
+- Dev/mock stacks simulate the cookie with `MockDataStore.httpOnlyRefreshCookie` and omit `refreshToken` from JS-facing `AuthTokens` when `refreshViaCookie` is true.
+- MSW handlers set `Set-Cookie: senbilan_refresh=…; HttpOnly` on login/refresh for HTTP+MSW stacks.
 - CSRF: cookie refresh endpoints must use SameSite and/or CSRF defenses on the
   backend; the admin origin must be an allowed credentialed origin.
 - XSS can still abuse the access token until expiry — keep CSP and sanitization
   strict; do not “fix” XSS by moving refresh into `localStorage`.
+- E2E: `apps/admin-e2e/src/refresh-cookie.spec.ts` asserts refresh is not readable from web storage after login.

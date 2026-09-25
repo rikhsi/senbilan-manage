@@ -55,6 +55,19 @@ export class MockDataStore {
     return { accessToken, refreshToken, expiresInSeconds: 3600 };
   }
 
+  /** Simulates an httpOnly refresh cookie (not readable via SessionStorage). */
+  setHttpOnlyRefresh(token: string): void {
+    this.db.httpOnlyRefreshCookie = token;
+  }
+
+  getHttpOnlyRefresh(): string | null {
+    return this.db.httpOnlyRefreshCookie;
+  }
+
+  clearHttpOnlyRefresh(): void {
+    this.db.httpOnlyRefreshCookie = null;
+  }
+
   resolveAccessToken(token: string | null | undefined): User | null {
     if (!token) {
       return null;

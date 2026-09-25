@@ -13,6 +13,7 @@ import { provideMockApi } from '@senbilan/infra/mock';
 import { provideObservability } from '@senbilan/infra/observability';
 import { provideStorage } from '@senbilan/infra/storage';
 import { providePlatform } from '@senbilan/platform/core';
+import { provideDesktopPlatform } from '@senbilan/platform/desktop';
 import { provideAuth } from '@senbilan/shared/auth';
 import { provideAppConfig } from '@senbilan/shared/config';
 import { provideI18n } from '@senbilan/shared/i18n';
@@ -39,6 +40,7 @@ export const appConfig: ApplicationConfig = {
     provideObservability(),
     provideStorage(),
     providePlatform(),
+    provideDesktopPlatform(),
     provideApi(),
     provideMockApi(),
     provideAuth(),
