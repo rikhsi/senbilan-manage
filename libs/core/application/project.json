@@ -1,0 +1,14 @@
+{
+  "name": "core-application",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/core/application/src",
+  "projectType": "library",
+  "tags": [
+    "layer:core",
+    "kind:application"
+  ],
+  "targets": {
+    "typecheck": {},
+    "lint-styles": {}
+  }
+}

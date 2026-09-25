@@ -1,0 +1,18 @@
+{
+  "name": "shared-ng",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ng/src",
+  "prefix": "app",
+  "projectType": "library",
+  "tags": [
+    "layer:shared",
+    "kind:util-ng"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {},
+    "lint-styles": {}
+  }
+}

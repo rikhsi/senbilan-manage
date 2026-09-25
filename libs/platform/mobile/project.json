@@ -1,0 +1,19 @@
+{
+  "name": "platform-mobile",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/platform/mobile/src",
+  "prefix": "app",
+  "projectType": "library",
+  "tags": [
+    "layer:infra",
+    "kind:infrastructure",
+    "platform:mobile"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {},
+    "lint-styles": {}
+  }
+}

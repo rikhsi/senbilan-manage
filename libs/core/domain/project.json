@@ -1,0 +1,14 @@
+{
+  "name": "core-domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/core/domain/src",
+  "projectType": "library",
+  "tags": [
+    "layer:core",
+    "kind:domain"
+  ],
+  "targets": {
+    "typecheck": {},
+    "lint-styles": {}
+  }
+}

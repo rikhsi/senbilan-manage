@@ -1,0 +1,18 @@
+{
+  "name": "feature-permissions",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/permissions/src",
+  "prefix": "permissions",
+  "projectType": "library",
+  "tags": [
+    "layer:features",
+    "kind:feature"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {},
+    "lint-styles": {}
+  }
+}

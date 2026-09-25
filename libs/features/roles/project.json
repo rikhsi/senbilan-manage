@@ -1,0 +1,18 @@
+{
+  "name": "feature-roles",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/roles/src",
+  "prefix": "roles",
+  "projectType": "library",
+  "tags": [
+    "layer:features",
+    "kind:feature"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {},
+    "lint-styles": {}
+  }
+}

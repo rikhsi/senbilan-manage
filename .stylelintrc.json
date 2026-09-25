@@ -1,0 +1,42 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "plugins": ["stylelint-order"],
+  "ignoreFiles": ["**/node_modules/**", "**/dist/**", "libs/design-system/tokens/**"],
+  "rules": {
+    "selector-class-pattern": [
+      "^[a-z]([a-z0-9-]+)?(__([a-z0-9]+-?)+)?(--([a-z0-9]+-?)+){0,2}$",
+      { "message": "Use BEM-ish kebab-case class names (block__element--modifier)." }
+    ],
+    "scss/at-rule-no-unknown": [true, { "ignoreAtRules": ["use", "forward", "include", "mixin", "each", "if", "else", "function", "return"] }],
+    "no-descending-specificity": null,
+    "declaration-empty-line-before": null,
+    "scss/dollar-variable-pattern": "^[a-z][a-z0-9-]*$",
+    "scss/no-global-function-names": null,
+    "color-no-hex": [true, { "message": "Hard-coded colors are forbidden outside design-system/tokens. Use var(--app-color-*)." }],
+    "color-named": ["never", { "message": "Named colors are forbidden. Use var(--app-color-*)." }],
+    "function-disallowed-list": [["rgb", "rgba", "hsl", "hsla"], { "message": "Raw color functions are forbidden. Use var(--app-color-*)." }],
+    "declaration-property-value-disallowed-list": {
+      "/^(padding|margin|gap|row-gap|column-gap)$/": ["/^\\d+px/", "/\\s\\d+px/"],
+      "/^border-radius$/": ["/\\d+px/"],
+      "/^box-shadow$/": ["/\\d+px/"],
+      "/^font-size$/": ["/\\d+(px|rem)/"],
+      "/^font-family$/": ["/./"],
+      "/^z-index$/": ["/^\\d+$/"],
+      "/^transition(-duration)?$/": ["/\\d+m?s/"]
+    },
+    "order/properties-alphabetical-order": null,
+    "custom-property-pattern": "^(app|tui|ion)-[a-z0-9-]+$",
+    "selector-pseudo-element-no-unknown": [true, { "ignorePseudoElements": ["ng-deep"] }],
+    "selector-type-no-unknown": [true, { "ignore": ["custom-elements"] }],
+    "at-rule-no-unknown": null,
+    "scss/load-no-partial-leading-underscore": null,
+    "media-feature-range-notation": null,
+    "value-keyword-case": null
+  },
+  "overrides": [
+    {
+      "files": ["**/*.stories.scss", "**/.storybook/**/*.scss"],
+      "rules": { "color-no-hex": null }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "design-system-layout",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/design-system/layout/src",
+  "prefix": "app",
+  "projectType": "library",
+  "tags": [
+    "layer:shared",
+    "kind:ui"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {},
+    "lint-styles": {}
+  }
+}
