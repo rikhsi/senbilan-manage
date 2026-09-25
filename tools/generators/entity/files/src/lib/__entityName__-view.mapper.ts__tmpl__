@@ -1,0 +1,11 @@
+/** UI view-model for <%= className %> — map domain → presentation here. */
+export type <%= className %>ViewModel = {
+  readonly id: string;
+  readonly label: string;
+};
+
+export const <%= className %>ViewMapper = {
+  toView(id: string, label: string): <%= className %>ViewModel {
+    return { id, label };
+  },
+};

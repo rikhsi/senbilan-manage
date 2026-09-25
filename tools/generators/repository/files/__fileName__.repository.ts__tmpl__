@@ -1,0 +1,6 @@
+/**
+ * <%= className %> — application port. Implement in infra/api or infra/mock.
+ */
+export abstract class <%= className %> {
+  abstract findById(id: string, signal?: AbortSignal): Promise<unknown | null>;
+}

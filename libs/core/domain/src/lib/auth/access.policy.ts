@@ -26,6 +26,28 @@ export const rbacRule: PolicyRule = {
 };
 
 /**
+ * Attribute rule: when resource.ownerId is set, only the owner (or elevated
+ * `*:admin` permission) may pass; otherwise abstain for other rules.
+ */
+export const ownershipRule = (adminPermission: PermissionKey = 'users:write'): PolicyRule => ({
+  name: 'ownership',
+  evaluate: (session, permission, resource) => {
+    if (!resource?.ownerId) {
+      return 'abstain';
+    }
+    if (session.user.id === resource.ownerId) {
+      return 'allow';
+    }
+    if (session.permissions.has(adminPermission) || session.permissions.has(permission)) {
+      // Elevated principals with the action permission still go through RBAC;
+      // ownership alone does not deny them — abstain so rbacRule decides.
+      return 'abstain';
+    }
+    return 'deny';
+  },
+});
+
+/**
  * Deny-overrides combining: any explicit `deny` wins, otherwise any `allow`
  * wins, otherwise deny (fail-closed).
  */

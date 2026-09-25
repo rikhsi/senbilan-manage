@@ -46,6 +46,7 @@
     "themeLight": "Светлая",
     "themeDark": "Тёмная",
     "themeSystem": "Системная",
+    "cycleTheme": "Переключить тему",
     "breadcrumbs": "Навигационная цепочка"
   },
   "auth": {

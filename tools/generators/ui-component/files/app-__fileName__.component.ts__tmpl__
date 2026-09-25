@@ -1,0 +1,13 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
+@Component({
+  selector: '<%= selector %>',
+  template: `<ng-content />`,
+  styleUrl: './app-<%= fileName %>.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: '<%= selector %>' },
+})
+export class <%= className %> {
+  /** Optional tone for themed surfaces. */
+  readonly tone = input<'neutral' | 'primary'>('neutral');
+}

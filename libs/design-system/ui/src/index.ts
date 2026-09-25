@@ -17,6 +17,7 @@ export {
   type CardPadding,
   type CardVariant,
 } from './lib/card/app-card.component';
+export { AppPanelComponent, type PanelPadding } from './lib/panel/app-panel.component';
 export { AppBadgeComponent, TONES, type Tone } from './lib/badge/app-badge.component';
 export { AppTagComponent } from './lib/tag/app-tag.component';
 export { AppStatusComponent } from './lib/status/app-status.component';
@@ -90,6 +91,13 @@ export {
   AppConfirmDialogService,
   type ConfirmDialogOptions,
 } from './lib/overlay/app-confirm-dialog.service';
+export {
+  AppActionSheetComponent,
+  AppActionSheetService,
+  AppSheetService,
+  type ActionSheetData,
+  type ActionSheetItem,
+} from './lib/sheet/app-sheet.service';
 export {
   ToastService,
   type Toast,

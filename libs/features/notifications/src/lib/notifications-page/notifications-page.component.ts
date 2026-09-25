@@ -1,61 +1,60 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { NotificationRepository } from '@senbilan/core/application';
 import { type Notification } from '@senbilan/core/domain';
 import { NotificationItemComponent, NotificationQueries } from '@senbilan/entities/notification';
-import { AppButtonComponent, AppSwitchComponent } from '@senbilan/design-system/ui';
+import {
+  AppButtonComponent,
+  AppEmptyStateComponent,
+  AppSkeletonComponent,
+  AppSwitchComponent,
+} from '@senbilan/design-system/ui';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { NotificationsStore } from '../state/notifications.store';
 
 @Component({
   selector: 'notifications-page',
-  imports: [TranslocoPipe, AppButtonComponent, AppSwitchComponent, NotificationItemComponent],
+  imports: [
+    TranslocoPipe,
+    AppButtonComponent,
+    AppEmptyStateComponent,
+    AppSkeletonComponent,
+    AppSwitchComponent,
+    NotificationItemComponent,
+  ],
   templateUrl: './notifications-page.component.html',
   styleUrl: './notifications-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsPageComponent {
   private readonly queries = inject(NotificationQueries);
-  private readonly repo = inject(NotificationRepository, { optional: true });
+  protected readonly store = inject(NotificationsStore);
 
-  protected readonly unreadOnly = signal(false);
-  protected readonly items = signal<readonly Notification[]>([]);
-  protected readonly loading = signal(false);
+  private readonly listQuery = injectQuery(() =>
+    this.queries.listOptions({
+      page: 1,
+      size: 50,
+      filter: { unreadOnly: this.store.unreadOnly() },
+    }),
+  );
 
-  constructor() {
-    void this.reload();
-  }
+  private readonly unreadQuery = injectQuery(() => this.queries.unreadCountOptions());
+
+  protected readonly items = computed(() => this.listQuery.data()?.items ?? []);
+  protected readonly loading = computed(() => this.listQuery.isPending());
+  protected readonly unreadOnly = computed(() => this.store.unreadOnly());
+  protected readonly unreadCount = computed(
+    () => this.unreadQuery.data() ?? this.store.unreadCount(),
+  );
 
   protected onUnreadOnly(checked: boolean): void {
-    this.unreadOnly.set(checked);
-    void this.reload();
+    this.store.setUnreadOnly(checked);
   }
 
   protected async onMarkRead(notification: Notification): Promise<void> {
-    await this.queries.markRead(notification.id);
-    await this.reload();
+    await this.store.markRead(notification.id);
   }
 
   protected async markAllRead(): Promise<void> {
-    await this.queries.markAllRead();
-    await this.reload();
-  }
-
-  private async reload(): Promise<void> {
-    if (!this.repo) {
-      this.items.set([]);
-      return;
-    }
-    this.loading.set(true);
-    try {
-      const page = await this.queries
-        .listOptions({
-          page: 1,
-          size: 50,
-          filter: { unreadOnly: this.unreadOnly() },
-        })
-        .queryFn({ signal: new AbortController().signal });
-      this.items.set(page.items);
-    } finally {
-      this.loading.set(false);
-    }
+    await this.store.markAllRead();
   }
 }

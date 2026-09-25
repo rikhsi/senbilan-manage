@@ -6,7 +6,7 @@ import {
   LogoutUseCase,
   RestoreSessionUseCase,
 } from '@senbilan/core/application';
-import { type PermissionKey, type Session } from '@senbilan/core/domain';
+import { AccessPolicy, type PermissionKey, type Session } from '@senbilan/core/domain';
 
 export type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'anonymous';
 
@@ -21,6 +21,8 @@ const initialState: AuthState = {
   status: 'idle',
   error: null,
 };
+
+const accessPolicy = new AccessPolicy();
 
 export const AuthStore = signalStore(
   { providedIn: 'root' },
@@ -39,23 +41,15 @@ export const AuthStore = signalStore(
 
     return {
       can(permission: PermissionKey): boolean {
-        return store.session()?.permissions.has(permission) ?? false;
+        return accessPolicy.can(store.session(), permission);
       },
 
       canAny(permissions: readonly PermissionKey[]): boolean {
-        const session = store.session();
-        if (!session) {
-          return false;
-        }
-        return permissions.some((permission) => session.permissions.has(permission));
+        return accessPolicy.canAny(store.session(), permissions);
       },
 
       canAll(permissions: readonly PermissionKey[]): boolean {
-        const session = store.session();
-        if (!session) {
-          return false;
-        }
-        return permissions.every((permission) => session.permissions.has(permission));
+        return accessPolicy.canAll(store.session(), permissions);
       },
 
       async login(credentials: Credentials): Promise<Session> {

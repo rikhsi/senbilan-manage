@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslocoPipe } from '@jsverse/transloco';
 import { type PermissionDescriptor, PermissionRepository } from '@senbilan/core/application';
 import { ALL_PERMISSIONS } from '@senbilan/core/domain';
-import { PermissionQueries } from '@senbilan/entities/permission';
 import { AppCardComponent, AppTagComponent } from '@senbilan/design-system/ui';
 
 @Component({
@@ -13,7 +12,6 @@ import { AppCardComponent, AppTagComponent } from '@senbilan/design-system/ui';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PermissionsPageComponent {
-  private readonly permissionQueries = inject(PermissionQueries);
   private readonly repo = inject(PermissionRepository, { optional: true });
 
   protected readonly items = signal<readonly PermissionDescriptor[]>([]);
@@ -30,11 +28,7 @@ export class PermissionsPageComponent {
         this.items.set(ALL_PERMISSIONS.map((p) => ({ ...p, description: p.key })));
         return;
       }
-      this.items.set(
-        await this.permissionQueries.listOptions().queryFn({
-          signal: new AbortController().signal,
-        }),
-      );
+      this.items.set(await this.repo.findAll());
     } finally {
       this.loading.set(false);
     }

@@ -59,6 +59,19 @@ Fix failures locally; do not bypass hooks unless explicitly agreed.
 - All UI copy via Transloco — [I18N.md](I18N.md).
 - Follow [AGENTS.md](../AGENTS.md) when using AI assistance.
 
+## Generators
+
+Scaffold via local plugin `@senbilan/workspace` (see `tools/generators/README.md`):
+
+```sh
+npx nx g @senbilan/workspace:feature orders
+# or: npm run g:feature -- orders
+npx nx g @senbilan/workspace:entity order
+npx nx g @senbilan/workspace:ui-component chip
+npx nx g @senbilan/workspace:use-case create-order --domain=orders
+npx nx g @senbilan/workspace:repository order
+```
+
 ## PR checklist
 
 - [ ] Conventional commit messages

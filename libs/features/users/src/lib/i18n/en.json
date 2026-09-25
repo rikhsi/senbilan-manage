@@ -22,6 +22,11 @@
     "back": "Back to users",
     "empty": "No users found",
     "confirmDelete": "Delete selected users?",
+    "viewMode": "View mode",
+    "view": {
+      "table": "Table",
+      "cards": "Cards"
+    },
     "statuses": {
       "active": "Active",
       "invited": "Invited",

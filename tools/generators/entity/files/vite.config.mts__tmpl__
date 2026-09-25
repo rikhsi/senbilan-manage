@@ -1,0 +1,6 @@
+import { defineConfig } from 'vitest/config';
+import { angularConfig } from '<%= offsetFromRoot %>/tools/vitest/presets';
+
+export default defineConfig(
+  angularConfig({ name: '<%= projectName %>', root: import.meta.dirname, workspaceRoot: '<%= offsetFromRoot %>' }),
+);

@@ -1,10 +1,11 @@
 {
   "settings": {
     "title": "Sozlamalar",
-    "subtitle": "Mavzu, til va profil",
+    "subtitle": "Mavzu, til, zichlik va profil",
     "tabs": {
       "theme": "Mavzu",
       "language": "Til",
+      "density": "Zichlik",
       "profile": "Profil"
     },
     "theme": {
@@ -16,13 +17,23 @@
     },
     "language": {
       "label": "Interfeys tili",
-      "hint": "shared/i18n ulanganidan keyin qo‘llanadi."
+      "hint": "Til darhol qo‘llanadi.",
+      "ru": "Русский",
+      "en": "English",
+      "uz": "Oʻzbekcha"
+    },
+    "density": {
+      "label": "Interfeys zichligi",
+      "comfortable": "Qulay",
+      "compact": "Ixcham",
+      "hint": "Zichlik shu brauzerda saqlanadi va shellga qo‘llanadi."
     },
     "profile": {
       "firstName": "Ism",
       "lastName": "Familiya",
       "email": "Email",
-      "save": "Profilni saqlash"
+      "save": "Profilni saqlash",
+      "saved": "Profil yangilandi"
     }
   }
 }

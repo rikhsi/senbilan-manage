@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ValidationError } from '@senbilan/core/application';
@@ -10,11 +9,17 @@ import {
   AppInputDirective,
 } from '@senbilan/design-system/ui';
 import { AuthStore } from '@senbilan/shared/auth';
+import { email, form, FormField, required, submit } from '@senbilan/shared/ng';
+
+interface LoginModel {
+  email: string;
+  password: string;
+}
 
 @Component({
   selector: 'auth-login-page',
   imports: [
-    ReactiveFormsModule,
+    FormField,
     TranslocoPipe,
     AppButtonComponent,
     AppCardComponent,
@@ -26,51 +31,51 @@ import { AuthStore } from '@senbilan/shared/auth';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
-  private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly i18n = inject(TranslocoService);
   private readonly auth = inject(AuthStore);
 
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
-  protected readonly submitted = signal(false);
 
-  protected readonly form = this.fb.nonNullable.group({
-    email: ['admin@senbilan.dev', [Validators.required, Validators.email]],
-    password: ['password123', [Validators.required]],
+  protected readonly model = signal<LoginModel>({
+    email: 'admin@senbilan.dev',
+    password: 'password123',
+  });
+
+  protected readonly loginForm = form(this.model, (path) => {
+    required(path.email, { message: () => this.i18n.translate('auth.emailRequired') });
+    email(path.email, { message: () => this.i18n.translate('auth.error') });
+    required(path.password, { message: () => this.i18n.translate('auth.passwordRequired') });
   });
 
   protected errorFor(control: 'email' | 'password'): string {
-    if (!this.submitted() && !this.form.controls[control].touched) {
+    const field = this.loginForm[control];
+    const state = field();
+    if (!state.touched() && !state.dirty()) {
       return '';
     }
-    const c = this.form.controls[control];
-    if (c.hasError('required')) {
-      return this.i18n.translate(
-        control === 'email' ? 'auth.emailRequired' : 'auth.passwordRequired',
-      );
-    }
-    return '';
+    const first = state.errors()[0];
+    return first?.message ?? '';
   }
 
-  protected async onSubmit(): Promise<void> {
-    this.submitted.set(true);
+  protected async onSubmit(event: Event): Promise<void> {
+    event.preventDefault();
     this.formError.set(null);
-    if (this.form.invalid) {
-      return;
-    }
 
-    this.submitting.set(true);
-    try {
-      await this.auth.login(this.form.getRawValue());
-      await this.router.navigateByUrl('/dashboard');
-    } catch (error: unknown) {
-      void error;
-      this.formError.set(
-        this.i18n.translate(error instanceof ValidationError ? 'auth.error' : 'auth.error'),
-      );
-    } finally {
-      this.submitting.set(false);
-    }
+    await submit(this.loginForm, async () => {
+      this.submitting.set(true);
+      try {
+        await this.auth.login(this.model());
+        await this.router.navigateByUrl('/dashboard');
+      } catch (error: unknown) {
+        void error;
+        this.formError.set(
+          this.i18n.translate(error instanceof ValidationError ? 'auth.error' : 'auth.error'),
+        );
+      } finally {
+        this.submitting.set(false);
+      }
+    });
   }
 }

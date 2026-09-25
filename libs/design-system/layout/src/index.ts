@@ -9,7 +9,23 @@ export {
   type ContentWidth,
 } from './lib/content/app-content-container.component';
 export { AppHeaderComponent } from './lib/header/app-header.component';
-export { type BreadcrumbItem, type NavigationItem } from './lib/navigation.types';
+export {
+  LAYOUT_CAN_ACCESS,
+  LAYOUT_COMMAND_PALETTE,
+  LAYOUT_THEME,
+  LAYOUT_USER,
+  type LayoutCommandItem,
+  type LayoutCommandPaletteBridge,
+  type LayoutThemeBridge,
+  type LayoutThemeMode,
+  type LayoutUserBridge,
+  type LayoutUserSnapshot,
+} from './lib/layout-bridges';
+export {
+  type BreadcrumbItem,
+  type CommandPaletteItem,
+  type NavigationItem,
+} from './lib/navigation.types';
 export { AppPageHeaderComponent } from './lib/page-header/app-page-header.component';
 export { AppShellComponent } from './lib/shell/app-shell.component';
 export { AppSidebarComponent } from './lib/sidebar/app-sidebar.component';

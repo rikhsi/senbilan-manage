@@ -5,13 +5,13 @@
       <p class="auth-login-page__subtitle">{{ 'auth.subtitle' | transloco }}</p>
     </header>
 
-    <form class="auth-login-page__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="auth-login-page__form" (submit)="onSubmit($event)" novalidate>
       <app-form-field [label]="'auth.email' | transloco" [error]="errorFor('email')" required>
-        <input appInput type="email" autocomplete="username" formControlName="email" />
+        <input appInput type="email" autocomplete="username" [formField]="loginForm.email" />
       </app-form-field>
 
       <app-form-field [label]="'auth.password' | transloco" [error]="errorFor('password')" required>
-        <input appInput type="password" autocomplete="current-password" formControlName="password" />
+        <input appInput type="password" autocomplete="current-password" [formField]="loginForm.password" />
       </app-form-field>
 
       @if (formError(); as message) {

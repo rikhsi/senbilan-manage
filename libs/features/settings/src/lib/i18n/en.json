@@ -1,10 +1,11 @@
 {
   "settings": {
     "title": "Settings",
-    "subtitle": "Theme, language and profile preferences",
+    "subtitle": "Theme, language, density and profile preferences",
     "tabs": {
       "theme": "Theme",
       "language": "Language",
+      "density": "Density",
       "profile": "Profile"
     },
     "theme": {
@@ -16,13 +17,23 @@
     },
     "language": {
       "label": "Interface language",
-      "hint": "Changes apply after reload once shared/i18n lands."
+      "hint": "Language changes apply immediately.",
+      "ru": "Русский",
+      "en": "English",
+      "uz": "Oʻzbekcha"
+    },
+    "density": {
+      "label": "UI density",
+      "comfortable": "Comfortable",
+      "compact": "Compact",
+      "hint": "Density is saved for this browser and applied to the shell."
     },
     "profile": {
       "firstName": "First name",
       "lastName": "Last name",
       "email": "Email",
-      "save": "Save profile"
+      "save": "Save profile",
+      "saved": "Profile updated"
     }
   }
 }

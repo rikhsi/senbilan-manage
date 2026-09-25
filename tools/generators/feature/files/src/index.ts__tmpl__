@@ -1,0 +1,2 @@
+export { FEATURE_<%= constantName %>_ROUTES } from './lib/lib.routes';
+export { provide<%= className %>I18n } from './lib/i18n/provide-<%= featureName %>-i18n';

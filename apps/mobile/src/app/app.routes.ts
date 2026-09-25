@@ -1,3 +1,9 @@
-import { Route } from '@angular/router';
+import { type Routes } from '@angular/router';
 
-export const appRoutes: Route[] = [];
+export const appRoutes: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./home-page.component').then((m) => m.HomePageComponent),
+  },
+  { path: '**', redirectTo: '' },
+];

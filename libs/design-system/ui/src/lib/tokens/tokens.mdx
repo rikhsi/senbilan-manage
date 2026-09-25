@@ -1,0 +1,30 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Tokens" />
+
+# Design tokens
+
+Use design tokens via CSS custom properties (`--app-*`) and the SCSS API:
+
+```scss
+@use 'ds' as ds;
+```
+
+## Rules
+
+- **Colors / spacing / radius / type / z-index / durations:** only `var(--app-*)` (or local `--_*` slots).
+- **Never** hardcode hex, named colors, `rgb()` / `hsl()`, raw `px` padding, or font stacks in feature or UI component SCSS.
+- Themes switch with `data-theme` on the document (`light` / `dark`). Density uses `data-density`.
+
+## Common groups
+
+| Group | Examples |
+| --- | --- |
+| Color | `--app-color-bg`, `--app-color-text`, `--app-color-primary` |
+| Space | `--app-space-1` … `--app-space-12` |
+| Radius | `--app-radius-sm`, `--app-radius-md`, `--app-radius-lg` |
+| Type | `--app-font-size-sm`, `--app-font-title-md` |
+| Motion | `--app-duration-fast`, `--app-easing-standard` |
+| Elevation | `--app-shadow-sm`, `--app-shadow-md` |
+
+Token sources live in `libs/design-system/tokens/src/styles`. Toggle the Storybook theme control to preview light vs dark.

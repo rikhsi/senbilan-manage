@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RoleRepository, UpdateRoleUseCase } from '@senbilan/core/application';
 import { ALL_PERMISSIONS, type PermissionKey, type Role } from '@senbilan/core/domain';
-import { RoleBadgeComponent, RoleQueries } from '@senbilan/entities/role';
+import { RoleBadgeComponent } from '@senbilan/entities/role';
 import {
   PermissionMatrixComponent,
   type PermissionMatrixGroup,
@@ -18,7 +18,6 @@ import { AppButtonComponent } from '@senbilan/design-system/ui';
 })
 export class RolesPageComponent {
   private readonly i18n = inject(TranslocoService);
-  private readonly roleQueries = inject(RoleQueries);
   private readonly rolesRepo = inject(RoleRepository, { optional: true });
 
   protected readonly roles = signal<readonly Role[]>([]);
@@ -86,9 +85,7 @@ export class RolesPageComponent {
         this.roles.set([]);
         return;
       }
-      const list = await this.roleQueries.listOptions().queryFn({
-        signal: new AbortController().signal,
-      });
+      const list = await this.rolesRepo.findAll();
       this.roles.set(list);
       const current = this.selectedId();
       const next = list.find((r) => r.id === current) ?? list[0] ?? null;

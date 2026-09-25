@@ -7,6 +7,7 @@
     "email": "Email",
     "avatarUrl": "Avatar URL",
     "save": "Saqlash",
-    "saved": "Profil yangilandi"
+    "saved": "Profil yangilandi",
+    "saveFailed": "Profilni saqlab bo‘lmadi"
   }
 }

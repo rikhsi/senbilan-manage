@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { UserId, type UserWithRoles } from '@senbilan/core/domain';
+import { UserId } from '@senbilan/core/domain';
 import { RoleBadgeComponent } from '@senbilan/entities/role';
 import {
   toUserViewModel,
@@ -12,8 +12,11 @@ import {
 import {
   AppButtonComponent,
   AppCardComponent,
+  AppEmptyStateComponent,
+  AppSkeletonComponent,
   AppStatusComponent,
 } from '@senbilan/design-system/ui';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 
 @Component({
   selector: 'users-detail-page',
@@ -22,6 +25,8 @@ import {
     TranslocoPipe,
     AppButtonComponent,
     AppCardComponent,
+    AppEmptyStateComponent,
+    AppSkeletonComponent,
     AppStatusComponent,
     UserAvatarComponent,
     RoleBadgeComponent,
@@ -31,35 +36,17 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserDetailPageComponent {
-  private readonly route = inject(ActivatedRoute);
   private readonly userQueries = inject(UserQueries);
 
-  protected readonly user = signal<UserWithRoles | null>(null);
-  protected readonly loading = signal(true);
+  /** Bound from route `:id` via `withComponentInputBinding`. */
+  readonly id = input.required<string>();
+
+  private readonly detailQuery = injectQuery(() =>
+    this.userQueries.detailOptions(UserId(this.id())),
+  );
+
+  protected readonly user = computed(() => this.detailQuery.data() ?? null);
+  protected readonly loading = computed(() => this.detailQuery.isPending());
   protected readonly viewOf = toUserViewModel;
   protected readonly statusTone = userStatusTone;
-
-  constructor() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      void this.load(UserId(id));
-    } else {
-      this.loading.set(false);
-    }
-  }
-
-  private async load(id: ReturnType<typeof UserId>): Promise<void> {
-    this.loading.set(true);
-    try {
-      this.user.set(
-        await this.userQueries.detailOptions(id).queryFn({
-          signal: new AbortController().signal,
-        }),
-      );
-    } catch {
-      this.user.set(null);
-    } finally {
-      this.loading.set(false);
-    }
-  }
 }

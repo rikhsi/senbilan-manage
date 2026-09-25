@@ -68,6 +68,12 @@
   gap: var(--app-space-2);
 }
 
+.users-page__view-toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-1);
+}
+
 .users-page__toolbar {
   display: flex;
   flex-wrap: wrap;

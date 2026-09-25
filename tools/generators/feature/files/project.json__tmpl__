@@ -1,0 +1,22 @@
+{
+  "name": "<%= projectName %>",
+  "$schema": "<%= offsetFromRoot %>/node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "<%= sourceRoot %>",
+  "prefix": "<%= classPrefix %>",
+  "projectType": "library",
+  "tags": ["layer:features", "kind:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
+    "lint-styles": {}
+  }
+}

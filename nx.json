@@ -32,7 +32,7 @@
         "default",
         "^default",
         "{workspaceRoot}/eslint.config.mjs",
-        "{workspaceRoot}/tools/eslint-rules/**/*"
+        "{workspaceRoot}/tools/eslint-plugin/**/*"
       ]
     },
     "typecheck": {
@@ -93,6 +93,23 @@
     }
   ],
   "generators": {
+    "@senbilan/workspace": {
+      "feature": {
+        "description": "Scaffold a feature library under libs/features"
+      },
+      "entity": {
+        "description": "Scaffold an entity library under libs/entities"
+      },
+      "ui-component": {
+        "description": "Scaffold an App* UI primitive under design-system/ui"
+      },
+      "use-case": {
+        "description": "Scaffold a VerbNounUseCase in core/application"
+      },
+      "repository": {
+        "description": "Scaffold an abstract repository port in core/application"
+      }
+    },
     "@nx/angular:application": {
       "e2eTestRunner": "playwright",
       "linter": "eslint",

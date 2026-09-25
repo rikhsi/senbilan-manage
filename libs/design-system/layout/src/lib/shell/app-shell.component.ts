@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, input, model, output } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ViewportService } from '@senbilan/design-system/ui';
-import { CommandPaletteService } from '@senbilan/shared/command';
 import { AppBottomNavComponent } from '../bottom-nav/app-bottom-nav.component';
 import { AppCommandPaletteComponent } from '../command-palette/app-command-palette.component';
 import { AppHeaderComponent } from '../header/app-header.component';
+import { LAYOUT_COMMAND_PALETTE } from '../layout-bridges';
 import { type BreadcrumbItem, type NavigationItem } from '../navigation.types';
 import { AppSidebarComponent } from '../sidebar/app-sidebar.component';
 
@@ -68,7 +68,7 @@ import { AppSidebarComponent } from '../sidebar/app-sidebar.component';
 })
 export class AppShellComponent {
   protected readonly viewport = inject(ViewportService);
-  private readonly palette = inject(CommandPaletteService);
+  private readonly palette = inject(LAYOUT_COMMAND_PALETTE, { optional: true });
 
   readonly navItems = input.required<readonly NavigationItem[]>();
   readonly breadcrumbs = input<readonly BreadcrumbItem[]>([]);
@@ -81,6 +81,6 @@ export class AppShellComponent {
   readonly logout = output<void>();
 
   protected openPalette(): void {
-    this.palette.open();
+    this.palette?.open();
   }
 }

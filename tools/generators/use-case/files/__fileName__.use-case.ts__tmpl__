@@ -1,0 +1,11 @@
+/**
+ * <%= className %> — orchestrates ports + domain for <%= domain %>.
+ * Wire the required repository/port in the constructor.
+ */
+export class <%= className %> {
+  // constructor(private readonly repo: SomeRepository) {}
+
+  async execute(_input?: unknown, _signal?: AbortSignal): Promise<void> {
+    throw new Error('<%= className %>.execute is not implemented');
+  }
+}

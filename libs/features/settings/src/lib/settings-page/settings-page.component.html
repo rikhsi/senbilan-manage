@@ -18,7 +18,7 @@
           <app-radio-group
             variant="cards"
             [options]="themeOptions()"
-            [value]="theme()"
+            [value]="themeMode()"
             [labelledBy]="'settings-theme-label'"
             (valueChange)="onThemeChange($event ?? 'system')"
           />
@@ -39,18 +39,33 @@
           <p class="settings-page__subtitle">{{ 'settings.language.hint' | transloco }}</p>
         </section>
       }
+      @case ('density') {
+        <section class="settings-page__section">
+          <p class="settings-page__subtitle" id="settings-density-label">
+            {{ 'settings.density.label' | transloco }}
+          </p>
+          <app-radio-group
+            variant="cards"
+            [options]="densityOptions()"
+            [value]="density()"
+            [labelledBy]="'settings-density-label'"
+            (valueChange)="onDensityChange($event ?? 'comfortable')"
+          />
+          <p class="settings-page__subtitle">{{ 'settings.density.hint' | transloco }}</p>
+        </section>
+      }
       @case ('profile') {
-        <form class="settings-page__form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-          <app-form-field [label]="'settings.profile.firstName' | transloco">
-            <input appInput formControlName="firstName" />
+        <form class="settings-page__form" (submit)="saveProfile($event)" novalidate>
+          <app-form-field [label]="'settings.profile.firstName' | transloco" required>
+            <input appInput [formField]="profileForm.firstName" />
           </app-form-field>
-          <app-form-field [label]="'settings.profile.lastName' | transloco">
-            <input appInput formControlName="lastName" />
+          <app-form-field [label]="'settings.profile.lastName' | transloco" required>
+            <input appInput [formField]="profileForm.lastName" />
           </app-form-field>
           <app-form-field [label]="'settings.profile.email' | transloco">
-            <input appInput type="email" formControlName="email" />
+            <input appInput type="email" [formField]="profileForm.email" />
           </app-form-field>
-          <button app-button type="submit" variant="primary">
+          <button app-button type="submit" variant="primary" [loading]="saving()">
             {{ 'settings.profile.save' | transloco }}
           </button>
         </form>

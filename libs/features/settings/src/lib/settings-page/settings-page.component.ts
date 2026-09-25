@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { APP_CONFIG } from '@senbilan/shared/config';
+import { UpdateProfileUseCase, UserRepository } from '@senbilan/core/application';
 import {
   AppButtonComponent,
   AppFormFieldComponent,
@@ -10,16 +9,27 @@ import {
   type RadioOption,
   AppTabsComponent,
   type TabItem,
+  ToastService,
 } from '@senbilan/design-system/ui';
+import { AuthStore } from '@senbilan/shared/auth';
+import { APP_CONFIG } from '@senbilan/shared/config';
+import { disabled, form, FormField, required, submit } from '@senbilan/shared/ng';
+import { ShellStore, type ShellDensity } from '@senbilan/shared/shell';
+import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
 
-type SettingsTab = 'theme' | 'language' | 'profile';
-type ThemeMode = 'light' | 'dark' | 'system';
+type SettingsTab = 'theme' | 'language' | 'density' | 'profile';
 type AppLocale = 'ru' | 'en' | 'uz';
+
+interface SettingsProfileModel {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
 
 @Component({
   selector: 'settings-page',
   imports: [
-    ReactiveFormsModule,
+    FormField,
     TranslocoPipe,
     AppButtonComponent,
     AppFormFieldComponent,
@@ -33,16 +43,20 @@ type AppLocale = 'ru' | 'en' | 'uz';
 })
 export class SettingsPageComponent {
   private readonly i18n = inject(TranslocoService);
-  private readonly fb = inject(FormBuilder);
   private readonly config = inject(APP_CONFIG, { optional: true });
+  private readonly auth = inject(AuthStore);
+  private readonly theme = inject(ThemeService);
+  private readonly shell = inject(ShellStore);
+  private readonly toast = inject(ToastService);
+  private readonly usersRepo = inject(UserRepository, { optional: true });
 
   protected readonly tab = signal<SettingsTab>('theme');
-  protected readonly theme = signal<ThemeMode>('system');
-  protected readonly language = signal<AppLocale>(this.config?.defaultLocale ?? 'ru');
+  protected readonly saving = signal(false);
 
   protected readonly tabs = computed<readonly TabItem<SettingsTab>[]>(() => [
     { id: 'theme', label: this.i18n.translate('settings.tabs.theme'), icon: 'palette' },
     { id: 'language', label: this.i18n.translate('settings.tabs.language'), icon: 'globe' },
+    { id: 'density', label: this.i18n.translate('settings.tabs.density'), icon: 'sliders' },
     { id: 'profile', label: this.i18n.translate('settings.tabs.profile'), icon: 'user' },
   ]);
 
@@ -52,33 +66,77 @@ export class SettingsPageComponent {
     { value: 'system', label: this.i18n.translate('settings.theme.system') },
   ]);
 
+  protected readonly densityOptions = computed<readonly RadioOption<ShellDensity>[]>(() => [
+    { value: 'comfortable', label: this.i18n.translate('settings.density.comfortable') },
+    { value: 'compact', label: this.i18n.translate('settings.density.compact') },
+  ]);
+
   protected readonly languageOptions = computed<readonly RadioOption<AppLocale>[]>(() => {
     const locales = this.config?.availableLocales ?? (['ru', 'en', 'uz'] as const);
-    return locales.map((locale) => ({ value: locale, label: locale.toUpperCase() }));
+    return locales.map((locale) => ({
+      value: locale,
+      label: this.i18n.translate(`settings.language.${locale}`),
+    }));
   });
 
-  protected readonly profileForm = this.fb.nonNullable.group({
-    firstName: [''],
-    lastName: [''],
-    email: [{ value: '', disabled: true }],
+  protected readonly themeMode = computed(() => this.theme.mode());
+  protected readonly density = computed(() => this.shell.density());
+  protected readonly language = computed(
+    () => (this.i18n.getActiveLang() as AppLocale) || this.config?.defaultLocale || 'ru',
+  );
+
+  private readonly user = this.auth.user();
+
+  protected readonly profileModel = signal<SettingsProfileModel>({
+    firstName: this.user?.firstName ?? '',
+    lastName: this.user?.lastName ?? '',
+    email: this.user?.email ?? '',
+  });
+
+  protected readonly profileForm = form(this.profileModel, (path) => {
+    required(path.firstName);
+    required(path.lastName);
+    disabled(path.email);
   });
 
   protected onThemeChange(value: ThemeMode): void {
-    this.theme.set(value);
-    let resolved: 'light' | 'dark' = value === 'dark' ? 'dark' : 'light';
-    if (value === 'system') {
-      resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    document.documentElement.dataset['theme'] = resolved;
+    this.theme.setMode(value);
+  }
+
+  protected onDensityChange(value: ShellDensity): void {
+    this.shell.setDensity(value);
+    this.theme.setDensity(value);
   }
 
   protected onLanguageChange(value: AppLocale): void {
-    this.language.set(value);
-    // TODO: wire TranslocoService.setActiveLang via shared/i18n.
     this.i18n.setActiveLang(value);
   }
 
-  protected saveProfile(): void {
-    // TODO: call UpdateProfileUseCase once session user id is available.
+  protected async saveProfile(event: Event): Promise<void> {
+    event.preventDefault();
+    const sessionUser = this.auth.user();
+    const repo = this.usersRepo;
+    if (!sessionUser || !repo) {
+      return;
+    }
+
+    await submit(this.profileForm, async () => {
+      this.saving.set(true);
+      try {
+        const value = this.profileModel();
+        await new UpdateProfileUseCase(repo).execute(sessionUser.id, {
+          firstName: value.firstName,
+          lastName: value.lastName,
+          avatarUrl: sessionUser.avatarUrl,
+        });
+        await this.auth.restore();
+        this.toast.show({
+          tone: 'success',
+          title: this.i18n.translate('settings.profile.saved'),
+        });
+      } finally {
+        this.saving.set(false);
+      }
+    });
   }
 }

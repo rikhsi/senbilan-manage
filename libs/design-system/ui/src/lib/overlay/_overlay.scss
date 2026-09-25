@@ -58,6 +58,13 @@
   }
 }
 
+.app-sheet-panel {
+  width: 100vw !important;
+  max-height: 92dvh !important;
+  border-radius: var(--app-radius-2xl) var(--app-radius-2xl) 0 0;
+  animation: app-slide-in-bottom var(--app-duration-slow) var(--app-ease-out);
+}
+
 // Menus and tooltips (CDK / Taiga) sit above modals.
 .app-menu-panel {
   z-index: var(--app-z-popover);

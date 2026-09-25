@@ -26,6 +26,11 @@
         ],
         "styles": [
           "node_modules/@fontsource-variable/inter/wght.css",
+          "node_modules/@ionic/angular/css/core.css",
+          "node_modules/@ionic/angular/css/normalize.css",
+          "node_modules/@ionic/angular/css/structure.css",
+          "node_modules/@ionic/angular/css/typography.css",
+          "node_modules/@ionic/angular/css/display.css",
           "apps/mobile/src/styles.scss"
         ]
       },
@@ -34,13 +39,18 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumWarning": "350kb",
+              "maximumError": "450kb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "4kb",
               "maximumError": "8kb"
+            },
+            {
+              "type": "anyScript",
+              "maximumWarning": "250kb",
+              "maximumError": "350kb"
             }
           ],
           "outputHashing": "all",
@@ -91,6 +101,29 @@
         "parallel": false
       }
     },
-    "lint-styles": {}
+    "lint-styles": {},
+    "cap-sync": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["npx cap sync"],
+        "parallel": false
+      },
+      "dependsOn": ["build"]
+    },
+    "cap-open-android": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "npx cap open android"
+      }
+    },
+    "cap-open-ios": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "npx cap open ios"
+      }
+    }
   }
 }

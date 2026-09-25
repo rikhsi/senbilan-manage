@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "SenbilanUseCase",
+  "title": "Use case",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Use case name, e.g. get-order or CreateOrder",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Use case name (VerbNoun)"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domain folder under use-cases/",
+      "default": "shared",
+      "x-prompt": "Domain folder (users, roles, …)"
+    }
+  },
+  "required": ["name"]
+}

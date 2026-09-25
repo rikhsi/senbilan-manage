@@ -12,11 +12,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { APP_ICONS, AppIconComponent, type AppIconName } from '@senbilan/design-system/icons';
 import { AppSearchInputComponent } from '@senbilan/design-system/ui';
-import { AuthStore } from '@senbilan/shared/auth';
-import { CommandPaletteService, type Command } from '@senbilan/shared/command';
+import {
+  LAYOUT_CAN_ACCESS,
+  LAYOUT_COMMAND_PALETTE,
+  type LayoutCommandItem,
+} from '../layout-bridges';
 
 const isAppIconName = (value: string): value is AppIconName =>
   Object.prototype.hasOwnProperty.call(APP_ICONS, value);
+
+const readIsOpen = (bridge: { readonly isOpen: (() => boolean) | { (): boolean } }): boolean => {
+  const value = bridge.isOpen;
+  return typeof value === 'function' ? value() : false;
+};
 
 @Component({
   selector: 'app-command-palette-panel',
@@ -69,8 +77,8 @@ const isAppIconName = (value: string): value is AppIconName =>
   },
 })
 export class AppCommandPalettePanelComponent {
-  private readonly palette = inject(CommandPaletteService);
-  private readonly auth = inject(AuthStore, { optional: true });
+  private readonly palette = inject(LAYOUT_COMMAND_PALETTE);
+  private readonly canAccessFn = inject(LAYOUT_CAN_ACCESS, { optional: true });
   private readonly dialogRef = inject(DialogRef<unknown, AppCommandPalettePanelComponent>, {
     optional: true,
   });
@@ -80,9 +88,9 @@ export class AppCommandPalettePanelComponent {
 
   protected readonly commands = computed(() => {
     const q = this.query().trim().toLowerCase();
-    const auth = this.auth;
+    const can = this.canAccessFn;
     return this.palette.all().filter((command) => {
-      if (command.permission !== undefined && auth && !auth.can(command.permission)) {
+      if (command.permission !== undefined && can && !can(command.permission)) {
         return false;
       }
       if (!q) {
@@ -96,7 +104,7 @@ export class AppCommandPalettePanelComponent {
     });
   });
 
-  protected iconName(command: Command): AppIconName | null {
+  protected iconName(command: LayoutCommandItem): AppIconName | null {
     return command.icon && isAppIconName(command.icon) ? command.icon : null;
   }
 
@@ -105,7 +113,7 @@ export class AppCommandPalettePanelComponent {
     this.activeIndex.set(0);
   }
 
-  protected async run(command: Command): Promise<void> {
+  protected async run(command: LayoutCommandItem): Promise<void> {
     await this.palette.run(command.id);
     this.dialogRef?.close();
   }
@@ -135,7 +143,7 @@ export class AppCommandPalettePanelComponent {
 
 /**
  * Host that opens the command palette overlay on Ctrl/Cmd+K and when the
- * shared `CommandPaletteService` requests it.
+ * layout command-palette bridge requests it.
  */
 @Component({
   selector: 'app-command-palette',
@@ -147,13 +155,14 @@ export class AppCommandPalettePanelComponent {
 })
 export class AppCommandPaletteComponent {
   private readonly dialog = inject(Dialog);
-  private readonly palette = inject(CommandPaletteService);
+  private readonly palette = inject(LAYOUT_COMMAND_PALETTE);
   private readonly destroyRef = inject(DestroyRef);
   private openRef: DialogRef<unknown, AppCommandPalettePanelComponent> | null = null;
 
   constructor() {
     effect(() => {
-      if (this.palette.isOpen()) {
+      const open = readIsOpen(this.palette);
+      if (open) {
         this.openOverlay();
       } else if (this.openRef) {
         this.openRef.close();
@@ -183,7 +192,7 @@ export class AppCommandPaletteComponent {
     });
     this.openRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.openRef = null;
-      if (this.palette.isOpen()) {
+      if (readIsOpen(this.palette)) {
         this.palette.close();
       }
     });

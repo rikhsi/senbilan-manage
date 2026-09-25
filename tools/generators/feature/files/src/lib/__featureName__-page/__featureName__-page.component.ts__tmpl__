@@ -1,0 +1,11 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
+
+@Component({
+  selector: '<%= classPrefix %>-<%= featureName %>-page',
+  imports: [TranslocoPipe],
+  templateUrl: './<%= featureName %>-page.component.html',
+  styleUrl: './<%= featureName %>-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class <%= className %>PageComponent {}

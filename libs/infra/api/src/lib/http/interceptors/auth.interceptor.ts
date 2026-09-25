@@ -1,6 +1,7 @@
 import { HttpErrorResponse, type HttpInterceptorFn, type HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthRepository, SessionStorage, UnauthorizedError } from '@senbilan/core/application';
+import { APP_CONFIG } from '@senbilan/shared/config';
 import { catchError, from, switchMap, throwError } from 'rxjs';
 import { SKIP_AUTH } from '../http-context.tokens';
 
@@ -12,6 +13,8 @@ const withBearer = (req: HttpRequest<unknown>, token: string): HttpRequest<unkno
 /**
  * Attaches the access token and performs a single-flight refresh on 401.
  * Refresh itself must use `SKIP_AUTH` to avoid recursion.
+ * When `auth.refreshViaCookie` is true, refresh relies on httpOnly cookie
+ * (withCredentials) and does not send a body refresh token from storage.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.context.get(SKIP_AUTH)) {
@@ -20,6 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const storage = inject(SessionStorage);
   const auth = inject(AuthRepository);
+  const cookieMode = inject(APP_CONFIG).auth.refreshViaCookie;
   const access = storage.getAccessToken();
   const authedReq = access ? withBearer(req, access) : req;
 
@@ -30,11 +34,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (!refreshInFlight) {
+        const storedRefresh = cookieMode ? undefined : (storage.getRefreshToken() ?? undefined);
         refreshInFlight = auth
-          .refresh(storage.getRefreshToken() ?? undefined)
+          .refresh(storedRefresh)
           .then((tokens) => {
             storage.setAccessToken(tokens.accessToken);
-            if (tokens.refreshToken !== undefined) {
+            if (!cookieMode && tokens.refreshToken !== undefined) {
               storage.setRefreshToken(tokens.refreshToken);
             }
             return tokens.accessToken;

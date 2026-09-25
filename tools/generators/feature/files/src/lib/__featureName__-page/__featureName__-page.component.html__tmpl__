@@ -1,0 +1,4 @@
+<section class="<%= featureName %>-page">
+  <h1>{{ '<%= featureName %>.title' | transloco }}</h1>
+  <p>{{ '<%= featureName %>.subtitle' | transloco }}</p>
+</section>

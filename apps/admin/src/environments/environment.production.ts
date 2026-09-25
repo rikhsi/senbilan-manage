@@ -24,6 +24,7 @@ export const environment: AppConfig = {
   auth: {
     accessTokenStorageKey: 'senbilan.accessToken',
     refreshTokenStorageKey: 'senbilan.refreshToken',
+    refreshViaCookie: true,
     sessionIdleMs: 30 * 60 * 1000,
   },
 };

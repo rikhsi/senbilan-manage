@@ -5,6 +5,8 @@
     "markRead": "O‘qilgan",
     "markAllRead": "Hammasini o‘qish",
     "empty": "Yangi bildirishnomalar yo‘q",
-    "unreadOnly": "Faqat o‘qilmaganlar"
+    "emptyHint": "Yangi bildirishnomalar shu yerda paydo bo‘ladi.",
+    "unreadOnly": "Faqat o‘qilmaganlar",
+    "loading": "Bildirishnomalar yuklanmoqda…"
   }
 }

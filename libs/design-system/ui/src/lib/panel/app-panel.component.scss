@@ -1,0 +1,26 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+  color: var(--app-color-text-primary);
+  background: var(--app-color-surface);
+  border-radius: var(--app-radius-lg);
+
+  &[data-bordered] {
+    border: 1px solid var(--app-color-border);
+  }
+
+  &[data-padding='sm'] {
+    padding: var(--app-space-3);
+  }
+  &[data-padding='md'] {
+    padding: var(--app-space-4);
+  }
+  &[data-padding='lg'] {
+    padding: var(--app-space-6);
+  }
+  &[data-padding='none'] {
+    padding: 0;
+  }
+}

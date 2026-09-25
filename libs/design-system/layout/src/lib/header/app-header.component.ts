@@ -8,9 +8,8 @@ import {
   AppMenuItemComponent,
   AppMenuTriggerDirective,
 } from '@senbilan/design-system/ui';
-import { AuthStore } from '@senbilan/shared/auth';
-import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
 import { AppBreadcrumbsComponent } from '../breadcrumbs/app-breadcrumbs.component';
+import { LAYOUT_THEME, LAYOUT_USER, type LayoutThemeMode } from '../layout-bridges';
 import { type BreadcrumbItem } from '../navigation.types';
 
 @Component({
@@ -126,14 +125,17 @@ import { type BreadcrumbItem } from '../navigation.types';
   host: { class: 'app-header-host' },
 })
 export class AppHeaderComponent {
-  private readonly auth = inject(AuthStore, { optional: true });
-  private readonly theme = inject(ThemeService, { optional: true });
+  private readonly userBridge = inject(LAYOUT_USER, { optional: true });
+  private readonly themeBridge = inject(LAYOUT_THEME, { optional: true });
   private readonly transloco = inject(TranslocoService, { optional: true });
 
   readonly breadcrumbs = input<readonly BreadcrumbItem[]>([]);
   readonly showMenuToggle = input(false);
   readonly showCollapseToggle = input(true);
   readonly sidebarCollapsed = input(false);
+  /** Optional override when the host prefers inputs over `LAYOUT_USER`. */
+  readonly userDisplayName = input<string | null>(null);
+  readonly userAvatarUrl = input<string | null>(null);
 
   readonly menuToggle = output<void>();
   readonly collapseToggle = output<void>();
@@ -144,17 +146,19 @@ export class AppHeaderComponent {
   readonly logout = output<void>();
 
   protected readonly userName = computed(() => {
-    const user = this.auth?.user();
-    if (!user) {
-      return 'User';
+    const fromInput = this.userDisplayName();
+    if (fromInput !== null && fromInput.length > 0) {
+      return fromInput;
     }
-    return `${user.firstName} ${user.lastName}`.trim() || user.email;
+    return this.userBridge?.user()?.displayName ?? 'User';
   });
 
-  protected readonly userAvatar = computed(() => this.auth?.user()?.avatarUrl ?? null);
+  protected readonly userAvatar = computed(
+    () => this.userAvatarUrl() ?? this.userBridge?.user()?.avatarUrl ?? null,
+  );
 
   protected readonly themeIcon = computed(() => {
-    const mode: ThemeMode = this.theme?.mode() ?? 'system';
+    const mode: LayoutThemeMode = this.themeBridge?.mode() ?? 'system';
     if (mode === 'dark') {
       return 'moon';
     }
@@ -165,7 +169,7 @@ export class AppHeaderComponent {
   });
 
   protected cycleTheme(): void {
-    this.theme?.cycleMode();
+    this.themeBridge?.cycleMode();
   }
 
   protected cycleLanguage(): void {

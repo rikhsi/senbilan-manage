@@ -6,7 +6,7 @@
   </header>
 
   @if (loading()) {
-    <p class="users-detail-page__empty">…</p>
+    <app-skeleton height="12rem" />
   } @else if (user(); as u) {
     <app-card padding="lg">
       <div class="users-detail-page__profile">
@@ -31,6 +31,10 @@
       </div>
     </app-card>
   } @else {
-    <p class="users-detail-page__empty">{{ 'users.empty' | transloco }}</p>
+    <app-empty-state
+      icon="user-x"
+      [title]="'users.empty' | transloco"
+      [description]="'users.table.emptyDescription' | transloco"
+    />
   }
 </div>

@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { type PermissionKey } from '@senbilan/core/domain';
 import { AppIconComponent } from '@senbilan/design-system/icons';
-import { AuthStore } from '@senbilan/shared/auth';
+import { LAYOUT_CAN_ACCESS } from '../layout-bridges';
 import { type NavigationItem } from '../navigation.types';
 
 @Component({
@@ -35,7 +34,7 @@ import { type NavigationItem } from '../navigation.types';
   host: { class: 'app-bottom-nav-host' },
 })
 export class AppBottomNavComponent {
-  private readonly auth = inject(AuthStore, { optional: true });
+  private readonly canAccessFn = inject(LAYOUT_CAN_ACCESS, { optional: true });
 
   readonly items = input.required<readonly NavigationItem[]>();
 
@@ -45,10 +44,10 @@ export class AppBottomNavComponent {
       .slice(0, 5),
   );
 
-  private canAccess(permission: PermissionKey | undefined): boolean {
+  private canAccess(permission: string | undefined): boolean {
     if (permission === undefined) {
       return true;
     }
-    return this.auth?.can(permission) ?? true;
+    return this.canAccessFn?.(permission) ?? true;
   }
 }

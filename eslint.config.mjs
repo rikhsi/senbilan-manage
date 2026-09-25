@@ -1,5 +1,7 @@
 import nx from '@nx/eslint-plugin';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import angularTemplateParser from '@angular-eslint/template-parser';
+import noHardcodedTextPlugin from './tools/eslint-plugin/no-hardcoded-text.mjs';
 
 /**
  * Architectural dependency rules.
@@ -33,7 +35,13 @@ const depConstraints = [
   },
   {
     sourceTag: 'kind:platform',
-    onlyDependOnLibsWithTags: ['kind:util', 'kind:util-ng', 'kind:application', 'kind:domain'],
+    onlyDependOnLibsWithTags: [
+      'kind:util',
+      'kind:util-ng',
+      'kind:application',
+      'kind:domain',
+      'kind:platform',
+    ],
   },
   {
     sourceTag: 'kind:state',
@@ -201,6 +209,29 @@ export default [
     files: ['libs/infra/observability/**/*.ts'],
     rules: {
       'no-console': ['error', { allow: ['log', 'info', 'debug', 'warn', 'error'] }],
+    },
+  },
+  {
+    files: ['libs/features/**/*.html', 'libs/entities/**/*.html', 'libs/design-system/**/*.html'],
+    languageOptions: {
+      parser: angularTemplateParser,
+    },
+    plugins: {
+      '@senbilan': noHardcodedTextPlugin,
+    },
+    rules: {
+      // Start as warn — tighten to error once backlog is clean.
+      '@senbilan/no-hardcoded-text': 'warn',
+    },
+  },
+  {
+    files: ['libs/features/**/*.ts', 'libs/entities/**/*.ts'],
+    ignores: ['**/*.spec.ts', '**/*.stories.ts', '**/testing/**', '**/i18n/**'],
+    plugins: {
+      '@senbilan': noHardcodedTextPlugin,
+    },
+    rules: {
+      '@senbilan/no-hardcoded-text-ts': 'warn',
     },
   },
   eslintConfigPrettier,

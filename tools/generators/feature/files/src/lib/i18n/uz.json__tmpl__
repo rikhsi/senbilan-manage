@@ -1,0 +1,6 @@
+{
+  "<%= featureName %>": {
+    "title": "<%= className %>",
+    "subtitle": "Yaratilgan feature sahifasi"
+  }
+}

@@ -20,6 +20,10 @@ const preview: Preview = {
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     layout: 'centered',
+    a11y: {
+      // Failures surface in the A11y panel; CI uses build-storybook as the compile gate.
+      test: 'todo',
+    },
   },
 };
 

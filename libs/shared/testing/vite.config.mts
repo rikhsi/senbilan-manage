@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
-import { angularConfig } from '../../../tools/vitest/presets';
+import { tsLibConfig } from '../../../tools/vitest/presets';
 
+/** Node env: MSW server + QueryClient / spy helpers; no Angular TestBed. */
 export default defineConfig(
-  angularConfig({ name: 'shared-testing', root: import.meta.dirname, workspaceRoot: '../../..' }),
+  tsLibConfig({ name: 'shared-testing', root: import.meta.dirname, workspaceRoot: '../../..' }),
 );

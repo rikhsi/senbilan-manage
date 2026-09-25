@@ -12,9 +12,9 @@ concurrency:
 
 jobs:
   verify:
-    name: Lint · typecheck · test · build
+    name: Lint · typecheck · test · build · e2e
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -34,11 +34,31 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Stylelint
+        run: npm run lint:styles
+
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Dependency boundaries
+        run: npm run depcruise
+
+      - name: i18n parity
+        run: npm run i18n:check
 
       - name: Unit tests
         run: npm test
 
       - name: Build admin
         run: npm run build:admin
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E (admin)
+        run: npx nx e2e admin-e2e
+        env:
+          CI: true

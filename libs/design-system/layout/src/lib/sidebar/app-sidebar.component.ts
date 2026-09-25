@@ -2,9 +2,8 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { type PermissionKey } from '@senbilan/core/domain';
 import { AppIconComponent } from '@senbilan/design-system/icons';
-import { AuthStore } from '@senbilan/shared/auth';
+import { LAYOUT_CAN_ACCESS } from '../layout-bridges';
 import { type NavigationItem } from '../navigation.types';
 
 @Component({
@@ -73,7 +72,7 @@ import { type NavigationItem } from '../navigation.types';
   },
 })
 export class AppSidebarComponent {
-  private readonly auth = inject(AuthStore, { optional: true });
+  private readonly canAccessFn = inject(LAYOUT_CAN_ACCESS, { optional: true });
 
   readonly items = input.required<readonly NavigationItem[]>();
   readonly collapsed = input(false);
@@ -93,10 +92,10 @@ export class AppSidebarComponent {
       .filter((item) => item.route !== undefined || (item.children?.length ?? 0) > 0);
   }
 
-  private canAccess(permission: PermissionKey | undefined): boolean {
+  private canAccess(permission: string | undefined): boolean {
     if (permission === undefined) {
       return true;
     }
-    return this.auth?.can(permission) ?? true;
+    return this.canAccessFn?.(permission) ?? true;
   }
 }

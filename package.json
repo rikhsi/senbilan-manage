@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "private": true,
+  "nx": {
+    "includedScripts": []
+  },
   "engines": {
     "node": ">=22.12.0",
     "npm": ">=10.0.0"
@@ -24,11 +27,18 @@
     "depcruise": "depcruise apps libs --config .dependency-cruiser.cjs",
     "depcruise:graph": "depcruise apps libs --config .dependency-cruiser.cjs --output-type dot | dot -T svg > dist/dependency-graph.svg",
     "i18n:check": "node tools/scripts/i18n-check.mjs",
+    "i18n:unused": "node tools/scripts/i18n-check.mjs --unused",
     "storybook": "nx storybook design-system-ui",
     "build-storybook": "nx build-storybook design-system-ui",
+    "storybook:a11y": "node tools/scripts/storybook-a11y.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "graph": "nx graph",
+    "g:feature": "nx g @senbilan/workspace:feature",
+    "g:entity": "nx g @senbilan/workspace:entity",
+    "g:ui": "nx g @senbilan/workspace:ui-component",
+    "g:use-case": "nx g @senbilan/workspace:use-case",
+    "g:repository": "nx g @senbilan/workspace:repository",
     "affected:lint": "nx affected -t lint",
     "affected:test": "nx affected -t test",
     "affected:build": "nx affected -t build",
@@ -105,6 +115,7 @@
     "@nx/vitest": "23.2.1",
     "@nx/web": "23.2.1",
     "@nx/workspace": "23.2.1",
+    "@senbilan/workspace": "file:tools/generators",
     "@playwright/test": "^1.63.0",
     "@schematics/angular": "~22.1.9",
     "@storybook/addon-a11y": "^10.6.0",

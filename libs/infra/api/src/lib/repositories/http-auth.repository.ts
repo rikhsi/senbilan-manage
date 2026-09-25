@@ -7,6 +7,7 @@ import {
   type Credentials,
 } from '@senbilan/core/application';
 import { type Session } from '@senbilan/core/domain';
+import { APP_CONFIG } from '@senbilan/shared/config';
 import { ApiClient } from '../http/api-client';
 import { SKIP_AUTH } from '../http/http-context.tokens';
 import { type AuthResultDto, type AuthTokensDto, type SessionDto } from '../dto/api.dto';
@@ -15,24 +16,34 @@ import { authResultFromDto, sessionFromDto, tokensFromDto } from '../dto/mappers
 @Injectable()
 export class HttpAuthRepository extends AuthRepository {
   private readonly api = inject(ApiClient);
+  private readonly config = inject(APP_CONFIG);
 
   override login(credentials: Credentials): Promise<AuthResult> {
     return this.api
       .post<AuthResultDto>('/auth/login', credentials, {
         context: new HttpContext().set(SKIP_AUTH, true),
+        withCredentials: true,
       })
       .then(authResultFromDto);
   }
 
   override logout(): Promise<void> {
-    return this.api.post<null>('/auth/logout').then(() => undefined);
+    return this.api
+      .post<null>('/auth/logout', undefined, { withCredentials: true })
+      .then(() => undefined);
   }
 
   override refresh(refreshToken?: string): Promise<AuthTokens> {
-    const body = refreshToken !== undefined ? { refreshToken } : {};
+    const cookieMode = this.config.auth.refreshViaCookie;
+    // Cookie mode: empty body; browser sends httpOnly refresh cookie via withCredentials.
+    let body: { readonly refreshToken?: string } = {};
+    if (!cookieMode && refreshToken !== undefined) {
+      body = { refreshToken };
+    }
     return this.api
       .post<AuthTokensDto>('/auth/refresh', body, {
         context: new HttpContext().set(SKIP_AUTH, true),
+        withCredentials: true,
       })
       .then(tokensFromDto);
   }

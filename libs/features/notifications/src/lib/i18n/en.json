@@ -5,6 +5,8 @@
     "markRead": "Mark as read",
     "markAllRead": "Mark all as read",
     "empty": "You are all caught up",
-    "unreadOnly": "Unread only"
+    "emptyHint": "New notifications will appear here.",
+    "unreadOnly": "Unread only",
+    "loading": "Loading notifications…"
   }
 }

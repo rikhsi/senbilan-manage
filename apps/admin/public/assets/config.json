@@ -1,0 +1,11 @@
+{
+  "_comment": "Optional runtime overrides. Deploy replaces this file per environment. Missing file is OK.",
+  "apiBaseUrl": "/api",
+  "sentry": {
+    "enabled": false,
+    "dsn": ""
+  },
+  "features": {
+    "mockApi": false
+  }
+}

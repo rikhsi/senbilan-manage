@@ -22,6 +22,11 @@
     "back": "Ro‘yxatga",
     "empty": "Foydalanuvchilar topilmadi",
     "confirmDelete": "Tanlangan foydalanuvchilar o‘chirilsinmi?",
+    "viewMode": "Ko‘rinish",
+    "view": {
+      "table": "Jadval",
+      "cards": "Kartochkalar"
+    },
     "statuses": {
       "active": "Faol",
       "invited": "Taklif",

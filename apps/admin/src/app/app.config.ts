@@ -1,10 +1,12 @@
 import {
   type ApplicationConfig,
+  isDevMode,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
+import { provideServiceWorker } from '@angular/service-worker';
 import { provideDesignSystem } from '@senbilan/design-system/ui';
 import { provideApi } from '@senbilan/infra/api';
 import { provideMockApi } from '@senbilan/infra/mock';
@@ -18,6 +20,7 @@ import { provideQueryClient } from '@senbilan/shared/query';
 import { provideTheme } from '@senbilan/shared/theme';
 import { appRoutes } from './app.routes';
 import { environment } from '../environments/environment';
+import { provideLayoutShell } from './provide-layout-shell';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +42,11 @@ export const appConfig: ApplicationConfig = {
     provideApi(),
     provideMockApi(),
     provideAuth(),
+    provideLayoutShell(),
     provideQueryClient(),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode() && environment.features.pwa,
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 };

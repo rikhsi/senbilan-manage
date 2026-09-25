@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "SenbilanRepository",
+  "title": "Repository port",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Repository name, e.g. order or OrderRepository",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Repository name (Noun)"
+    }
+  },
+  "required": ["name"]
+}

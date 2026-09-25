@@ -66,7 +66,7 @@ Class names: BEM-ish kebab-case (`app-button__label`, `app-button--loading`).
 
 ## Components inventory (`design-system-ui`)
 
-**Primitives:** `AppButtonComponent`, `AppIconButtonComponent`, `AppCardComponent`, `AppBadgeComponent`, `AppTagComponent`, `AppStatusComponent`, `AppAvatarComponent`, `AppSkeletonComponent`, `AppTabsComponent`, `AppStatCardComponent`
+**Primitives:** `AppButtonComponent`, `AppIconButtonComponent`, `AppCardComponent`, `AppPanelComponent`, `AppBadgeComponent`, `AppTagComponent`, `AppStatusComponent`, `AppAvatarComponent`, `AppSkeletonComponent`, `AppTabsComponent`, `AppStatCardComponent`
 
 **States:** empty / error / loading
 
@@ -74,7 +74,7 @@ Class names: BEM-ish kebab-case (`app-button__label`, `app-button--loading`).
 
 **Data:** `AppDataTableComponent` (+ cell/row directives), `AppPaginationComponent`, `AppChartComponent`
 
-**Overlays:** modal / drawer (`AppModalService`), confirm dialog, toast, tooltip, menu
+**Overlays:** modal / drawer (`AppModalService`), confirm dialog, toast, tooltip, menu, sheet / action sheet
 
 **Setup:** `provideDesignSystem()` in each app `app.config.ts`.
 
@@ -97,6 +97,10 @@ Do **not** put feature-specific business UI in the design system — that belong
 ```sh
 npm run storybook
 npm run build-storybook
+npm run storybook:a11y   # documents a11y addon workflow (panel + CI build)
 ```
 
-Config: `libs/design-system/ui/.storybook/`.
+Config: `libs/design-system/ui/.storybook/`. Stories cover Button, Badge, Card,
+Panel, FormField+Input, Empty/Error/Loading, DataTable, and Foundation/Tokens
+(`--app-*` CSS variables). `@storybook/addon-a11y` is enabled — use the
+Accessibility panel while developing.

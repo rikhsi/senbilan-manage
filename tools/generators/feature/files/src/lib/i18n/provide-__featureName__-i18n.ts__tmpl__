@@ -1,0 +1,11 @@
+import { provideTranslocoScope } from '@jsverse/transloco';
+
+export const provide<%= className %>I18n = () =>
+  provideTranslocoScope({
+    scope: '<%= featureName %>',
+    loader: {
+      en: () => import('./en.json'),
+      ru: () => import('./ru.json'),
+      uz: () => import('./uz.json'),
+    },
+  });

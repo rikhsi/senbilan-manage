@@ -5,6 +5,28 @@
       <p class="users-page__subtitle">{{ 'users.subtitle' | transloco }}</p>
     </div>
     <div class="users-page__actions">
+      <div class="users-page__view-toggle" role="group" [attr.aria-label]="'users.viewMode' | transloco">
+        <button
+          app-button
+          type="button"
+          [variant]="viewMode() === 'table' ? 'secondary' : 'ghost'"
+          size="sm"
+          icon="columns"
+          (click)="setViewMode('table')"
+        >
+          {{ 'users.view.table' | transloco }}
+        </button>
+        <button
+          app-button
+          type="button"
+          [variant]="viewMode() === 'cards' ? 'secondary' : 'ghost'"
+          size="sm"
+          icon="layout-dashboard"
+          (click)="setViewMode('cards')"
+        >
+          {{ 'users.view.cards' | transloco }}
+        </button>
+      </div>
       @if (selected().length > 0) {
         <button app-button type="button" variant="danger" icon="trash" (click)="bulkDelete()">
           {{ 'users.bulkDelete' | transloco }}
@@ -32,10 +54,15 @@
     [labels]="tableLabels()"
     [loading]="loading()"
     [error]="error()"
+    [mode]="viewMode()"
     [selectable]="true"
     [rowClickable]="true"
-    [(selected)]="selected"
-    [(sort)]="sort"
+    [selected]="selected()"
+    [sort]="sort()"
+    [hiddenColumns]="hiddenColumns()"
+    (selectedChange)="onSelectedChange($event)"
+    (sortChange)="onSortChange($event)"
+    (hiddenColumnsChange)="onHiddenColumnsChange($event)"
     (rowClick)="onRowClick($event)"
     (retry)="resetFilters()"
   >

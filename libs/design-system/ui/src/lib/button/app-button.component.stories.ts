@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 
-import { AppButtonComponent, type ButtonSize, type ButtonVariant } from './app-button.component';
+import {
+  AppButtonComponent,
+  BUTTON_SIZES,
+  BUTTON_VARIANTS,
+  type ButtonSize,
+  type ButtonVariant,
+} from './app-button.component';
 
 type ButtonStoryArgs = {
   label: string;
@@ -9,6 +15,7 @@ type ButtonStoryArgs = {
   size: ButtonSize;
   loading: boolean;
   block: boolean;
+  disabled: boolean;
 };
 
 const meta: Meta<ButtonStoryArgs> = {
@@ -27,22 +34,18 @@ const meta: Meta<ButtonStoryArgs> = {
         [size]="size"
         [loading]="loading"
         [block]="block"
+        [disabled]="disabled"
       >
         {{ label }}
       </button>
     `,
   }),
   argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'ghost', 'surface', 'danger', 'link'],
-    },
-    size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
-    },
+    variant: { control: 'select', options: [...BUTTON_VARIANTS] },
+    size: { control: 'select', options: [...BUTTON_SIZES] },
     loading: { control: 'boolean' },
     block: { control: 'boolean' },
+    disabled: { control: 'boolean' },
     label: { control: 'text' },
   },
   args: {
@@ -51,6 +54,7 @@ const meta: Meta<ButtonStoryArgs> = {
     size: 'md',
     loading: false,
     block: false,
+    disabled: false,
   },
 };
 
@@ -64,10 +68,51 @@ export const Secondary: Story = {
   args: { variant: 'secondary', label: 'Secondary' },
 };
 
+export const Ghost: Story = {
+  args: { variant: 'ghost', label: 'Ghost' },
+};
+
+export const Surface: Story = {
+  args: { variant: 'surface', label: 'Surface' },
+};
+
 export const Danger: Story = {
   args: { variant: 'danger', label: 'Delete' },
 };
 
+export const Link: Story = {
+  args: { variant: 'link', label: 'Learn more' },
+};
+
 export const Loading: Story = {
   args: { loading: true, label: 'Saving' },
+};
+
+export const Disabled: Story = {
+  args: { disabled: true, label: 'Disabled' },
+};
+
+export const Sizes: Story = {
+  render: () => ({
+    template: `
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
+        <button app-button variant="primary" size="sm">Small</button>
+        <button app-button variant="primary" size="md">Medium</button>
+        <button app-button variant="primary" size="lg">Large</button>
+      </div>
+    `,
+  }),
+};
+
+export const AllVariants: Story = {
+  render: () => ({
+    props: { variants: BUTTON_VARIANTS },
+    template: `
+      <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+        @for (v of variants; track v) {
+          <button app-button [variant]="v">{{ v }}</button>
+        }
+      </div>
+    `,
+  }),
 };

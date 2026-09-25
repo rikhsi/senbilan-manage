@@ -46,6 +46,7 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystem": "System",
+    "cycleTheme": "Cycle theme",
     "breadcrumbs": "Breadcrumbs"
   },
   "auth": {

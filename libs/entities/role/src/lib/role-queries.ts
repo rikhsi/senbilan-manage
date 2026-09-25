@@ -1,30 +1,26 @@
 import { inject, Injectable } from '@angular/core';
 import { RoleRepository } from '@senbilan/core/application';
 import { type RoleId } from '@senbilan/core/domain';
+import { queryKeys } from '@senbilan/shared/query';
+import { queryOptions } from '@tanstack/angular-query-experimental';
 
-export const roleQueryKeys = {
-  all: ['roles'] as const,
-  lists: () => [...roleQueryKeys.all, 'list'] as const,
-  list: () => [...roleQueryKeys.lists()] as const,
-  details: () => [...roleQueryKeys.all, 'detail'] as const,
-  detail: (id: RoleId) => [...roleQueryKeys.details(), id] as const,
-};
+export const roleQueryKeys = queryKeys.roles;
 
 @Injectable({ providedIn: 'root' })
 export class RoleQueries {
   private readonly roles = inject(RoleRepository);
 
   listOptions() {
-    return {
-      queryKey: roleQueryKeys.list(),
-      queryFn: ({ signal }: { signal: AbortSignal }) => this.roles.findAll(signal),
-    };
+    return queryOptions({
+      queryKey: roleQueryKeys.list({}),
+      queryFn: ({ signal }) => this.roles.findAll(signal),
+    });
   }
 
   detailOptions(id: RoleId) {
-    return {
+    return queryOptions({
       queryKey: roleQueryKeys.detail(id),
-      queryFn: ({ signal }: { signal: AbortSignal }) => this.roles.findById(id, signal),
-    };
+      queryFn: ({ signal }) => this.roles.findById(id, signal),
+    });
   }
 }

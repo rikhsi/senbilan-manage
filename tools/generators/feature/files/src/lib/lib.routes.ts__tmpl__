@@ -1,0 +1,11 @@
+import { type Routes } from '@angular/router';
+import { provide<%= className %>I18n } from './i18n/provide-<%= featureName %>-i18n';
+import { <%= className %>PageComponent } from './<%= featureName %>-page/<%= featureName %>-page.component';
+
+export const FEATURE_<%= constantName %>_ROUTES: Routes = [
+  {
+    path: '',
+    providers: [provide<%= className %>I18n()],
+    component: <%= className %>PageComponent,
+  },
+];

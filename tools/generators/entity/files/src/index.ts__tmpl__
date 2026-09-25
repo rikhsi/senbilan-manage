@@ -1,0 +1,1 @@
+export { <%= className %>ViewMapper, type <%= className %>ViewModel } from './lib/<%= entityName %>-view.mapper';

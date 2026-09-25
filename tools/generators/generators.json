@@ -1,0 +1,29 @@
+{
+  "generators": {
+    "feature": {
+      "factory": "./feature/index.js",
+      "schema": "./feature/schema.json",
+      "description": "Scaffold a feature library under libs/features"
+    },
+    "entity": {
+      "factory": "./entity/index.js",
+      "schema": "./entity/schema.json",
+      "description": "Scaffold an entity library under libs/entities"
+    },
+    "ui-component": {
+      "factory": "./ui-component/index.js",
+      "schema": "./ui-component/schema.json",
+      "description": "Scaffold an App* UI primitive under design-system/ui"
+    },
+    "use-case": {
+      "factory": "./use-case/index.js",
+      "schema": "./use-case/schema.json",
+      "description": "Scaffold a VerbNounUseCase in core/application"
+    },
+    "repository": {
+      "factory": "./repository/index.js",
+      "schema": "./repository/schema.json",
+      "description": "Scaffold an abstract repository port in core/application"
+    }
+  }
+}

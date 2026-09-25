@@ -1,0 +1,11 @@
+{
+  "name": "@senbilan/workspace",
+  "version": "0.0.1",
+  "private": true,
+  "generators": "./generators.json",
+  "main": "./index.js",
+  "type": "commonjs",
+  "nx": {
+    "generators": "./generators.json"
+  }
+}

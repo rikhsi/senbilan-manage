@@ -1,0 +1,8 @@
+@use 'ds' as ds;
+
+.<%= selector %> {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  color: var(--app-color-text-primary);
+}
