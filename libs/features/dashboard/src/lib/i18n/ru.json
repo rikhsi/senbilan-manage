@@ -1,0 +1,24 @@
+{
+  "dashboard": {
+    "title": "Панель",
+    "subtitle": "Обзор пользователей, ролей и активности",
+    "metrics": {
+      "users.total": "Всего пользователей",
+      "users.active": "Активные",
+      "users.invited": "Приглашённые",
+      "roles.total": "Роли"
+    },
+    "chartTitle": "Регистрации",
+    "chartAria": "Регистрации пользователей во времени",
+    "activityTitle": "Недавняя активность",
+    "activityEmpty": "Пока нет активности",
+    "quickActions": "Быстрые действия",
+    "actionUsers": "Пользователи",
+    "actionRoles": "Роли",
+    "actionSettings": "Настройки",
+    "deltaHint": "к прошлому периоду",
+    "range7d": "7 дней",
+    "range30d": "30 дней",
+    "range90d": "90 дней"
+  }
+}

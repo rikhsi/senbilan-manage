@@ -1,0 +1,13 @@
+{
+  "roles": {
+    "title": "Roles",
+    "subtitle": "Manage roles and their permissions",
+    "select": "Select a role",
+    "save": "Save permissions",
+    "usersCount": "{{count}} users",
+    "system": "System",
+    "empty": "No roles yet",
+    "name": "Name",
+    "description": "Description"
+  }
+}

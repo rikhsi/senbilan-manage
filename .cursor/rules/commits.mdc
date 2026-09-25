@@ -1,0 +1,14 @@
+---
+description: Conventional commits and lint-staged expectations
+globs: "*"
+alwaysApply: true
+---
+
+# commits
+
+- Format: `type(scope): subject` — Commitlint enforced.
+- Types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`, `build`, `style`, `revert`.
+- Scope: kebab-case (Nx project name preferred, e.g. `feature-users`, `core-domain`).
+- Subject: imperative, ≤100 char header; no Sentence case / PascalCase.
+- Pre-commit runs lint-staged (ESLint, Stylelint, Prettier) — fix, do not skip hooks.
+- Do not commit `.env.local` or secrets.

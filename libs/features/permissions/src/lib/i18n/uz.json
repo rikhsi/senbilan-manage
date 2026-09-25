@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "title": "Ruxsatlar",
+    "subtitle": "Mavjud ruxsatlar katalogi",
+    "empty": "Ruxsatlar yuklanmagan",
+    "resource": "Resurs",
+    "action": "Amal",
+    "key": "Kalit",
+    "description": "Tavsif"
+  }
+}

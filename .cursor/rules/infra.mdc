@@ -1,0 +1,15 @@
+---
+description: Infrastructure adapters implementing application ports
+globs: libs/infra/**
+alwaysApply: false
+---
+
+# infra
+
+- Implement ports from `@senbilan/core/application` (HTTP, mock, storage, observability).
+- Map DTO ↔ domain in adapters; do not leak DTO types into features.
+- `infra/mock`: local/dev only; selected when `APP_CONFIG.features.mockApi === true`.
+- May use Angular `HttpClient`, MSW, Sentry, browser APIs — **not** feature UI.
+- Do not import `libs/features/*` or `libs/entities/*`.
+- Export only concrete adapters / providers via `src/index.ts`.
+- Keep side effects here; keep rules in domain/use cases.

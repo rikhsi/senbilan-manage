@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Theme, language and profile preferences",
+    "tabs": {
+      "theme": "Theme",
+      "language": "Language",
+      "profile": "Profile"
+    },
+    "theme": {
+      "label": "Color theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "hint": "Theme preference is applied immediately."
+    },
+    "language": {
+      "label": "Interface language",
+      "hint": "Changes apply after reload once shared/i18n lands."
+    },
+    "profile": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "save": "Save profile"
+    }
+  }
+}

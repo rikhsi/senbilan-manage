@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin-inline: auto;
+  padding-block: var(--app-space-6);
+  padding-inline: var(--app-space-4);
+}
+
+:host([data-width='sm']) {
+  max-width: 40rem;
+}
+
+:host([data-width='md']) {
+  max-width: 48rem;
+}
+
+:host([data-width='lg']) {
+  max-width: 72rem;
+}
+
+:host([data-width='xl']) {
+  max-width: 90rem;
+}
+
+:host([data-width='full']) {
+  max-width: none;
+}
+
+:host(.app-content-container--flush) {
+  padding-inline: 0;
+}

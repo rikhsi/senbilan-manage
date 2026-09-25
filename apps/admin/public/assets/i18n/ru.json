@@ -1,0 +1,69 @@
+{
+  "app": {
+    "name": "Senbilan Manage"
+  },
+  "nav": {
+    "dashboard": "Панель",
+    "users": "Пользователи",
+    "roles": "Роли",
+    "permissions": "Права",
+    "notifications": "Уведомления",
+    "settings": "Настройки",
+    "profile": "Профиль",
+    "menu": "Меню",
+    "collapse": "Свернуть меню",
+    "expand": "Развернуть меню",
+    "openMenu": "Открыть навигацию",
+    "closeMenu": "Закрыть навигацию"
+  },
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Изменить",
+    "create": "Создать",
+    "search": "Поиск",
+    "reset": "Сбросить",
+    "retry": "Повторить",
+    "close": "Закрыть",
+    "actions": "Действия",
+    "loading": "Загрузка…",
+    "empty": "Пока ничего нет",
+    "error": "Что-то пошло не так",
+    "selectedCount": "Выбрано: {count}",
+    "clearSelection": "Снять выделение",
+    "yes": "Да",
+    "no": "Нет",
+    "logout": "Выйти",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "theme": "Тема",
+    "language": "Язык",
+    "notifications": "Уведомления",
+    "commandPalette": "Палитра команд",
+    "commandPaletteHint": "Введите команду или поиск…",
+    "noCommands": "Команды не найдены",
+    "themeLight": "Светлая",
+    "themeDark": "Тёмная",
+    "themeSystem": "Системная",
+    "breadcrumbs": "Навигационная цепочка"
+  },
+  "auth": {
+    "login": {
+      "title": "Вход",
+      "email": "Email",
+      "password": "Пароль",
+      "submit": "Войти",
+      "forgotPassword": "Забыли пароль?",
+      "failed": "Неверный email или пароль"
+    }
+  },
+  "errors": {
+    "unexpected": "Произошла непредвиденная ошибка",
+    "network": "Ошибка сети. Проверьте подключение и попробуйте снова.",
+    "forbidden": "У вас нет доступа к этой странице",
+    "notFound": "Страница не найдена",
+    "unauthorized": "Войдите, чтобы продолжить",
+    "validation": "Исправьте выделенные поля"
+  }
+}

@@ -1,0 +1,47 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+}
+
+.app-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--app-space-4);
+  margin-block-end: var(--app-space-6);
+}
+
+.app-page-header__text {
+  min-width: 0;
+  flex: 1;
+}
+
+.app-page-header__eyebrow {
+  margin: 0 0 var(--app-space-1);
+  color: var(--app-color-text-tertiary);
+  @include ds.text('caption-strong');
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.app-page-header__title {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('title');
+}
+
+.app-page-header__description {
+  margin: var(--app-space-2) 0 0;
+  color: var(--app-color-text-secondary);
+  @include ds.text('body');
+  max-width: 42rem;
+}
+
+.app-page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2);
+}

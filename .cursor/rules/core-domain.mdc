@@ -1,0 +1,15 @@
+---
+description: Pure domain layer — entities, VOs, policies; no frameworks
+globs: libs/core/domain/**
+alwaysApply: false
+---
+
+# core/domain
+
+- Pure TypeScript only. **No** Angular, RxJS, NgRx, TanStack, UI, Capacitor, Sentry.
+- May depend only on `@senbilan/shared/util` (and itself).
+- Export through `src/index.ts` → `@senbilan/core/domain`.
+- Prefer immutable types, branded IDs, `Result` for fallible ops.
+- Business rules and status transitions live here — not in components.
+- Tests: Vitest node env, table-driven; no TestBed.
+- File names: `*.entity.ts`, `*.value-object.ts`, `*.errors.ts`, `*.policy.ts`.

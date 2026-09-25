@@ -1,0 +1,59 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { type EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import {
+  AuthRepository,
+  DashboardRepository,
+  NotificationRepository,
+  PermissionRepository,
+  RoleRepository,
+  UserRepository,
+} from '@senbilan/core/application';
+import { ApiClient } from './http/api-client';
+import {
+  authInterceptor,
+  correlationIdInterceptor,
+  errorNormalizationInterceptor,
+  loggingInterceptor,
+  retryInterceptor,
+  timeoutInterceptor,
+} from './http/interceptors';
+import { HttpAuthRepository } from './repositories/http-auth.repository';
+import { HttpDashboardRepository } from './repositories/http-dashboard.repository';
+import { HttpNotificationRepository } from './repositories/http-notification.repository';
+import { HttpPermissionRepository } from './repositories/http-permission.repository';
+import { HttpRoleRepository } from './repositories/http-role.repository';
+import { HttpUserRepository } from './repositories/http-user.repository';
+
+/**
+ * Registers HttpClient, interceptors (order: correlation → auth → timeout →
+ * retry → errorNormalization → logging), ApiClient, and HTTP repository bindings.
+ *
+ * Compose with `provideMockApi()` after this call when `features.mockApi` is true
+ * so mock repositories override the HTTP ones.
+ */
+export const provideApi = (): EnvironmentProviders =>
+  makeEnvironmentProviders([
+    provideHttpClient(
+      withInterceptors([
+        correlationIdInterceptor,
+        authInterceptor,
+        timeoutInterceptor,
+        retryInterceptor,
+        errorNormalizationInterceptor,
+        loggingInterceptor,
+      ]),
+    ),
+    ApiClient,
+    HttpAuthRepository,
+    HttpUserRepository,
+    HttpRoleRepository,
+    HttpPermissionRepository,
+    HttpNotificationRepository,
+    HttpDashboardRepository,
+    { provide: AuthRepository, useExisting: HttpAuthRepository },
+    { provide: UserRepository, useExisting: HttpUserRepository },
+    { provide: RoleRepository, useExisting: HttpRoleRepository },
+    { provide: PermissionRepository, useExisting: HttpPermissionRepository },
+    { provide: NotificationRepository, useExisting: HttpNotificationRepository },
+    { provide: DashboardRepository, useExisting: HttpDashboardRepository },
+  ]);

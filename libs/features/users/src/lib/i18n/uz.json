@@ -1,0 +1,46 @@
+{
+  "users": {
+    "title": "Foydalanuvchilar",
+    "subtitle": "Konsol foydalanuvchilarini boshqarish",
+    "search": "Qidirish",
+    "reset": "Filtrlarni tozalash",
+    "create": "Yaratish",
+    "edit": "Tahrirlash",
+    "delete": "O‘chirish",
+    "bulkDelete": "Tanlanganlarni o‘chirish",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish",
+    "firstName": "Ism",
+    "lastName": "Familiya",
+    "email": "Email",
+    "roles": "Rollar",
+    "status": "Holat",
+    "lastActive": "Oxirgi faollik",
+    "name": "Ism",
+    "detailTitle": "Foydalanuvchi",
+    "back": "Ro‘yxatga",
+    "empty": "Foydalanuvchilar topilmadi",
+    "confirmDelete": "Tanlangan foydalanuvchilar o‘chirilsinmi?",
+    "statuses": {
+      "active": "Faol",
+      "invited": "Taklif",
+      "blocked": "Bloklangan"
+    },
+    "table": {
+      "selectAll": "Hammasini tanlash",
+      "selectRow": "Qatorni tanlash",
+      "sortBy": "Saralash",
+      "actions": "Amallar",
+      "expand": "Yoyish",
+      "collapse": "Yig‘ish",
+      "retry": "Qayta urinish",
+      "emptyTitle": "Foydalanuvchi yo‘q",
+      "emptyDescription": "Filtrlarni o‘zgartiring yoki yangi foydalanuvchi yarating.",
+      "errorTitle": "Yuklash muvaffaqiyatsiz",
+      "clearSelection": "Tanlovni tozalash",
+      "columns": "Ustunlar",
+      "resizeColumn": "Kenglikni o‘zgartirish"
+    }
+  }
+}

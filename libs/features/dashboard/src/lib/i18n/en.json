@@ -1,0 +1,24 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview of users, roles and recent activity",
+    "metrics": {
+      "users.total": "Total users",
+      "users.active": "Active users",
+      "users.invited": "Invited users",
+      "roles.total": "Roles"
+    },
+    "chartTitle": "Signups",
+    "chartAria": "User signups over time",
+    "activityTitle": "Recent activity",
+    "activityEmpty": "No recent activity yet",
+    "quickActions": "Quick actions",
+    "actionUsers": "Manage users",
+    "actionRoles": "Manage roles",
+    "actionSettings": "Open settings",
+    "deltaHint": "vs previous period",
+    "range7d": "7 days",
+    "range30d": "30 days",
+    "range90d": "90 days"
+  }
+}

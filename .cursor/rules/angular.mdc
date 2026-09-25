@@ -1,0 +1,16 @@
+---
+description: Angular conventions for apps and libraries (standalone, OnPush, signals)
+globs: "{apps,libs}/**/*.{ts,html}"
+alwaysApply: false
+---
+
+# Angular
+
+- Standalone components/directives/pipes; `ChangeDetectionStrategy.OnPush`.
+- Prefer `input()` / `output()` / `model()` and `inject()`.
+- Templates: `@if` / `@for` / `@switch` (not `*ngIf` / `*ngFor`).
+- No `any`, no non-null assertions in production code; `eqeqeq` always.
+- Use `provideDesignSystem()`, `provideAppConfig(environment)` in app composition roots.
+- Prefer Signals for local UI; bridge RxJS with `toSignal` at edges.
+- Follow Nx tags / `@nx/enforce-module-boundaries`.
+- Full AI rules: see root `AGENTS.md`.

@@ -1,0 +1,31 @@
+<div class="profile-page">
+  <header class="profile-page__header">
+    <div>
+      <h1 class="profile-page__title">{{ 'profile.title' | transloco }}</h1>
+      <p class="profile-page__subtitle">{{ 'profile.subtitle' | transloco }}</p>
+    </div>
+    <entity-user-avatar
+      [name]="form.controls.firstName.value + ' ' + form.controls.lastName.value"
+      [src]="form.controls.avatarUrl.value || null"
+      size="lg"
+    />
+  </header>
+
+  <form class="profile-page__form" [formGroup]="form" (ngSubmit)="save()">
+    <app-form-field [label]="'profile.firstName' | transloco" required>
+      <input appInput formControlName="firstName" autocomplete="given-name" />
+    </app-form-field>
+    <app-form-field [label]="'profile.lastName' | transloco" required>
+      <input appInput formControlName="lastName" autocomplete="family-name" />
+    </app-form-field>
+    <app-form-field [label]="'profile.email' | transloco">
+      <input appInput type="email" formControlName="email" autocomplete="email" />
+    </app-form-field>
+    <app-form-field [label]="'profile.avatarUrl' | transloco">
+      <input appInput type="url" formControlName="avatarUrl" />
+    </app-form-field>
+    <button app-button type="submit" variant="primary" [loading]="saving()">
+      {{ 'profile.save' | transloco }}
+    </button>
+  </form>
+</div>

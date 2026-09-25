@@ -1,0 +1,45 @@
+<div class="roles-page">
+  <header class="roles-page__header">
+    <div>
+      <h1 class="roles-page__title">{{ 'roles.title' | transloco }}</h1>
+      <p class="roles-page__subtitle">{{ 'roles.subtitle' | transloco }}</p>
+    </div>
+    @if (selectedRole()) {
+      <button app-button type="button" variant="primary" icon="check" [loading]="saving()" (click)="save()">
+        {{ 'roles.save' | transloco }}
+      </button>
+    }
+  </header>
+
+  <div class="roles-page__split">
+    <section class="roles-page__section">
+      <ul class="roles-page__list">
+        @for (role of roles(); track role.id) {
+          <li>
+            <button
+              type="button"
+              class="roles-page__role"
+              [class.roles-page__role--active]="selectedId() === role.id"
+              (click)="selectRole(role)"
+            >
+              <entity-role-badge [role]="role" />
+              <span class="roles-page__role-meta">{{ usersCountLabel(role.usersCount) }}</span>
+            </button>
+          </li>
+        } @empty {
+          <li class="roles-page__empty">{{ 'roles.empty' | transloco }}</li>
+        }
+      </ul>
+    </section>
+
+    <section class="roles-page__section">
+      @if (selectedRole(); as role) {
+        <h2 class="roles-page__section-title">{{ role.name }}</h2>
+        <p class="roles-page__subtitle">{{ role.description }}</p>
+        <entity-permission-matrix [groups]="matrixGroups()" [(selected)]="selectedPermissions" />
+      } @else {
+        <p class="roles-page__empty">{{ 'roles.select' | transloco }}</p>
+      }
+    </section>
+  </div>
+</div>

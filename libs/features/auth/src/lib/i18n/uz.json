@@ -1,0 +1,13 @@
+{
+  "auth": {
+    "title": "Kirish",
+    "subtitle": "Senbilan admin paneliga kirish",
+    "email": "Elektron pochta",
+    "password": "Parol",
+    "submit": "Kirish",
+    "submitting": "Kirilmoqda…",
+    "error": "Kirib bo‘lmadi. Ma’lumotlarni tekshirib, qayta urinib ko‘ring.",
+    "emailRequired": "Elektron pochta majburiy",
+    "passwordRequired": "Parol majburiy"
+  }
+}

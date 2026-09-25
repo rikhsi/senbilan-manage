@@ -1,0 +1,12 @@
+{
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Update your personal details",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "avatarUrl": "Avatar URL",
+    "save": "Save changes",
+    "saved": "Profile updated"
+  }
+}

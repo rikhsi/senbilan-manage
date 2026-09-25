@@ -1,0 +1,102 @@
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { type PermissionKey } from '@senbilan/core/domain';
+import { AppIconComponent } from '@senbilan/design-system/icons';
+import { AuthStore } from '@senbilan/shared/auth';
+import { type NavigationItem } from '../navigation.types';
+
+@Component({
+  selector: 'app-sidebar',
+  imports: [RouterLink, RouterLinkActive, AppIconComponent, TranslocoDirective, NgTemplateOutlet],
+  template: `
+    <ng-container *transloco="let t">
+      <aside class="app-sidebar" [class.app-sidebar--collapsed]="collapsed()">
+        <div class="app-sidebar__brand">
+          <span class="app-sidebar__brand-mark" aria-hidden="true">S</span>
+          @if (!collapsed()) {
+            <span class="app-sidebar__brand-name">{{ t('app.name') }}</span>
+          }
+        </div>
+
+        <nav class="app-sidebar__nav" [attr.aria-label]="t('nav.menu')">
+          <ng-container
+            *ngTemplateOutlet="navList; context: { $implicit: visibleItems(), depth: 0 }"
+          />
+        </nav>
+
+        <ng-content select="[sidebarFooter]" />
+      </aside>
+
+      <ng-template #navList let-items let-depth="depth">
+        <ul class="app-sidebar__list" [attr.data-depth]="depth" role="list">
+          @for (item of items; track item.id) {
+            <li class="app-sidebar__item">
+              @if (item.route; as route) {
+                <a
+                  class="app-sidebar__link"
+                  [routerLink]="route"
+                  routerLinkActive="app-sidebar__link--active"
+                  [routerLinkActiveOptions]="{ exact: item.exact === true }"
+                  [attr.title]="collapsed() ? t(item.labelKey) : null"
+                >
+                  @if (item.icon; as icon) {
+                    <app-icon class="app-sidebar__icon" [name]="icon" size="sm" />
+                  }
+                  @if (!collapsed()) {
+                    <span class="app-sidebar__label">{{ t(item.labelKey) }}</span>
+                  }
+                </a>
+              } @else if (!collapsed()) {
+                <div class="app-sidebar__group-label">{{ t(item.labelKey) }}</div>
+              }
+              @if (item.children?.length && !collapsed()) {
+                <ng-container
+                  *ngTemplateOutlet="
+                    navList;
+                    context: { $implicit: filterItems(item.children ?? []), depth: depth + 1 }
+                  "
+                />
+              }
+            </li>
+          }
+        </ul>
+      </ng-template>
+    </ng-container>
+  `,
+  styleUrl: './app-sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'app-sidebar-host',
+    '[class.app-sidebar-host--collapsed]': 'collapsed()',
+  },
+})
+export class AppSidebarComponent {
+  private readonly auth = inject(AuthStore, { optional: true });
+
+  readonly items = input.required<readonly NavigationItem[]>();
+  readonly collapsed = input(false);
+
+  protected readonly visibleItems = computed(() => this.filterItems(this.items()));
+
+  protected filterItems(items: readonly NavigationItem[]): NavigationItem[] {
+    return items
+      .filter((item) => this.canAccess(item.permission))
+      .map((item) => {
+        const children = item.children ? this.filterItems(item.children) : undefined;
+        if (children === undefined) {
+          return item;
+        }
+        return { ...item, children };
+      })
+      .filter((item) => item.route !== undefined || (item.children?.length ?? 0) > 0);
+  }
+
+  private canAccess(permission: PermissionKey | undefined): boolean {
+    if (permission === undefined) {
+      return true;
+    }
+    return this.auth?.can(permission) ?? true;
+  }
+}

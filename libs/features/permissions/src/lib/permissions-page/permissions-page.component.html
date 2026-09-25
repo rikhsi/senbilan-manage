@@ -1,0 +1,29 @@
+<div class="permissions-page">
+  <header class="permissions-page__header">
+    <div>
+      <h1 class="permissions-page__title">{{ 'permissions.title' | transloco }}</h1>
+      <p class="permissions-page__subtitle">{{ 'permissions.subtitle' | transloco }}</p>
+    </div>
+  </header>
+
+  <ul class="permissions-page__list">
+    @for (item of items(); track item.key) {
+      <li>
+        <app-card padding="md" variant="outlined">
+          <div class="permissions-page__row">
+            <div>
+              <p class="permissions-page__key">{{ item.key }}</p>
+              <p class="permissions-page__subtitle">{{ item.description }}</p>
+            </div>
+            <div class="permissions-page__actions">
+              <app-tag>{{ item.resource }}</app-tag>
+              <app-tag>{{ item.action }}</app-tag>
+            </div>
+          </div>
+        </app-card>
+      </li>
+    } @empty {
+      <li class="permissions-page__empty">{{ 'permissions.empty' | transloco }}</li>
+    }
+  </ul>
+</div>

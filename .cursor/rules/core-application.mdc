@@ -1,0 +1,16 @@
+---
+description: Application layer — use cases and ports only
+globs: libs/core/application/**
+alwaysApply: false
+---
+
+# core/application
+
+- Define **ports** as abstract classes (`UserRepository`, `ClockPort`, …).
+- Implement **use cases** that orchestrate ports + domain; return Promises.
+- Depend only on `@senbilan/core/domain` and `@senbilan/shared/util`.
+- **Never** import infra, features, entities, design-system, Angular, RxJS, state libs.
+- Accept optional `AbortSignal` on read ports for cancellation.
+- Validation of use-case input may live next to the use case (`*.validation.ts`).
+- Export ports + use cases from `src/index.ts`.
+- Tests: fake in-memory ports; no HTTP, no TestBed.

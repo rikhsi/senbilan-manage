@@ -1,0 +1,46 @@
+{
+  "users": {
+    "title": "Users",
+    "subtitle": "Create, edit and manage console users",
+    "search": "Search users",
+    "reset": "Reset filters",
+    "create": "Create user",
+    "edit": "Edit user",
+    "delete": "Delete",
+    "bulkDelete": "Delete selected",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "roles": "Roles",
+    "status": "Status",
+    "lastActive": "Last active",
+    "name": "Name",
+    "detailTitle": "User details",
+    "back": "Back to users",
+    "empty": "No users found",
+    "confirmDelete": "Delete selected users?",
+    "statuses": {
+      "active": "Active",
+      "invited": "Invited",
+      "blocked": "Blocked"
+    },
+    "table": {
+      "selectAll": "Select all",
+      "selectRow": "Select row",
+      "sortBy": "Sort by",
+      "actions": "Actions",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "retry": "Retry",
+      "emptyTitle": "No users",
+      "emptyDescription": "Try adjusting filters or create a new user.",
+      "errorTitle": "Failed to load users",
+      "clearSelection": "Clear selection",
+      "columns": "Columns",
+      "resizeColumn": "Resize column"
+    }
+  }
+}

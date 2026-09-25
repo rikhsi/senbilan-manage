@@ -1,0 +1,45 @@
+import { HttpContext } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import {
+  AuthRepository,
+  type AuthResult,
+  type AuthTokens,
+  type Credentials,
+} from '@senbilan/core/application';
+import { type Session } from '@senbilan/core/domain';
+import { ApiClient } from '../http/api-client';
+import { SKIP_AUTH } from '../http/http-context.tokens';
+import { type AuthResultDto, type AuthTokensDto, type SessionDto } from '../dto/api.dto';
+import { authResultFromDto, sessionFromDto, tokensFromDto } from '../dto/mappers';
+
+@Injectable()
+export class HttpAuthRepository extends AuthRepository {
+  private readonly api = inject(ApiClient);
+
+  override login(credentials: Credentials): Promise<AuthResult> {
+    return this.api
+      .post<AuthResultDto>('/auth/login', credentials, {
+        context: new HttpContext().set(SKIP_AUTH, true),
+      })
+      .then(authResultFromDto);
+  }
+
+  override logout(): Promise<void> {
+    return this.api.post<null>('/auth/logout').then(() => undefined);
+  }
+
+  override refresh(refreshToken?: string): Promise<AuthTokens> {
+    const body = refreshToken !== undefined ? { refreshToken } : {};
+    return this.api
+      .post<AuthTokensDto>('/auth/refresh', body, {
+        context: new HttpContext().set(SKIP_AUTH, true),
+      })
+      .then(tokensFromDto);
+  }
+
+  override me(signal?: AbortSignal): Promise<Session> {
+    return this.api
+      .get<SessionDto>('/auth/me', signal !== undefined ? { signal } : undefined)
+      .then(sessionFromDto);
+  }
+}

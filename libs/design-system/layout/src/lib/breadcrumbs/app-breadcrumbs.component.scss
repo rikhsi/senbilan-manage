@@ -1,0 +1,46 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.app-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  min-width: 0;
+}
+
+.app-breadcrumbs__link {
+  color: var(--app-color-text-secondary);
+  text-decoration: none;
+  @include ds.text('body-sm');
+  @include ds.focus-reset;
+
+  @include ds.can-hover {
+    &:hover {
+      color: var(--app-color-text-link);
+    }
+  }
+}
+
+.app-breadcrumbs__current {
+  color: var(--app-color-text-primary);
+  @include ds.text('body-sm');
+  @include ds.truncate;
+}
+
+.app-breadcrumbs__sep {
+  color: var(--app-color-text-tertiary);
+}

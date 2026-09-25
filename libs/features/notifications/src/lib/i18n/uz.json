@@ -1,0 +1,10 @@
+{
+  "notifications": {
+    "title": "Bildirishnomalar",
+    "subtitle": "Tizim hodisalari",
+    "markRead": "O‘qilgan",
+    "markAllRead": "Hammasini o‘qish",
+    "empty": "Yangi bildirishnomalar yo‘q",
+    "unreadOnly": "Faqat o‘qilmaganlar"
+  }
+}

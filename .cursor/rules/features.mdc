@@ -1,0 +1,16 @@
+---
+description: Feature libraries — screens, routes, feature flows
+globs: libs/features/**
+alwaysApply: false
+---
+
+# features
+
+- Own routes/pages for one capability (`users`, `auth`, …).
+- May use entities, DS UI, shared state/query/i18n, application ports/use cases.
+- **Must not** import another feature’s internals or `libs/infra/*` directly — apps wire adapters.
+- No hardcoded UI strings — Transloco scopes (`users.*`, …).
+- Lists/details: TanStack Query. Ephemeral UI: Signals. Cross-app client state: shared SignalStores.
+- Forms: DS field controls + i18n validation messages.
+- Tables: `AppDataTableComponent` + column defs.
+- Export feature routes/providers from `src/index.ts` only.

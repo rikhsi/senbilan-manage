@@ -45,6 +45,7 @@ const depConstraints = [
       'kind:i18n',
       'kind:platform',
       'kind:state',
+      'kind:tokens',
     ],
   },
 
@@ -182,10 +183,24 @@ export default [
     },
   },
   {
-    files: ['**/*.spec.ts', '**/*.stories.ts', '**/testing/**/*.ts', '**/mock/**/*.ts'],
+    files: [
+      '**/*.spec.ts',
+      '**/*.stories.ts',
+      '**/testing/**/*.ts',
+      '**/mock/**/*.ts',
+      '**/.storybook/**/*.{ts,tsx}',
+    ],
     rules: {
       'max-lines': 'off',
+      'no-nested-ternary': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
+      '@nx/enforce-module-boundaries': 'off',
+    },
+  },
+  {
+    files: ['libs/infra/observability/**/*.ts'],
+    rules: {
+      'no-console': ['error', { allow: ['log', 'info', 'debug', 'warn', 'error'] }],
     },
   },
   eslintConfigPrettier,

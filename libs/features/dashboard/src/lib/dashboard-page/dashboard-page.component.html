@@ -1,0 +1,98 @@
+<div class="dashboard-page">
+  <header class="dashboard-page__header">
+    <div>
+      <h1 class="dashboard-page__title">{{ 'dashboard.title' | transloco }}</h1>
+      <p class="dashboard-page__subtitle">{{ 'dashboard.subtitle' | transloco }}</p>
+    </div>
+    <div class="dashboard-page__actions">
+      <button
+        app-button
+        type="button"
+        size="sm"
+        [variant]="range() === '7d' ? 'primary' : 'ghost'"
+        (click)="setRange('7d')"
+      >
+        {{ 'dashboard.range7d' | transloco }}
+      </button>
+      <button
+        app-button
+        type="button"
+        size="sm"
+        [variant]="range() === '30d' ? 'primary' : 'ghost'"
+        (click)="setRange('30d')"
+      >
+        {{ 'dashboard.range30d' | transloco }}
+      </button>
+      <button
+        app-button
+        type="button"
+        size="sm"
+        [variant]="range() === '90d' ? 'primary' : 'ghost'"
+        (click)="setRange('90d')"
+      >
+        {{ 'dashboard.range90d' | transloco }}
+      </button>
+    </div>
+  </header>
+
+  <section class="dashboard-page__grid" aria-label="{{ 'dashboard.title' | transloco }}">
+    @for (metric of overview()?.metrics ?? []; track metric.key) {
+      <app-stat-card
+        [label]="metricLabel(metric.key)"
+        [value]="'' + metric.value"
+        [delta]="metric.delta"
+        [deltaLabel]="formatDelta(metric.delta)"
+        [deltaHint]="'dashboard.deltaHint' | transloco"
+        [icon]="metricIcon(metric.key)"
+        [loading]="loading()"
+      />
+    } @empty {
+      @for (_ of [1, 2, 3, 4]; track $index) {
+        <app-stat-card [label]="'…'" value="—" [loading]="true" icon="users" />
+      }
+    }
+  </section>
+
+  <div class="dashboard-page__split">
+    <section class="dashboard-page__section">
+      <h2 class="dashboard-page__section-title">{{ 'dashboard.chartTitle' | transloco }}</h2>
+      <app-card padding="md">
+        <app-chart type="line" [data]="chartData()" [height]="260" [ariaLabel]="'dashboard.chartAria' | transloco" />
+      </app-card>
+    </section>
+
+    <section class="dashboard-page__section">
+      <h2 class="dashboard-page__section-title">{{ 'dashboard.quickActions' | transloco }}</h2>
+      <div class="dashboard-page__actions">
+        <a app-button variant="secondary" icon="users" routerLink="/users">
+          {{ 'dashboard.actionUsers' | transloco }}
+        </a>
+        <a app-button variant="secondary" icon="shield" routerLink="/roles">
+          {{ 'dashboard.actionRoles' | transloco }}
+        </a>
+        <a app-button variant="secondary" icon="settings" routerLink="/settings">
+          {{ 'dashboard.actionSettings' | transloco }}
+        </a>
+      </div>
+
+      <h2 class="dashboard-page__section-title">{{ 'dashboard.activityTitle' | transloco }}</h2>
+      <ul class="dashboard-page__list">
+        @for (entry of activity(); track entry.id) {
+          <li>
+            <app-card padding="sm" variant="outlined">
+              <div class="dashboard-page__activity-row">
+                <entity-user-avatar [user]="entry.actor" size="sm" />
+                <div>
+                  <p class="dashboard-page__activity-text">{{ activityLabel(entry) }}</p>
+                  <time [attr.datetime]="entry.at">{{ entry.at | date: 'short' }}</time>
+                </div>
+              </div>
+            </app-card>
+          </li>
+        } @empty {
+          <li class="dashboard-page__empty">{{ 'dashboard.activityEmpty' | transloco }}</li>
+        }
+      </ul>
+    </section>
+  </div>
+</div>

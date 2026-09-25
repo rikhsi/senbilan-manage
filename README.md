@@ -1,102 +1,115 @@
-# SenbilanManage
+# Senbilan Manage
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Nx + Angular monorepo for **Senbilan Manage** — an admin web app and a Capacitor/Ionic mobile shell sharing Clean Architecture domain/application layers, a design system, and feature libraries.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+- **Node** `>=22.12` · **npm** `>=10`
+- **Angular** ~22 · **Nx** 23 · **Vitest** · **Playwright** · **Storybook** 10
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## Apps
 
-## Run tasks
+| Project     | Path             | Role                                 |
+| ----------- | ---------------- | ------------------------------------ |
+| `admin`     | `apps/admin`     | Web admin (Taiga UI + design system) |
+| `mobile`    | `apps/mobile`    | Capacitor / Ionic mobile shell       |
+| `admin-e2e` | `apps/admin-e2e` | Playwright e2e against admin         |
 
-To run the dev server for your app, use:
+## Libraries (high level)
 
-```sh
-npx nx serve admin
+```
+libs/
+  core/domain          Pure domain (entities, VOs, policies) — no Angular/RxJS
+  core/application     Use cases + ports (repositories, clock, storage, logger)
+  infra/               Adapters: api, mock, storage, observability
+  platform/            platform/core + platform/mobile (Capacitor)
+  entities/            FSD entities (user, role, permission, notification)
+  features/            FSD features (auth, dashboard, users, roles, …)
+  design-system/       tokens, ui, icons, layout
+  shared/              util, ng, config, i18n, query, auth, theme, command, testing
 ```
 
-To create a production bundle:
+Import only public APIs: `@senbilan/<group>/<name>` (see `tsconfig.base.json` paths).
+
+Deep docs: [Architecture](docs/ARCHITECTURE.md) · [Design system](docs/DESIGN-SYSTEM.md) · [i18n](docs/I18N.md) · [Testing](docs/TESTING.md) · [Deployment](docs/DEPLOYMENT.md) · [Contributing](docs/CONTRIBUTING.md) · [AGENTS.md](AGENTS.md)
+
+## Quick start
 
 ```sh
-npx nx build admin
+npm ci
+npm start                 # nx serve admin  → http://localhost:4200
+npm run start:mobile      # nx serve mobile
 ```
 
-To see all available targets to run for a project, run:
+### Mock API
+
+Development environments set `features.mockApi: true` in:
+
+- `apps/admin/src/environments/environment.ts`
+- `apps/mobile/src/environments/environment.ts`
+
+Wire HTTP vs mock adapters in the app composition root based on `APP_CONFIG.features.mockApi`. Production envs set `mockApi: false`. Root `.env*` files mirror the same flags for tooling (`FEATURE_MOCK_API`).
 
 ```sh
-npx nx show project admin
+# optional local overrides (gitignored)
+cp .env.example .env.local
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+## Scripts
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| Script                                 | What it does                                                         |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| `npm start` / `start:mobile`           | Serve admin / mobile                                                 |
+| `npm run build`                        | Build admin + mobile                                                 |
+| `npm run build:admin` / `build:mobile` | Single app production build                                          |
+| `npm run lint`                         | ESLint (incl. module boundaries) across projects                     |
+| `npm run lint:styles`                  | Stylelint for SCSS                                                   |
+| `npm run typecheck`                    | `ngc` / `tsc --noEmit` across projects                               |
+| `npm test`                             | Vitest unit tests                                                    |
+| `npm run test:e2e`                     | Playwright (`admin-e2e`)                                             |
+| `npm run i18n:check`                   | Translation key parity check                                         |
+| `npm run depcruise`                    | Dependency-cruiser architecture rules                                |
+| `npm run storybook`                    | Storybook for `design-system-ui`                                     |
+| `npm run verify`                       | format + lint + styles + typecheck + depcruise + i18n + test + build |
+| `npm run graph`                        | Nx project graph                                                     |
 
-## Add new projects
+Affected variants: `affected:lint`, `affected:test`, `affected:build`, `affected:typecheck`.
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+Capacitor: `cap:sync`, `cap:open:android`, `cap:open:ios`.
 
-Use the plugin's generator to create new projects.
+## Branch strategy
 
-To generate a new application, use:
+| Branch | Purpose                                                         |
+| ------ | --------------------------------------------------------------- |
+| `main` | Default integration / default Nx base (`nx.json` `defaultBase`) |
+| `dev`  | Active development / staging-bound                              |
+| `prod` | Production release line                                         |
+
+Work on short-lived feature branches; open PRs into `dev` (or `main` per team convention). CI runs on push/PR to `main`, `dev`, and `prod`.
+
+## Environment files
+
+| File                          | Committed?          | Use                                  |
+| ----------------------------- | ------------------- | ------------------------------------ |
+| `.env.example`                | yes                 | Template for tooling / CI inject     |
+| `.env.development`            | yes                 | Local/dev tooling defaults           |
+| `.env.production`             | yes                 | Production placeholders (no secrets) |
+| `.env.local` / `.env.*.local` | **no** (gitignored) | Machine-specific overrides           |
+
+Angular apps do **not** read root `.env` at runtime. They use:
+
+- `apps/*/src/environments/environment.ts` (development)
+- `apps/*/src/environments/environment.production.ts` (production via `fileReplacements`)
+
+Typed as `AppConfig` from `@senbilan/shared/config`.
+
+## Design system & Storybook
 
 ```sh
-npx nx g @nx/angular:app demo
+npm run storybook          # design-system-ui
+npm run build-storybook
 ```
 
-To generate a new library, use:
+SCSS: `@use 'ds' as ds;` — see [DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
 
-```sh
-npx nx g @nx/angular:lib mylib
-```
+## AI / agents
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Any AI coding in this repo **must** follow [AGENTS.md](AGENTS.md) and `.cursor/rules/`.

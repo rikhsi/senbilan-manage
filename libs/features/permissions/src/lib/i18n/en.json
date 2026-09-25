@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "title": "Permissions",
+    "subtitle": "Catalogue of available permission keys",
+    "empty": "No permissions loaded",
+    "resource": "Resource",
+    "action": "Action",
+    "key": "Key",
+    "description": "Description"
+  }
+}

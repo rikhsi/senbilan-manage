@@ -1,0 +1,30 @@
+<div class="notifications-page">
+  <header class="notifications-page__header">
+    <div>
+      <h1 class="notifications-page__title">{{ 'notifications.title' | transloco }}</h1>
+      <p class="notifications-page__subtitle">{{ 'notifications.subtitle' | transloco }}</p>
+    </div>
+    <div class="notifications-page__actions">
+      <app-switch [checked]="unreadOnly()" (checkedChange)="onUnreadOnly($event)">
+        {{ 'notifications.unreadOnly' | transloco }}
+      </app-switch>
+      <button app-button type="button" variant="secondary" icon="check" (click)="markAllRead()">
+        {{ 'notifications.markAllRead' | transloco }}
+      </button>
+    </div>
+  </header>
+
+  <ul class="notifications-page__list">
+    @for (item of items(); track item.id) {
+      <li>
+        <entity-notification-item
+          [notification]="item"
+          [markReadLabel]="'notifications.markRead' | transloco"
+          (markRead)="onMarkRead($event)"
+        />
+      </li>
+    } @empty {
+      <li class="notifications-page__empty">{{ 'notifications.empty' | transloco }}</li>
+    }
+  </ul>
+</div>

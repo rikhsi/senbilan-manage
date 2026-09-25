@@ -1,0 +1,20 @@
+<div class="entity-permission-matrix__grid" role="table">
+  @for (group of groups(); track group.resource) {
+    <section class="entity-permission-matrix__group" role="rowgroup">
+      <h3 class="entity-permission-matrix__group-title">{{ group.label }}</h3>
+      <ul class="entity-permission-matrix__list">
+        @for (permission of group.permissions; track permission.key) {
+          <li class="entity-permission-matrix__item">
+            <app-checkbox
+              [checked]="isChecked(permission.key)"
+              [disabled]="readonly()"
+              (checkedChange)="toggle(permission.key, $event)"
+            >
+              {{ permission.label }}
+            </app-checkbox>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

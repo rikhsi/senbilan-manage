@@ -1,0 +1,26 @@
+<div class="auth-login-page__frame">
+  <app-card class="auth-login-page__card" variant="elevated" padding="lg">
+    <header class="auth-login-page__header">
+      <h1 class="auth-login-page__title">{{ 'auth.title' | transloco }}</h1>
+      <p class="auth-login-page__subtitle">{{ 'auth.subtitle' | transloco }}</p>
+    </header>
+
+    <form class="auth-login-page__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-field [label]="'auth.email' | transloco" [error]="errorFor('email')" required>
+        <input appInput type="email" autocomplete="username" formControlName="email" />
+      </app-form-field>
+
+      <app-form-field [label]="'auth.password' | transloco" [error]="errorFor('password')" required>
+        <input appInput type="password" autocomplete="current-password" formControlName="password" />
+      </app-form-field>
+
+      @if (formError(); as message) {
+        <p class="auth-login-page__error" role="alert">{{ message }}</p>
+      }
+
+      <button app-button type="submit" variant="primary" [block]="true" [loading]="submitting()" icon="lock">
+        {{ (submitting() ? 'auth.submitting' : 'auth.submit') | transloco }}
+      </button>
+    </form>
+  </app-card>
+</div>

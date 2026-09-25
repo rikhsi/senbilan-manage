@@ -1,0 +1,17 @@
+---
+description: SCSS token usage — ds mixin API, no hardcoded colors
+globs: "**/*.scss"
+alwaysApply: false
+---
+
+# styles
+
+```scss
+@use 'ds' as ds;
+```
+
+- Colors/spacing/radius/type/z-index/duration: `var(--app-*)` or local `--_*` slots only.
+- Forbidden outside `design-system/tokens`: hex, named colors, `rgb/rgba/hsl`, raw px on spacing/radius/font-size, hardcoded font-family.
+- Class names: BEM-ish kebab-case (`block__element--modifier`).
+- includePaths already point at `libs/design-system/tokens/src/styles` — do not invent parallel token files in features.
+- Do not disable Stylelint color rules to ship shortcuts.

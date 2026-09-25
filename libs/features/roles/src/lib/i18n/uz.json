@@ -1,0 +1,13 @@
+{
+  "roles": {
+    "title": "Rollar",
+    "subtitle": "Rollar va ruxsatlarni boshqarish",
+    "select": "Rolni tanlang",
+    "save": "Ruxsatlarni saqlash",
+    "usersCount": "{{count}} foydalanuvchi",
+    "system": "Tizim",
+    "empty": "Hali rollar yo‘q",
+    "name": "Nomi",
+    "description": "Tavsif"
+  }
+}

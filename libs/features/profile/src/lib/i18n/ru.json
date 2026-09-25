@@ -1,0 +1,12 @@
+{
+  "profile": {
+    "title": "Профиль",
+    "subtitle": "Личные данные",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "email": "Email",
+    "avatarUrl": "URL аватара",
+    "save": "Сохранить",
+    "saved": "Профиль обновлён"
+  }
+}

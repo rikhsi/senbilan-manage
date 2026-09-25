@@ -1,0 +1,60 @@
+<div class="settings-page">
+  <header class="settings-page__header">
+    <div>
+      <h1 class="settings-page__title">{{ 'settings.title' | transloco }}</h1>
+      <p class="settings-page__subtitle">{{ 'settings.subtitle' | transloco }}</p>
+    </div>
+  </header>
+
+  <app-tabs [items]="tabs()" [(selected)]="tab" [label]="'settings.title' | transloco" />
+
+  <div class="settings-page__tabs-panel" role="tabpanel">
+    @switch (tab()) {
+      @case ('theme') {
+        <section class="settings-page__section">
+          <p class="settings-page__subtitle" id="settings-theme-label">
+            {{ 'settings.theme.label' | transloco }}
+          </p>
+          <app-radio-group
+            variant="cards"
+            [options]="themeOptions()"
+            [value]="theme()"
+            [labelledBy]="'settings-theme-label'"
+            (valueChange)="onThemeChange($event ?? 'system')"
+          />
+          <p class="settings-page__subtitle">{{ 'settings.theme.hint' | transloco }}</p>
+        </section>
+      }
+      @case ('language') {
+        <section class="settings-page__section">
+          <p class="settings-page__subtitle" id="settings-language-label">
+            {{ 'settings.language.label' | transloco }}
+          </p>
+          <app-radio-group
+            [options]="languageOptions()"
+            [value]="language()"
+            [labelledBy]="'settings-language-label'"
+            (valueChange)="onLanguageChange($event ?? language())"
+          />
+          <p class="settings-page__subtitle">{{ 'settings.language.hint' | transloco }}</p>
+        </section>
+      }
+      @case ('profile') {
+        <form class="settings-page__form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <app-form-field [label]="'settings.profile.firstName' | transloco">
+            <input appInput formControlName="firstName" />
+          </app-form-field>
+          <app-form-field [label]="'settings.profile.lastName' | transloco">
+            <input appInput formControlName="lastName" />
+          </app-form-field>
+          <app-form-field [label]="'settings.profile.email' | transloco">
+            <input appInput type="email" formControlName="email" />
+          </app-form-field>
+          <button app-button type="submit" variant="primary">
+            {{ 'settings.profile.save' | transloco }}
+          </button>
+        </form>
+      }
+    }
+  </div>
+</div>

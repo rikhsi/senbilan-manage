@@ -1,0 +1,10 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Stay on top of system events",
+    "markRead": "Mark as read",
+    "markAllRead": "Mark all as read",
+    "empty": "You are all caught up",
+    "unreadOnly": "Unread only"
+  }
+}

@@ -1,0 +1,64 @@
+<div class="users-page">
+  <header class="users-page__header">
+    <div>
+      <h1 class="users-page__title">{{ 'users.title' | transloco }}</h1>
+      <p class="users-page__subtitle">{{ 'users.subtitle' | transloco }}</p>
+    </div>
+    <div class="users-page__actions">
+      @if (selected().length > 0) {
+        <button app-button type="button" variant="danger" icon="trash" (click)="bulkDelete()">
+          {{ 'users.bulkDelete' | transloco }}
+        </button>
+      }
+      <button app-button type="button" variant="primary" icon="user-plus" (click)="openCreate()">
+        {{ 'users.create' | transloco }}
+      </button>
+    </div>
+  </header>
+
+  <app-filter-bar [activeCount]="activeFilterCount()" [resetLabel]="'users.reset' | transloco" (reset)="resetFilters()">
+    <app-search-input
+      search
+      [placeholder]="'users.search' | transloco"
+      [value]="search()"
+      (search)="onSearch($event)"
+    />
+  </app-filter-bar>
+
+  <app-data-table
+    [rows]="rows()"
+    [columns]="columns()"
+    [rowId]="rowId"
+    [labels]="tableLabels()"
+    [loading]="loading()"
+    [error]="error()"
+    [selectable]="true"
+    [rowClickable]="true"
+    [(selected)]="selected"
+    [(sort)]="sort"
+    (rowClick)="onRowClick($event)"
+    (retry)="resetFilters()"
+  >
+    <ng-template appCell="name" let-row>
+      <div class="users-page__name-cell">
+        <entity-user-avatar [user]="row" size="sm" />
+        <a [routerLink]="['/users', row.id]">{{ viewOf(row).fullName }}</a>
+      </div>
+    </ng-template>
+    <ng-template appCell="status" let-row>
+      <app-status [tone]="statusTone(row.status)">{{ statusLabel(row.status) }}</app-status>
+    </ng-template>
+    <ng-template appRowActions let-row>
+      <button
+        app-button
+        type="button"
+        variant="ghost"
+        size="sm"
+        icon="pencil"
+        (click)="openEdit(row); $event.stopPropagation()"
+      >
+        {{ 'users.edit' | transloco }}
+      </button>
+    </ng-template>
+  </app-data-table>
+</div>

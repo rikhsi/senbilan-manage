@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "title": "Sozlamalar",
+    "subtitle": "Mavzu, til va profil",
+    "tabs": {
+      "theme": "Mavzu",
+      "language": "Til",
+      "profile": "Profil"
+    },
+    "theme": {
+      "label": "Rang mavzusi",
+      "light": "Yorug‘",
+      "dark": "Qorong‘u",
+      "system": "Tizim",
+      "hint": "Mavzu darhol qo‘llanadi."
+    },
+    "language": {
+      "label": "Interfeys tili",
+      "hint": "shared/i18n ulanganidan keyin qo‘llanadi."
+    },
+    "profile": {
+      "firstName": "Ism",
+      "lastName": "Familiya",
+      "email": "Email",
+      "save": "Profilni saqlash"
+    }
+  }
+}

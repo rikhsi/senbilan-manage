@@ -1,0 +1,12 @@
+{
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Shaxsiy ma’lumotlar",
+    "firstName": "Ism",
+    "lastName": "Familiya",
+    "email": "Email",
+    "avatarUrl": "Avatar URL",
+    "save": "Saqlash",
+    "saved": "Profil yangilandi"
+  }
+}

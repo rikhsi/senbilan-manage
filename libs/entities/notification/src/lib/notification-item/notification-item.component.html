@@ -1,0 +1,22 @@
+<div class="entity-notification-item__icon" aria-hidden="true">
+  <app-icon [name]="icon()" size="md" />
+</div>
+<div class="entity-notification-item__body">
+  <p class="entity-notification-item__title">{{ notification().title }}</p>
+  <p class="entity-notification-item__text">{{ notification().body }}</p>
+  <time class="entity-notification-item__time" [attr.datetime]="notification().createdAt">
+    {{ notification().createdAt | date: 'medium' }}
+  </time>
+</div>
+@if (unread()) {
+  <button
+    app-button
+    type="button"
+    variant="ghost"
+    size="sm"
+    class="entity-notification-item__action"
+    (click)="onMarkRead()"
+  >
+    {{ markReadLabel() }}
+  </button>
+}

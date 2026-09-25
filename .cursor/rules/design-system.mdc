@@ -1,0 +1,15 @@
+---
+description: Design-system UI, tokens, icons, layout conventions
+globs: libs/design-system/**
+alwaysApply: false
+---
+
+# design-system
+
+- Prefix `app`. Standalone, `OnPush`, `input()` / `output()`.
+- Styles: `@use 'ds' as ds;` + `var(--app-*)` only — no hex/rgb/raw px.
+- Prefer native element + attribute selector when semantics matter (`button[app-button]`).
+- Export new public symbols from `ui` / `icons` / `layout` / `tokens` `src/index.ts`.
+- No feature business logic or feature i18n product copy inside DS — accept label inputs.
+- Add a Storybook `*.stories.ts` for new UI components.
+- Do not duplicate existing primitives (button, table, form field, toast, …).

@@ -1,0 +1,69 @@
+{
+  "app": {
+    "name": "Senbilan Manage"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "roles": "Roles",
+    "permissions": "Permissions",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "profile": "Profile",
+    "menu": "Menu",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "openMenu": "Open navigation",
+    "closeMenu": "Close navigation"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "reset": "Reset",
+    "retry": "Retry",
+    "close": "Close",
+    "actions": "Actions",
+    "loading": "Loading…",
+    "empty": "Nothing here yet",
+    "error": "Something went wrong",
+    "selectedCount": "{count} selected",
+    "clearSelection": "Clear selection",
+    "yes": "Yes",
+    "no": "No",
+    "logout": "Log out",
+    "profile": "Profile",
+    "settings": "Settings",
+    "theme": "Theme",
+    "language": "Language",
+    "notifications": "Notifications",
+    "commandPalette": "Command palette",
+    "commandPaletteHint": "Type a command or search…",
+    "noCommands": "No matching commands",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "breadcrumbs": "Breadcrumbs"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot password?",
+      "failed": "Invalid email or password"
+    }
+  },
+  "errors": {
+    "unexpected": "An unexpected error occurred",
+    "network": "Network error. Check your connection and try again.",
+    "forbidden": "You do not have permission to view this page",
+    "notFound": "Page not found",
+    "unauthorized": "Please sign in to continue",
+    "validation": "Please fix the highlighted fields"
+  }
+}

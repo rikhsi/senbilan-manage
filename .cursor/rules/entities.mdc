@@ -1,0 +1,15 @@
+---
+description: Entity libraries — entity UI and entity-scoped helpers
+globs: libs/entities/**
+alwaysApply: false
+---
+
+# entities
+
+- Entity-scoped UI pieces, mappers, and small stores shared by multiple features.
+- May depend on application, domain, DS UI/tokens, shared util/ng/i18n/state.
+- **Must not** import `libs/features/*` or `libs/infra/*`.
+- Do not put use cases here — those stay in `core/application`.
+- Do not put pure domain entities here — those stay in `core/domain`.
+- Keep public API small via `src/index.ts`.
+- i18n + tokens for any visible text/styles.

@@ -1,0 +1,42 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+}
+
+.app-bottom-nav {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--app-space-1);
+  box-sizing: border-box;
+  padding: var(--app-space-2) var(--app-space-3);
+  padding-bottom: calc(var(--app-space-2) + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--app-color-border);
+  background: var(--app-color-surface);
+}
+
+.app-bottom-nav__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-space-1);
+  min-height: 2.75rem;
+  padding: var(--app-space-1);
+  border-radius: var(--app-radius-md);
+  color: var(--app-color-text-secondary);
+  text-decoration: none;
+  @include ds.text('caption');
+  @include ds.focus-reset;
+
+  &--active {
+    color: var(--app-color-primary);
+    background: var(--app-color-primary-muted);
+  }
+}
+
+.app-bottom-nav__label {
+  @include ds.truncate;
+  max-width: 100%;
+}

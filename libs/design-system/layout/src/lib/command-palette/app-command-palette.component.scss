@@ -1,0 +1,69 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+}
+
+.app-command-palette {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  padding: var(--app-space-3);
+  background: var(--app-color-surface-elevated);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-shadow-lg);
+}
+
+.app-command-palette__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 20rem;
+  overflow: auto;
+  @include ds.thin-scrollbar;
+}
+
+.app-command-palette__item {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+  width: 100%;
+  min-height: var(--app-size-control-md);
+  padding: var(--app-space-2) var(--app-space-3);
+  border: 0;
+  border-radius: var(--app-radius-md);
+  background: transparent;
+  color: var(--app-color-text-primary);
+  text-align: start;
+  cursor: pointer;
+  @include ds.text('body-sm');
+  @include ds.focus-reset;
+
+  &--active,
+  &:hover {
+    background: var(--app-color-surface-muted);
+  }
+}
+
+.app-command-palette__icon {
+  flex-shrink: 0;
+  color: var(--app-color-text-secondary);
+}
+
+.app-command-palette__label {
+  flex: 1;
+  min-width: 0;
+  @include ds.truncate;
+}
+
+.app-command-palette__shortcut {
+  color: var(--app-color-text-tertiary);
+  @include ds.text('caption');
+}
+
+.app-command-palette__empty {
+  padding: var(--app-space-6) var(--app-space-3);
+  color: var(--app-color-text-secondary);
+  text-align: center;
+  @include ds.text('body-sm');
+}

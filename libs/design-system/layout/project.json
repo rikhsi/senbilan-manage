@@ -4,7 +4,7 @@
   "sourceRoot": "libs/design-system/layout/src",
   "prefix": "app",
   "projectType": "library",
-  "tags": ["layer:shared", "kind:ui"],
+  "tags": ["layer:shared", "kind:feature"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"

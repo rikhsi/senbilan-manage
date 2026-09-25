@@ -6,6 +6,26 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- Theme bootstrap: apply data-theme before first paint (see ThemeService). -->
+    <script>
+      (function () {
+        try {
+          var key = 'senbilan.theme';
+          var raw = localStorage.getItem(key);
+          var prefs = raw ? JSON.parse(raw) : null;
+          var root = document.documentElement;
+          var mode = prefs && prefs.mode ? prefs.mode : 'system';
+          var theme =
+            mode === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
+          root.setAttribute('data-theme', theme);
+          if (prefs) {
+            if (prefs.density) root.setAttribute('data-density', prefs.density);
+            if (prefs.contrast) root.setAttribute('data-contrast', prefs.contrast);
+            if (prefs.motion) root.setAttribute('data-motion', prefs.motion);
+          }
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body>
     <admin-root></admin-root>

@@ -1,0 +1,14 @@
+---
+description: Vitest, Testing Library, Playwright expectations per layer
+globs: "**/*.{spec.ts,test.ts,stories.ts}"
+alwaysApply: false
+---
+
+# testing
+
+- Unit: Vitest via `tools/vitest/presets` (`tsLibConfig` vs `angularConfig`).
+- Domain/application: pure tests + fake ports; no TestBed.
+- UI: Testing Library — prefer `getByRole` / label text (i18n keys or roles).
+- E2E: Playwright in `apps/admin-e2e` for critical flows only.
+- Colocate `*.spec.ts`; never import specs from production code.
+- New domain/use-case logic requires tests; DS changes should keep/add specs + stories.

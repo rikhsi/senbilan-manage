@@ -1,0 +1,13 @@
+{
+  "auth": {
+    "title": "Sign in",
+    "subtitle": "Access the Senbilan admin console",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "error": "Unable to sign in. Check your credentials and try again.",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required"
+  }
+}

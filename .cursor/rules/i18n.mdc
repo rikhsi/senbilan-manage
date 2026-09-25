@@ -1,0 +1,14 @@
+---
+description: Transloco i18n — ru/en/uz, no hardcoded UI text
+globs: "{apps,libs}/**/*.{ts,html}"
+alwaysApply: false
+---
+
+# i18n
+
+- Locales: `ru` (default), `en`, `uz` — all keys must exist in each.
+- No hardcoded user-facing strings in templates or UI TypeScript.
+- Use Transloco (`@senbilan/shared/i18n` helpers/providers when available).
+- Key shape: `scope.path` (e.g. `users.create`, `common.save`).
+- DS components receive labels from callers; do not embed product copy in DS.
+- Run `npm run i18n:check` when adding/changing keys.
