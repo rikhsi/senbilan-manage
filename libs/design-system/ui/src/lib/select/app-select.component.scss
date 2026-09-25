@@ -1,0 +1,206 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.app-select__trigger {
+  display: flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  width: 100%;
+  height: var(--app-size-control-md);
+  padding: 0 var(--app-space-2) 0 var(--app-space-3);
+  color: var(--app-color-text-primary);
+  text-align: start;
+  background: var(--app-color-surface);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+  transition:
+    border-color var(--app-duration-fast) var(--app-ease-out),
+    box-shadow var(--app-duration-fast) var(--app-ease-out);
+  @include ds.text('body');
+  @include ds.focus-reset;
+
+  :host[data-size='lg'] & {
+    height: var(--app-size-control-lg);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--app-color-border-strong);
+  }
+
+  &:focus-visible,
+  :host.app-select--open & {
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-color-primary) 20%, transparent);
+    outline: none;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--app-color-danger);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: var(--app-color-surface-muted);
+    opacity: var(--app-state-disabled-opacity);
+  }
+}
+
+.app-select__value {
+  flex: 1;
+  min-width: 0;
+  @include ds.truncate;
+
+  &--placeholder {
+    color: var(--app-color-text-tertiary);
+  }
+}
+
+.app-select__count {
+  padding: 0 var(--app-space-1-5);
+  color: var(--app-color-on-primary-container);
+  background: var(--app-color-primary-container);
+  border-radius: var(--app-radius-full);
+  @include ds.text('caption-strong');
+}
+
+.app-select__clear {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--app-color-icon-muted);
+  border-radius: var(--app-radius-xs);
+  &:hover {
+    color: var(--app-color-text-primary);
+    background: var(--app-color-surface-muted);
+  }
+}
+
+.app-select__chevron {
+  flex-shrink: 0;
+  color: var(--app-color-icon-muted);
+  transition: transform var(--app-duration-fast) var(--app-ease-out);
+  :host.app-select--open & {
+    transform: rotate(180deg);
+  }
+}
+
+// ---- panel (rendered in CDK overlay, styles are encapsulated via ::ng-deep-free approach:
+// the panel is inside the component's template so emulated encapsulation still applies) ----
+.app-select__panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(20rem, 50dvh);
+  overflow: hidden;
+  background: var(--app-color-surface-elevated);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-shadow-md);
+  animation: app-scale-in var(--app-duration-fast) var(--app-ease-out);
+  @include ds.reduced-motion {
+    animation: none;
+  }
+}
+
+.app-select__search {
+  display: flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  padding: var(--app-space-2) var(--app-space-3);
+  color: var(--app-color-icon-muted);
+  border-bottom: 1px solid var(--app-color-divider);
+}
+
+.app-select__search-field {
+  flex: 1;
+  min-width: 0;
+  color: var(--app-color-text-primary);
+  background: transparent;
+  border: 0;
+  outline: none;
+  @include ds.text('body-sm');
+  &::placeholder {
+    color: var(--app-color-text-tertiary);
+  }
+}
+
+.app-select__list {
+  padding: var(--app-space-1);
+  margin: 0;
+  overflow: auto;
+  list-style: none;
+  outline: none;
+  @include ds.thin-scrollbar;
+}
+
+.app-select__option {
+  display: flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  min-height: var(--app-size-control-md);
+  padding: var(--app-space-1-5) var(--app-space-2-5);
+  cursor: pointer;
+  border-radius: var(--app-radius-sm);
+  @include ds.text('body-sm');
+
+  &--active {
+    background: var(--app-color-surface-muted);
+  }
+  &--selected {
+    color: var(--app-color-primary);
+    font-weight: var(--app-font-weight-medium);
+  }
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: var(--app-state-disabled-opacity);
+  }
+  @include ds.touch {
+    min-height: var(--app-size-control-lg);
+  }
+}
+
+.app-select__check {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  color: var(--app-color-on-primary);
+  border: 1.5px solid var(--app-color-border-strong);
+  border-radius: var(--app-radius-xs);
+  .app-select__option--selected & {
+    background: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+  }
+}
+
+.app-select__option-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-select__option-label {
+  @include ds.truncate;
+}
+
+.app-select__option-description {
+  color: var(--app-color-text-tertiary);
+  @include ds.text('caption');
+}
+
+.app-select__option-tick {
+  flex-shrink: 0;
+}
+
+.app-select__empty {
+  padding: var(--app-space-4);
+  color: var(--app-color-text-tertiary);
+  text-align: center;
+  @include ds.text('body-sm');
+}

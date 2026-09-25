@@ -4,15 +4,19 @@
   "sourceRoot": "libs/infra/api/src",
   "prefix": "app",
   "projectType": "library",
-  "tags": [
-    "layer:infra",
-    "kind:infrastructure"
-  ],
+  "tags": ["layer:infra", "kind:infrastructure"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

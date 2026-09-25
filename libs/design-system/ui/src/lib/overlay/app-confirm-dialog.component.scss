@@ -1,0 +1,46 @@
+@use 'ds' as ds;
+
+.app-confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--app-space-6) var(--app-space-5) var(--app-space-5);
+  text-align: center;
+  @include ds.safe-area-bottom(var(--app-space-5));
+}
+
+.app-confirm__icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: var(--app-space-4);
+  border-radius: var(--app-radius-full);
+
+  &[data-tone='primary'] {
+    color: var(--app-color-on-primary-container);
+    background: var(--app-color-primary-container);
+  }
+  &[data-tone='danger'] {
+    color: var(--app-color-on-danger-container);
+    background: var(--app-color-danger-container);
+  }
+}
+
+.app-confirm__title {
+  @include ds.text('h3');
+}
+
+.app-confirm__message {
+  margin-top: var(--app-space-2);
+  color: var(--app-color-text-secondary);
+  @include ds.text('body');
+}
+
+.app-confirm__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--app-space-2);
+  width: 100%;
+  margin-top: var(--app-space-6);
+}

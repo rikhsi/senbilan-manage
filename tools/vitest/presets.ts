@@ -1,7 +1,8 @@
 /// <reference types="vitest" />
 import angular from '@analogjs/vite-plugin-angular';
+import { resolve } from 'node:path';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { type UserConfig } from 'vitest/config';
+import { type ViteUserConfig as UserConfig } from 'vitest/config';
 
 interface PresetOptions {
   /** Project name shown in the reporter, e.g. `feature-users`. */
@@ -16,6 +17,14 @@ const base = ({ name, root, workspaceRoot }: PresetOptions): UserConfig => ({
   root,
   cacheDir: `${workspaceRoot}/node_modules/.vite/${name}`,
   plugins: [tsconfigPaths({ root: workspaceRoot })],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // Lets component styles `@use 'ds' as ds;` exactly like the Angular builder does.
+        loadPaths: [resolve(root, workspaceRoot, 'libs/design-system/tokens/src/styles')],
+      },
+    },
+  },
   test: {
     name,
     watch: false,
@@ -27,7 +36,13 @@ const base = ({ name, root, workspaceRoot }: PresetOptions): UserConfig => ({
       reportsDirectory: `${workspaceRoot}/coverage/${name}`,
       provider: 'v8',
       include: ['src/**/*.ts'],
-      exclude: ['src/**/*.spec.ts', 'src/**/*.stories.ts', 'src/index.ts', 'src/test-setup.ts', 'src/testing/**'],
+      exclude: [
+        'src/**/*.spec.ts',
+        'src/**/*.stories.ts',
+        'src/index.ts',
+        'src/test-setup.ts',
+        'src/testing/**',
+      ],
     },
   },
 });

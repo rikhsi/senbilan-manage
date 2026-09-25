@@ -1,0 +1,67 @@
+@use 'ds' as ds;
+
+:host {
+  --_w: 2.5rem;
+  --_h: 1.5rem;
+  --_thumb: 1.125rem;
+
+  display: inline-flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  min-height: var(--app-size-control-sm);
+
+  &[data-size='sm'] {
+    --_w: 2rem;
+    --_h: 1.25rem;
+    --_thumb: 0.875rem;
+  }
+
+  &.app-switch--disabled {
+    opacity: var(--app-state-disabled-opacity);
+    .app-switch__track,
+    .app-switch__label {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.app-switch__track {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--_w);
+  height: var(--_h);
+  background: var(--app-color-border-strong);
+  border-radius: var(--app-radius-full);
+  transition: background-color var(--app-duration-fast) var(--app-ease-out);
+  @include ds.focus-reset;
+
+  :host.app-switch--on & {
+    background: var(--app-color-primary);
+  }
+}
+
+.app-switch__thumb {
+  position: absolute;
+  top: 50%;
+  left: calc((var(--_h) - var(--_thumb)) / 2);
+  width: var(--_thumb);
+  height: var(--_thumb);
+  background: var(--app-color-surface);
+  border-radius: var(--app-radius-full);
+  box-shadow: var(--app-shadow-sm);
+  transition: transform var(--app-duration-fast) var(--app-ease-out-back);
+  transform: translateY(-50%);
+
+  :host.app-switch--on & {
+    transform: translate(calc(var(--_w) - var(--_h)), -50%);
+  }
+}
+
+.app-switch__label {
+  cursor: pointer;
+  user-select: none;
+  @include ds.text('body');
+  &:empty {
+    display: none;
+  }
+}

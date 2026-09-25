@@ -1,0 +1,37 @@
+@use 'ds' as ds;
+@use 'tones' as tones;
+
+:host {
+  display: inline-flex;
+  gap: var(--app-space-1);
+  align-items: center;
+  height: 1.625rem;
+  padding: 0 var(--app-space-1) 0 var(--app-space-2);
+  border-radius: var(--app-radius-full);
+  @include ds.text('body-sm');
+  @include tones.container-tones;
+
+  &.app-tag--disabled {
+    opacity: var(--app-state-disabled-opacity);
+  }
+}
+
+.app-tag__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  color: inherit;
+  border-radius: var(--app-radius-full);
+  opacity: 0.7;
+  transition:
+    opacity var(--app-duration-fast) var(--app-ease-out),
+    background-color var(--app-duration-fast) var(--app-ease-out);
+  @include ds.focus-reset;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, currentcolor 15%, transparent);
+    opacity: 1;
+  }
+}

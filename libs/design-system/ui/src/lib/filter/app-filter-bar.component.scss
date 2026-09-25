@@ -1,0 +1,52 @@
+@use 'ds' as ds;
+
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  align-items: center;
+  width: 100%;
+}
+
+.app-filter-bar__search {
+  flex: 1 1 100%;
+  min-width: 0;
+  &:not(:has(*)) {
+    display: none;
+  }
+  @include ds.up('md') {
+    flex: 1 1 16rem;
+    max-width: 24rem;
+  }
+}
+
+.app-filter-bar__filters {
+  display: grid;
+  flex: 1 1 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--app-space-2);
+  &:not(:has(*)) {
+    display: none;
+  }
+  @include ds.up('md') {
+    display: flex;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    > * {
+      min-width: 10rem;
+    }
+  }
+}
+
+.app-filter-bar__reset {
+  flex-shrink: 0;
+}
+
+.app-filter-bar__end {
+  display: flex;
+  gap: var(--app-space-2);
+  margin-left: auto;
+  &:not(:has(*)) {
+    display: none;
+  }
+}

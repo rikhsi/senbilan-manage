@@ -1,0 +1,119 @@
+@use 'sass:map';
+
+// Raw palette. NEVER use these directly in components — only `themes/*` and
+// `vendors/*` may read them. Components consume semantic slots (`--app-color-*`).
+// Source: DESIGN-SYSTEM.md §2.1 (shared with the senbilan mobile app).
+
+$rose: (
+  50: #fff4f6,
+  100: #ffe3e9,
+  200: #ffc9d5,
+  300: #ffa1b7,
+  400: #fb6f92,
+  500: #ef4470,
+  600: #d9265a,
+  700: #b61a4a,
+  800: #961a44,
+  900: #7a1a3c,
+);
+
+$peach: (
+  50: #fff7f0,
+  100: #ffebd9,
+  200: #ffd4b0,
+  300: #fdb57b,
+  400: #fa8f48,
+  500: #f2711f,
+  600: #d25a10,
+  700: #a9460f,
+  800: #7f3612,
+  900: #5c2a12,
+);
+
+$lavender: (
+  50: #f8f4fc,
+  100: #efe4f8,
+  200: #e0ccf3,
+  300: #c7a8e9,
+  400: #ab82dc,
+  500: #9160cc,
+  600: #7a47b4,
+  700: #633893,
+  800: #4e2d74,
+  900: #3a2257,
+);
+
+$sky: (
+  50: #f3f6fd,
+  100: #e3e9f9,
+  200: #c9d6f3,
+  300: #a3b9e9,
+  400: #7896db,
+  500: #5877cc,
+  600: #445db0,
+  700: #384b8d,
+  800: #2c3a6e,
+  900: #202b52,
+);
+
+// Mauve neutrals — grey with a hint of rose. Pure grey is forbidden.
+$neutral: (
+  0: #ffffff,
+  50: #fcf8f9,
+  100: #f6eff1,
+  200: #ebe1e4,
+  300: #d6c9ce,
+  400: #ac9da3,
+  500: #7f7178,
+  600: #5f535a,
+  700: #463c42,
+  800: #2d262a,
+  850: #231d21,
+  900: #191418,
+  950: #110d10,
+);
+
+// Status families: 100 container, 400 dark-mode accent, 600 light-mode accent, 800 text-on-container.
+$green: (
+  100: #dcf5e6,
+  400: #4ade80,
+  600: #16a34a,
+  800: #166534,
+  900: #14532d,
+);
+$amber: (
+  100: #fef0c7,
+  400: #fbbf24,
+  600: #d97706,
+  800: #92400e,
+  900: #78350f,
+);
+$red: (
+  100: #fee2e2,
+  400: #f87171,
+  600: #dc2626,
+  800: #991b1b,
+  900: #7f1d1d,
+);
+$blue: (
+  100: #dbeafe,
+  400: #60a5fa,
+  600: #2563eb,
+  800: #1e40af,
+  900: #1e3a8a,
+);
+
+// Gradient stops
+$blush: #fbd2dc;
+$lavender-mist: #efe1f6;
+$sky-mist: #e3e8f8;
+$blush-deep: #3a1f2b;
+$lavender-deep: #2a2036;
+$sky-deep: #1b1f2e;
+
+// Shadow ink (mauve, never black)
+$shadow-ink: #2d1a22;
+
+@function shade($palette, $step) {
+  @return map.get($palette, $step);
+}

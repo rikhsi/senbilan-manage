@@ -1,0 +1,43 @@
+// Global stylesheet entry. Import ONCE from each app's styles.scss:
+//   @use 'index';   // via stylePreprocessorOptions.includePaths
+// The Inter font CSS is added to the app `styles` array (node_modules/@fontsource-variable/inter/wght.css).
+@use 'reset';
+@use 'primitives';
+@use 'themes';
+@use 'typography';
+@use 'vendors/taiga';
+@use 'vendors/ionic';
+
+@include typography.utilities;
+
+// Layout helpers used by pages (kept tiny on purpose; components own their layout).
+.app-visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}
+
+.app-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2);
+}
+
+.app-grid {
+  display: grid;
+  gap: var(--app-space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+}

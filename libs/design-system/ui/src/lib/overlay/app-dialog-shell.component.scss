@@ -1,0 +1,68 @@
+@use 'ds' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+  min-height: 0;
+  height: 100%;
+}
+
+.app-dialog-shell__header {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--app-space-3);
+  align-items: flex-start;
+  padding: var(--app-space-5) var(--app-space-5) var(--app-space-3);
+}
+
+.app-dialog-shell__heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-dialog-shell__title {
+  color: var(--app-color-text-primary);
+  @include ds.text('h3');
+}
+
+.app-dialog-shell__subtitle {
+  margin-top: var(--app-space-1);
+  color: var(--app-color-text-secondary);
+  @include ds.text('body-sm');
+}
+
+.app-dialog-shell__body {
+  flex: 1;
+  min-height: 0;
+  padding: var(--app-space-2) var(--app-space-5) var(--app-space-5);
+  overflow: auto;
+  @include ds.thin-scrollbar;
+
+  &--flush {
+    padding: 0;
+  }
+}
+
+.app-dialog-shell__footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  justify-content: flex-end;
+  padding: var(--app-space-3) var(--app-space-5);
+  border-top: 1px solid var(--app-color-divider);
+  @include ds.safe-area-bottom(var(--app-space-3));
+
+  &:not(:has(*)) {
+    display: none;
+  }
+
+  // Mobile: full-width stacked actions, primary last (thumb-reachable).
+  @include ds.down('md') {
+    flex-direction: column-reverse;
+    > * {
+      width: 100%;
+    }
+  }
+}

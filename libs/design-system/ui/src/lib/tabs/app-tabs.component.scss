@@ -1,0 +1,103 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+}
+
+.app-tabs__list {
+  display: flex;
+  gap: var(--app-space-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.app-tabs__tab {
+  position: relative;
+  display: inline-flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  height: var(--app-size-control-md);
+  padding: 0 var(--app-space-3);
+  color: var(--app-color-text-secondary);
+  white-space: nowrap;
+  border-radius: var(--app-radius-md);
+  transition:
+    color var(--app-duration-fast) var(--app-ease-out),
+    background-color var(--app-duration-fast) var(--app-ease-out);
+  @include ds.text('body-strong');
+  @include ds.focus-reset;
+
+  @include ds.can-hover {
+    &:hover:not(:disabled) {
+      color: var(--app-color-text-primary);
+      background: color-mix(
+        in srgb,
+        var(--app-color-text-primary) var(--app-state-hover),
+        transparent
+      );
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: var(--app-state-disabled-opacity);
+  }
+
+  &[aria-selected='true'] {
+    color: var(--app-color-text-primary);
+  }
+}
+
+.app-tabs__badge {
+  padding: 0 var(--app-space-1-5);
+  color: var(--app-color-text-secondary);
+  background: var(--app-color-surface-muted);
+  border-radius: var(--app-radius-full);
+  @include ds.text('caption');
+  @include ds.tabular-numbers;
+}
+
+// ---- underline variant --------------------------------------------------------
+:host[data-variant='underline'] {
+  .app-tabs__list {
+    border-bottom: 1px solid var(--app-color-border);
+  }
+  .app-tabs__tab {
+    border-radius: var(--app-radius-md) var(--app-radius-md) 0 0;
+    &::after {
+      position: absolute;
+      inset: auto var(--app-space-2) -1px;
+      height: 2px;
+      content: '';
+      background: transparent;
+      border-radius: var(--app-radius-full);
+      transition: background-color var(--app-duration-fast) var(--app-ease-out);
+    }
+    &[aria-selected='true']::after {
+      background: var(--app-color-primary);
+    }
+    &[aria-selected='true'] .app-tabs__badge {
+      color: var(--app-color-on-primary-container);
+      background: var(--app-color-primary-container);
+    }
+  }
+}
+
+// ---- pill variant ---------------------------------------------------------------
+:host[data-variant='pill'] {
+  .app-tabs__list {
+    padding: var(--app-space-1);
+    background: var(--app-color-surface-muted);
+    border-radius: var(--app-radius-md);
+  }
+  .app-tabs__tab {
+    height: calc(var(--app-size-control-md) - var(--app-space-2));
+    &[aria-selected='true'] {
+      background: var(--app-color-surface);
+      box-shadow: var(--app-shadow-sm);
+    }
+  }
+}

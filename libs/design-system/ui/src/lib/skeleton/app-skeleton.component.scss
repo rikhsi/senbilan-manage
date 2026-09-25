@@ -1,0 +1,31 @@
+@use 'ds' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  width: 100%;
+
+  &[data-shape='circle'] {
+    display: inline-flex;
+    width: auto;
+  }
+}
+
+.app-skeleton__bar {
+  display: block;
+  height: 0.875em;
+  border-radius: var(--app-radius-sm);
+  @include ds.shimmer;
+
+  :host[data-shape='rect'] & {
+    height: 6rem;
+    border-radius: var(--app-radius-lg);
+  }
+
+  :host[data-shape='circle'] & {
+    width: var(--app-size-avatar-md);
+    height: var(--app-size-avatar-md);
+    border-radius: var(--app-radius-full);
+  }
+}

@@ -1,0 +1,93 @@
+// Taiga UI bridge: every Taiga variable points to an --app-* slot so Taiga
+// components inherit our theme automatically (light/dark/high-contrast/brand).
+:root {
+  --tui-font-text: var(--app-font-family-sans);
+  --tui-font-heading: var(--app-font-family-sans);
+
+  --tui-radius-xs: var(--app-radius-xs);
+  --tui-radius-s: var(--app-radius-sm);
+  --tui-radius-m: var(--app-radius-md);
+  --tui-radius-l: var(--app-radius-lg);
+  --tui-radius-xl: var(--app-radius-xl);
+
+  --tui-height-xs: var(--app-size-control-sm);
+  --tui-height-s: 2rem;
+  --tui-height-m: var(--app-size-control-md);
+  --tui-height-l: var(--app-size-control-lg);
+
+  --tui-duration: var(--app-duration-normal);
+
+  // backgrounds
+  --tui-background-base: var(--app-color-surface);
+  --tui-background-base-alt: var(--app-color-background);
+  --tui-background-neutral-1: var(--app-color-surface-muted);
+  --tui-background-neutral-1-hover: color-mix(
+    in srgb,
+    var(--app-color-text-primary) 8%,
+    var(--app-color-surface-muted)
+  );
+  --tui-background-neutral-1-pressed: color-mix(
+    in srgb,
+    var(--app-color-text-primary) 14%,
+    var(--app-color-surface-muted)
+  );
+  --tui-background-neutral-2: var(--app-color-divider);
+  --tui-background-neutral-2-hover: var(--app-color-border);
+  --tui-background-neutral-2-pressed: var(--app-color-border-strong);
+  --tui-background-accent-1: var(--app-color-primary);
+  --tui-background-accent-1-hover: var(--app-color-primary-hover);
+  --tui-background-accent-1-pressed: var(--app-color-primary-active);
+  --tui-background-accent-2: var(--app-color-secondary);
+  --tui-background-accent-2-hover: var(--app-color-secondary);
+  --tui-background-accent-2-pressed: var(--app-color-secondary);
+  --tui-background-accent-opposite: var(--app-color-surface-inverse);
+  --tui-background-accent-opposite-hover: var(--app-color-surface-inverse);
+  --tui-background-accent-opposite-pressed: var(--app-color-surface-inverse);
+  --tui-background-elevation-1: var(--app-color-surface);
+  --tui-background-elevation-2: var(--app-color-surface-elevated);
+  --tui-background-elevation-3: var(--app-color-surface-elevated);
+  --tui-service-autofill-background: var(--app-color-primary-muted);
+  --tui-service-selection-background: var(--app-color-primary-container);
+  --tui-service-backdrop: var(--app-color-overlay);
+
+  // borders
+  --tui-border-normal: var(--app-color-border);
+  --tui-border-hover: var(--app-color-border-strong);
+  --tui-border-focus: var(--app-color-focus-ring);
+
+  // text
+  --tui-text-primary: var(--app-color-text-primary);
+  --tui-text-secondary: var(--app-color-text-secondary);
+  --tui-text-tertiary: var(--app-color-text-tertiary);
+  --tui-text-primary-on-accent-1: var(--app-color-on-primary);
+  --tui-text-primary-on-accent-2: var(--app-color-on-secondary);
+  --tui-text-action: var(--app-color-text-link);
+  --tui-text-action-hover: var(--app-color-primary-hover);
+  --tui-text-positive: var(--app-color-success);
+  --tui-text-positive-hover: var(--app-color-success);
+  --tui-text-negative: var(--app-color-danger);
+  --tui-text-negative-hover: var(--app-color-danger-hover);
+
+  // statuses
+  --tui-status-positive: var(--app-color-success);
+  --tui-status-positive-pale: var(--app-color-success-container);
+  --tui-status-positive-pale-hover: var(--app-color-success-container);
+  --tui-status-negative: var(--app-color-danger);
+  --tui-status-negative-pale: var(--app-color-danger-container);
+  --tui-status-negative-pale-hover: var(--app-color-danger-container);
+  --tui-status-warning: var(--app-color-warning);
+  --tui-status-warning-pale: var(--app-color-warning-container);
+  --tui-status-warning-pale-hover: var(--app-color-warning-container);
+  --tui-status-info: var(--app-color-info);
+  --tui-status-info-pale: var(--app-color-info-container);
+  --tui-status-info-pale-hover: var(--app-color-info-container);
+  --tui-status-neutral: var(--app-color-text-tertiary);
+
+  // shadows
+  --tui-shadow-small: var(--app-shadow-sm);
+  --tui-shadow-small-hover: var(--app-shadow-md);
+  --tui-shadow-medium: var(--app-shadow-md);
+  --tui-shadow-medium-hover: var(--app-shadow-lg);
+  --tui-shadow-popup: var(--app-shadow-lg);
+  --tui-shadow-dropdown: var(--app-shadow-md);
+}

@@ -3,8 +3,8 @@ import { DomainError } from '../shared/domain-error';
 export class RoleNameInvalidError extends DomainError {
   readonly code = 'role.name-invalid';
 
-  constructor(readonly name: string) {
-    super(`Role name "${name}" is invalid`);
+  constructor(readonly roleName: string) {
+    super(`Role name "${roleName}" is invalid`);
   }
 }
 

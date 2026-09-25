@@ -1,0 +1,114 @@
+<button
+  #trigger
+  type="button"
+  class="app-select__trigger"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  role="combobox"
+  [id]="id()"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="listboxId"
+  [attr.aria-haspopup]="'listbox'"
+  [attr.aria-invalid]="invalid() || null"
+  [attr.aria-describedby]="describedBy()"
+  [disabled]="disabled()"
+  (click)="toggle()"
+  (keydown)="onTriggerKeydown($event)"
+>
+  <span class="app-select__value" [class.app-select__value--placeholder]="!displayText()">
+    {{ displayText() || labels().placeholder }}
+  </span>
+  @if (multiple() && selectedOptions().length > 2) {
+    <span class="app-select__count">{{ selectedOptions().length }}</span>
+  }
+  @if (clearable() && selectedOptions().length > 0 && !disabled()) {
+    <span
+      class="app-select__clear"
+      role="button"
+      tabindex="-1"
+      [attr.aria-label]="labels().clear"
+      (click)="clear($event)"
+      (keydown.enter)="clear($event)"
+    >
+      <app-icon name="x" size="xs" />
+    </span>
+  }
+  <app-icon class="app-select__chevron" name="chevron-down" size="sm" />
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayMinWidth]="panelWidth()"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  cdkConnectedOverlayPanelClass="app-menu-panel"
+  [cdkConnectedOverlayFlexibleDimensions]="true"
+  (backdropClick)="close(false)"
+  (detach)="close(false)"
+>
+  <div class="app-select__panel" (keydown)="onPanelKeydown($event)">
+    @if (searchable()) {
+      <div class="app-select__search">
+        <app-icon name="search" size="sm" />
+        <input
+          #searchField
+          type="text"
+          class="app-select__search-field"
+          autocomplete="off"
+          role="searchbox"
+          [attr.placeholder]="labels().searchPlaceholder"
+          [attr.aria-controls]="listboxId"
+          [attr.aria-activedescendant]="activeIndex() >= 0 ? optionId(activeIndex()) : null"
+          [value]="query()"
+          (input)="onSearch($any($event.target).value)"
+        />
+      </div>
+    }
+
+    <ul
+      class="app-select__list"
+      role="listbox"
+      [id]="listboxId"
+      [attr.aria-multiselectable]="multiple() || null"
+      [attr.tabindex]="searchable() ? -1 : 0"
+      [attr.aria-activedescendant]="activeIndex() >= 0 ? optionId(activeIndex()) : null"
+    >
+      @for (option of filtered(); track option.value; let index = $index) {
+        <li
+          #optionEl
+          class="app-select__option"
+          role="option"
+          [id]="optionId(index)"
+          [attr.aria-selected]="isSelected(option)"
+          [attr.aria-disabled]="option.disabled || null"
+          [class.app-select__option--active]="index === activeIndex()"
+          [class.app-select__option--selected]="isSelected(option)"
+          (click)="pick(option)"
+          (mousemove)="activeIndex.set(index)"
+        >
+          @if (multiple()) {
+            <span class="app-select__check" aria-hidden="true">
+              @if (isSelected(option)) {
+                <app-icon name="check" size="xs" />
+              }
+            </span>
+          }
+          <span class="app-select__option-text">
+            <span class="app-select__option-label">{{ option.label }}</span>
+            @if (option.description) {
+              <span class="app-select__option-description">{{ option.description }}</span>
+            }
+          </span>
+          @if (!multiple() && isSelected(option)) {
+            <app-icon class="app-select__option-tick" name="check" size="sm" />
+          }
+        </li>
+      } @empty {
+        <li class="app-select__empty" role="presentation">{{ labels().noResults }}</li>
+      }
+    </ul>
+  </div>
+</ng-template>

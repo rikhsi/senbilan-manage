@@ -4,23 +4,20 @@
   "projectType": "application",
   "prefix": "mobile",
   "sourceRoot": "apps/mobile/src",
-  "tags": [
-    "layer:app",
-    "kind:app",
-    "platform:mobile"
-  ],
+  "tags": ["layer:app", "kind:app", "platform:mobile"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/mobile",
         "browser": "apps/mobile/src/main.ts",
         "tsConfig": "apps/mobile/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/design-system/tokens/src/styles"]
+        },
         "assets": [
           {
             "glob": "**/*",
@@ -28,6 +25,7 @@
           }
         ],
         "styles": [
+          "node_modules/@fontsource-variable/inter/wght.css",
           "apps/mobile/src/styles.scss"
         ]
       },
@@ -45,7 +43,13 @@
               "maximumError": "8kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/mobile/src/environments/environment.ts",
+              "with": "apps/mobile/src/environments/environment.production.ts"
+            }
+          ]
         },
         "development": {
           "optimization": false,
@@ -79,7 +83,14 @@
         "spa": true
       }
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.app.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

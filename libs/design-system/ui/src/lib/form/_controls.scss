@@ -1,0 +1,85 @@
+@use 'ds' as ds;
+
+// Global styles for native controls decorated with `appInput`. Loaded once via ui/styles.
+.app-input {
+  width: 100%;
+  min-width: 0;
+  height: var(--app-size-control-md);
+  padding: 0 var(--app-space-3);
+  color: var(--app-color-text-primary);
+  background: var(--app-color-surface);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+  outline: none;
+  transition:
+    border-color var(--app-duration-fast) var(--app-ease-out),
+    box-shadow var(--app-duration-fast) var(--app-ease-out),
+    background-color var(--app-duration-fast) var(--app-ease-out);
+  @include ds.text('body');
+
+  &::placeholder {
+    color: var(--app-color-text-tertiary);
+  }
+
+  &:hover:not(:disabled, :focus) {
+    border-color: var(--app-color-border-strong);
+  }
+
+  &:focus,
+  &:focus-visible {
+    border-color: var(--app-color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-color-primary) 20%, transparent);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--app-color-danger);
+    &:focus {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-color-danger) 20%, transparent);
+    }
+  }
+
+  &:disabled,
+  &[readonly] {
+    color: var(--app-color-text-secondary);
+    background: var(--app-color-surface-muted);
+  }
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--app-color-text-disabled);
+  }
+
+  &[data-size='lg'] {
+    height: var(--app-size-control-lg);
+    padding: 0 var(--app-space-4);
+    font-size: var(--app-font-size-lg);
+  }
+
+  &--textarea {
+    height: auto;
+    min-height: calc(var(--app-size-control-md) * 2.5);
+    padding: var(--app-space-2) var(--app-space-3);
+    resize: vertical;
+    line-height: var(--app-line-height-relaxed);
+  }
+
+  &--select {
+    padding-right: var(--app-space-8);
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237F7178' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--app-space-2) center;
+    background-size: var(--app-size-icon-sm);
+  }
+}
+
+// Touch devices: keep controls ≥44px for one-hand use.
+@include ds.touch {
+  .app-input {
+    height: var(--app-size-control-lg);
+  }
+  .app-input--textarea {
+    height: auto;
+  }
+}

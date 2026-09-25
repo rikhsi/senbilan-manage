@@ -1,0 +1,119 @@
+@use 'sass:color';
+@use '../palette' as p;
+
+// Semantic slots — DARK. Lower saturation, depth by surface levels (shadows are near-invisible).
+@mixin dark-theme {
+  color-scheme: dark;
+
+  --app-color-primary: #{p.shade(p.$rose, 400)};
+  --app-color-on-primary: #{p.shade(p.$neutral, 950)};
+  --app-color-primary-hover: #{p.shade(p.$rose, 300)};
+  --app-color-primary-active: #{p.shade(p.$rose, 200)};
+  --app-color-primary-container: #{p.shade(p.$rose, 900)};
+  --app-color-on-primary-container: #{p.shade(p.$rose, 100)};
+  --app-color-primary-muted: #2a1a20;
+
+  --app-color-secondary: #{p.shade(p.$lavender, 400)};
+  --app-color-on-secondary: #{p.shade(p.$neutral, 950)};
+  --app-color-secondary-container: #{p.shade(p.$lavender, 900)};
+  --app-color-on-secondary-container: #{p.shade(p.$lavender, 100)};
+
+  --app-color-accent: #{p.shade(p.$peach, 300)};
+  --app-color-on-accent: #{p.shade(p.$neutral, 950)};
+  --app-color-accent-container: #{p.shade(p.$peach, 900)};
+  --app-color-on-accent-container: #{p.shade(p.$peach, 100)};
+
+  --app-color-success: #{p.shade(p.$green, 400)};
+  --app-color-on-success: #{p.shade(p.$neutral, 950)};
+  --app-color-success-container: #{p.shade(p.$green, 900)};
+  --app-color-on-success-container: #{p.shade(p.$green, 100)};
+
+  --app-color-warning: #{p.shade(p.$amber, 400)};
+  --app-color-on-warning: #{p.shade(p.$neutral, 950)};
+  --app-color-warning-container: #{p.shade(p.$amber, 900)};
+  --app-color-on-warning-container: #{p.shade(p.$amber, 100)};
+
+  --app-color-danger: #{p.shade(p.$red, 400)};
+  --app-color-on-danger: #{p.shade(p.$neutral, 950)};
+  --app-color-danger-hover: #{p.shade(p.$red, 600)};
+  --app-color-danger-container: #{p.shade(p.$red, 900)};
+  --app-color-on-danger-container: #{p.shade(p.$red, 100)};
+
+  --app-color-info: #{p.shade(p.$sky, 400)};
+  --app-color-on-info: #{p.shade(p.$neutral, 950)};
+  --app-color-info-container: #{p.shade(p.$sky, 900)};
+  --app-color-on-info-container: #{p.shade(p.$sky, 100)};
+
+  --app-color-background: #{p.shade(p.$neutral, 950)};
+  --app-color-surface: #{p.shade(p.$neutral, 900)};
+  --app-color-surface-elevated: #{p.shade(p.$neutral, 850)};
+  --app-color-surface-muted: #{p.shade(p.$neutral, 800)};
+  --app-color-surface-sunken: #{p.shade(p.$neutral, 900)};
+  --app-color-surface-tint: #241a1e;
+  --app-color-surface-inverse: #{p.shade(p.$neutral, 50)};
+  --app-color-on-surface-inverse: #{p.shade(p.$neutral, 900)};
+
+  --app-color-text-primary: #{p.shade(p.$neutral, 50)};
+  --app-color-text-secondary: #{p.shade(p.$neutral, 300)};
+  --app-color-text-tertiary: #{p.shade(p.$neutral, 400)};
+  --app-color-text-disabled: #{p.shade(p.$neutral, 600)};
+  --app-color-text-link: #{p.shade(p.$rose, 300)};
+  --app-color-icon: #{p.shade(p.$neutral, 100)};
+  --app-color-icon-muted: #{p.shade(p.$neutral, 400)};
+
+  --app-color-border: #{p.shade(p.$neutral, 800)};
+  --app-color-border-strong: #{p.shade(p.$neutral, 700)};
+  --app-color-divider: #{p.shade(p.$neutral, 850)};
+  --app-color-focus-ring: #{p.shade(p.$rose, 300)};
+  --app-color-overlay: #{color.change(#000000, $alpha: 0.6)};
+  --app-color-shadow-ink-soft: #{color.change(#000000, $alpha: 0.4)};
+
+  --app-color-shimmer-base: #{p.shade(p.$neutral, 850)};
+  --app-color-shimmer-highlight: #{p.shade(p.$neutral, 800)};
+
+  --app-color-chart-1: #{p.shade(p.$rose, 400)};
+  --app-color-chart-2: #{p.shade(p.$lavender, 400)};
+  --app-color-chart-3: #{p.shade(p.$peach, 300)};
+  --app-color-chart-4: #{p.shade(p.$sky, 400)};
+  --app-color-chart-5: #{p.shade(p.$green, 400)};
+  --app-color-chart-grid: #{p.shade(p.$neutral, 850)};
+
+  --app-gradient-aurora: linear-gradient(
+    135deg,
+    #{p.$blush-deep} 0%,
+    #{p.$lavender-deep} 55%,
+    #{p.$sky-deep} 100%
+  );
+  --app-gradient-brand: linear-gradient(
+    135deg,
+    #{p.shade(p.$rose, 400)} 0%,
+    #{p.shade(p.$peach, 300)} 100%
+  );
+
+  --app-shadow-sm: 0 1px 2px #{color.change(#000000, $alpha: 0.3)};
+  --app-shadow-md: 0 4px 12px #{color.change(#000000, $alpha: 0.35)};
+  --app-shadow-lg: 0 12px 36px #{color.change(#000000, $alpha: 0.5)};
+  --app-shadow-glow: 0 0 0 4px #{color.change(p.shade(p.$rose, 400), $alpha: 0.3)};
+  --app-shadow-focus: 0 0 0 var(--app-focus-ring-width) var(--app-color-focus-ring);
+
+  --app-color-primary-rgb:
+    #{color.channel(p.shade(p.$rose, 400), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$rose, 400), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$rose, 400), 'blue', $space: rgb)};
+  --app-color-secondary-rgb:
+    #{color.channel(p.shade(p.$lavender, 400), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$lavender, 400), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$lavender, 400), 'blue', $space: rgb)};
+  --app-color-danger-rgb:
+    #{color.channel(p.shade(p.$red, 400), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$red, 400), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$red, 400), 'blue', $space: rgb)};
+  --app-color-background-rgb:
+    #{color.channel(p.shade(p.$neutral, 950), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 950), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 950), 'blue', $space: rgb)};
+  --app-color-text-primary-rgb:
+    #{color.channel(p.shade(p.$neutral, 50), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 50), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 50), 'blue', $space: rgb)};
+}

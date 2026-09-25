@@ -1,0 +1,83 @@
+@use 'ds' as ds;
+
+:host {
+  --_size: var(--app-size-control-md);
+  --_bg: transparent;
+  --_fg: var(--app-color-icon-muted);
+
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--_size);
+  height: var(--_size);
+  color: var(--_fg);
+  background: var(--_bg);
+  border: 1px solid transparent;
+  border-radius: var(--app-radius-md);
+  transition:
+    background-color var(--app-duration-fast) var(--app-ease-out),
+    color var(--app-duration-fast) var(--app-ease-out);
+  @include ds.focus-reset;
+
+  &[data-size='sm'] {
+    --_size: var(--app-size-control-sm);
+    border-radius: var(--app-radius-sm);
+  }
+  &[data-size='lg'] {
+    --_size: var(--app-size-control-lg);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: var(--app-state-disabled-opacity);
+  }
+
+  &[data-variant='ghost'] {
+    @include ds.can-hover {
+      &:hover:not(:disabled) {
+        --_bg: color-mix(
+          in srgb,
+          var(--app-color-text-primary) var(--app-state-hover),
+          transparent
+        );
+        --_fg: var(--app-color-text-primary);
+      }
+    }
+    &.app-icon-button--active {
+      --_bg: var(--app-color-primary-container);
+      --_fg: var(--app-color-on-primary-container);
+    }
+  }
+
+  &[data-variant='secondary'] {
+    --_bg: var(--app-color-surface);
+    --_fg: var(--app-color-text-primary);
+    border-color: var(--app-color-border);
+    @include ds.can-hover {
+      &:hover:not(:disabled) {
+        --_bg: var(--app-color-surface-muted);
+      }
+    }
+  }
+
+  &[data-variant='primary'] {
+    --_bg: var(--app-color-primary);
+    --_fg: var(--app-color-on-primary);
+    @include ds.can-hover {
+      &:hover:not(:disabled) {
+        --_bg: var(--app-color-primary-hover);
+      }
+    }
+  }
+
+  &[data-variant='danger'] {
+    --_fg: var(--app-color-danger);
+    @include ds.can-hover {
+      &:hover:not(:disabled) {
+        --_bg: var(--app-color-danger-container);
+        --_fg: var(--app-color-on-danger-container);
+      }
+    }
+  }
+}

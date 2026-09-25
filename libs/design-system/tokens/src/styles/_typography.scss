@@ -1,0 +1,143 @@
+@use 'sass:list';
+@use 'sass:map';
+
+// Type scale: name -> (size token, line-height, weight, letter-spacing).
+$text-styles: (
+  'display': (
+    var(--app-font-size-4xl),
+    var(--app-line-height-tight),
+    var(--app-font-weight-bold),
+    -0.025em,
+  ),
+  'h1': (
+    var(--app-font-size-3xl),
+    var(--app-line-height-tight),
+    var(--app-font-weight-bold),
+    var(--app-letter-spacing-tight),
+  ),
+  'h2': (
+    var(--app-font-size-2xl),
+    var(--app-line-height-snug),
+    var(--app-font-weight-semibold),
+    -0.015em,
+  ),
+  'h3': (
+    var(--app-font-size-xl),
+    var(--app-line-height-snug),
+    var(--app-font-weight-semibold),
+    -0.01em,
+  ),
+  'title': (
+    var(--app-font-size-lg),
+    var(--app-line-height-normal),
+    var(--app-font-weight-semibold),
+    var(--app-letter-spacing-normal),
+  ),
+  'body': (
+    var(--app-font-size-md),
+    var(--app-line-height-normal),
+    var(--app-font-weight-regular),
+    var(--app-letter-spacing-normal),
+  ),
+  'body-strong': (
+    var(--app-font-size-md),
+    var(--app-line-height-normal),
+    var(--app-font-weight-medium),
+    var(--app-letter-spacing-normal),
+  ),
+  'body-sm': (
+    var(--app-font-size-sm),
+    var(--app-line-height-normal),
+    var(--app-font-weight-regular),
+    var(--app-letter-spacing-normal),
+  ),
+  'caption': (
+    var(--app-font-size-xs),
+    var(--app-line-height-normal),
+    var(--app-font-weight-medium),
+    0.005em,
+  ),
+  'caption-strong': (
+    var(--app-font-size-xs),
+    var(--app-line-height-normal),
+    var(--app-font-weight-semibold),
+    0.005em,
+  ),
+  'label': (
+    var(--app-font-size-xs),
+    var(--app-line-height-normal),
+    var(--app-font-weight-medium),
+    var(--app-letter-spacing-wide),
+  ),
+  'button': (
+    var(--app-font-size-md),
+    var(--app-line-height-normal),
+    var(--app-font-weight-semibold),
+    var(--app-letter-spacing-normal),
+  ),
+  'button-sm': (
+    var(--app-font-size-sm),
+    var(--app-line-height-normal),
+    var(--app-font-weight-semibold),
+    var(--app-letter-spacing-normal),
+  ),
+  'code': (
+    var(--app-font-size-sm),
+    var(--app-line-height-relaxed),
+    var(--app-font-weight-regular),
+    var(--app-letter-spacing-normal),
+  ),
+);
+
+/// Apply a named text style. Colour is intentionally NOT part of a text style.
+@mixin text($name) {
+  @if not map.has-key($text-styles, $name) {
+    @error 'Unknown text style `#{$name}`. Known: #{map.keys($text-styles)}';
+  }
+  $style: map.get($text-styles, $name);
+  font-size: list.nth($style, 1);
+  line-height: list.nth($style, 2);
+  font-weight: list.nth($style, 3);
+  letter-spacing: list.nth($style, 4);
+  @if $name == 'code' {
+    font-family: var(--app-font-family-mono);
+  }
+}
+
+/// Tabular figures for metrics and table numbers.
+@mixin tabular-numbers {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/// Utility classes (`.app-text-h1` …). Prefer the mixin inside components; use classes in templates.
+@mixin utilities {
+  @each $name, $_ in $text-styles {
+    .app-text-#{$name} {
+      @include text($name);
+    }
+  }
+  .app-text-tabular {
+    @include tabular-numbers;
+  }
+  .app-text-primary {
+    color: var(--app-color-text-primary);
+  }
+  .app-text-secondary {
+    color: var(--app-color-text-secondary);
+  }
+  .app-text-tertiary {
+    color: var(--app-color-text-tertiary);
+  }
+  .app-text-danger {
+    color: var(--app-color-danger);
+  }
+  .app-text-success {
+    color: var(--app-color-success);
+  }
+  .app-text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

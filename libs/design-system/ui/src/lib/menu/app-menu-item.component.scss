@@ -1,0 +1,61 @@
+@use 'ds' as ds;
+
+:host {
+  display: flex;
+  gap: var(--app-space-2-5);
+  align-items: center;
+  width: 100%;
+  min-height: var(--app-size-control-md);
+  padding: 0 var(--app-space-2-5);
+  color: var(--app-color-text-primary);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: var(--app-radius-sm);
+  transition: background-color var(--app-duration-fast) var(--app-ease-out);
+  @include ds.text('body-sm');
+  @include ds.focus-reset;
+
+  &:hover,
+  &:focus-visible,
+  &[data-active] {
+    background: var(--app-color-surface-muted);
+  }
+
+  &[aria-disabled='true'] {
+    pointer-events: none;
+    opacity: var(--app-state-disabled-opacity);
+  }
+
+  &[data-tone='danger'] {
+    color: var(--app-color-danger);
+    &:hover,
+    &:focus-visible {
+      background: var(--app-color-danger-container);
+    }
+  }
+
+  @include ds.touch {
+    min-height: var(--app-size-control-lg);
+  }
+}
+
+.app-menu-item__icon {
+  flex-shrink: 0;
+  color: var(--app-color-icon-muted);
+  :host[data-tone='danger'] & {
+    color: inherit;
+  }
+}
+
+.app-menu-item__label {
+  flex: 1;
+  min-width: 0;
+  @include ds.truncate;
+}
+
+.app-menu-item__shortcut {
+  color: var(--app-color-text-tertiary);
+  font-family: var(--app-font-family-sans);
+  @include ds.text('caption');
+}

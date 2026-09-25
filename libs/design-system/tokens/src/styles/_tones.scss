@@ -1,0 +1,33 @@
+// Tone helpers shared by badge / tag / status / toast.
+// `data-tone` -> container background + on-container text (WCAG-safe pairs).
+$tones: primary, secondary, accent, success, warning, danger, info;
+
+@mixin container-tones {
+  &[data-tone='neutral'] {
+    --_tone-fg: var(--app-color-text-secondary);
+    --_tone-bg: var(--app-color-surface-muted);
+    --_tone-solid: var(--app-color-text-tertiary);
+  }
+  @each $tone in $tones {
+    &[data-tone='#{$tone}'] {
+      --_tone-fg: var(--app-color-on-#{$tone}-container);
+      --_tone-bg: var(--app-color-#{$tone}-container);
+      --_tone-solid: var(--app-color-#{$tone});
+    }
+  }
+  color: var(--_tone-fg);
+  background: var(--_tone-bg);
+}
+
+@mixin solid-tones {
+  @each $tone in $tones {
+    &[data-tone='#{$tone}'] {
+      --_tone-solid: var(--app-color-#{$tone});
+      --_tone-on-solid: var(--app-color-on-#{$tone});
+    }
+  }
+  &[data-tone='neutral'] {
+    --_tone-solid: var(--app-color-text-tertiary);
+    --_tone-on-solid: var(--app-color-surface);
+  }
+}

@@ -1,0 +1,15 @@
+@use '../palette' as p;
+
+// High-contrast overrides applied ON TOP of light or dark. Only slots that need
+// stronger separation are redefined; everything else is inherited.
+@mixin high-contrast-overrides {
+  --app-color-border: var(--app-color-text-secondary);
+  --app-color-border-strong: var(--app-color-text-primary);
+  --app-color-divider: var(--app-color-text-tertiary);
+  --app-color-text-secondary: var(--app-color-text-primary);
+  --app-color-text-tertiary: var(--app-color-text-primary);
+  --app-color-icon-muted: var(--app-color-icon);
+  --app-focus-ring-width: 3px;
+  --app-state-hover: 12%;
+  --app-state-selected: 20%;
+}

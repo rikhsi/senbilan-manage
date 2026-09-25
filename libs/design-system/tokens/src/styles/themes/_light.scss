@@ -1,0 +1,135 @@
+@use 'sass:color';
+@use '../palette' as p;
+
+// Semantic slots — LIGHT. Every slot here must also exist in _dark.scss.
+@mixin light-theme {
+  color-scheme: light;
+
+  // brand
+  --app-color-primary: #{p.shade(p.$rose, 500)};
+  --app-color-on-primary: #{p.shade(p.$neutral, 0)};
+  --app-color-primary-hover: #{p.shade(p.$rose, 600)};
+  --app-color-primary-active: #{p.shade(p.$rose, 700)};
+  --app-color-primary-container: #{p.shade(p.$rose, 100)};
+  --app-color-on-primary-container: #{p.shade(p.$rose, 800)};
+  --app-color-primary-muted: #{p.shade(p.$rose, 50)};
+
+  --app-color-secondary: #{p.shade(p.$lavender, 500)};
+  --app-color-on-secondary: #{p.shade(p.$neutral, 0)};
+  --app-color-secondary-container: #{p.shade(p.$lavender, 100)};
+  --app-color-on-secondary-container: #{p.shade(p.$lavender, 800)};
+
+  --app-color-accent: #{p.shade(p.$peach, 400)};
+  --app-color-on-accent: #{p.shade(p.$neutral, 0)};
+  --app-color-accent-container: #{p.shade(p.$peach, 100)};
+  --app-color-on-accent-container: #{p.shade(p.$peach, 800)};
+
+  // status
+  --app-color-success: #{p.shade(p.$green, 600)};
+  --app-color-on-success: #{p.shade(p.$neutral, 0)};
+  --app-color-success-container: #{p.shade(p.$green, 100)};
+  --app-color-on-success-container: #{p.shade(p.$green, 800)};
+
+  --app-color-warning: #{p.shade(p.$amber, 600)};
+  --app-color-on-warning: #{p.shade(p.$neutral, 0)};
+  --app-color-warning-container: #{p.shade(p.$amber, 100)};
+  --app-color-on-warning-container: #{p.shade(p.$amber, 800)};
+
+  --app-color-danger: #{p.shade(p.$red, 600)};
+  --app-color-on-danger: #{p.shade(p.$neutral, 0)};
+  --app-color-danger-hover: #{p.shade(p.$red, 800)};
+  --app-color-danger-container: #{p.shade(p.$red, 100)};
+  --app-color-on-danger-container: #{p.shade(p.$red, 800)};
+
+  --app-color-info: #{p.shade(p.$sky, 600)};
+  --app-color-on-info: #{p.shade(p.$neutral, 0)};
+  --app-color-info-container: #{p.shade(p.$sky, 100)};
+  --app-color-on-info-container: #{p.shade(p.$sky, 800)};
+
+  // surfaces
+  --app-color-background: #{p.shade(p.$neutral, 50)};
+  --app-color-surface: #{p.shade(p.$neutral, 0)};
+  --app-color-surface-elevated: #{p.shade(p.$neutral, 0)};
+  --app-color-surface-muted: #{p.shade(p.$neutral, 100)};
+  --app-color-surface-sunken: #{p.shade(p.$neutral, 50)};
+  --app-color-surface-tint: #{p.shade(p.$rose, 50)};
+  --app-color-surface-inverse: #{p.shade(p.$neutral, 900)};
+  --app-color-on-surface-inverse: #{p.shade(p.$neutral, 50)};
+
+  // text & icons
+  --app-color-text-primary: #{p.shade(p.$neutral, 900)};
+  --app-color-text-secondary: #{p.shade(p.$neutral, 600)};
+  --app-color-text-tertiary: #{p.shade(p.$neutral, 500)};
+  --app-color-text-disabled: #{p.shade(p.$neutral, 400)};
+  --app-color-text-link: #{p.shade(p.$rose, 600)};
+  --app-color-icon: #{p.shade(p.$neutral, 700)};
+  --app-color-icon-muted: #{p.shade(p.$neutral, 500)};
+
+  // lines
+  --app-color-border: #{p.shade(p.$neutral, 200)};
+  --app-color-border-strong: #{p.shade(p.$neutral, 300)};
+  --app-color-divider: #{p.shade(p.$neutral, 100)};
+  --app-color-focus-ring: #{p.shade(p.$rose, 400)};
+  --app-color-overlay: #{color.change(p.shade(p.$neutral, 900), $alpha: 0.4)};
+  --app-color-shadow-ink-soft: #{color.change(p.$shadow-ink, $alpha: 0.12)};
+
+  // skeleton
+  --app-color-shimmer-base: #{p.shade(p.$neutral, 100)};
+  --app-color-shimmer-highlight: #{p.shade(p.$neutral, 50)};
+
+  // chart palette (ordered)
+  --app-color-chart-1: #{p.shade(p.$rose, 500)};
+  --app-color-chart-2: #{p.shade(p.$lavender, 500)};
+  --app-color-chart-3: #{p.shade(p.$peach, 400)};
+  --app-color-chart-4: #{p.shade(p.$sky, 500)};
+  --app-color-chart-5: #{p.shade(p.$green, 600)};
+  --app-color-chart-grid: #{p.shade(p.$neutral, 100)};
+
+  // gradients
+  --app-gradient-aurora: linear-gradient(
+    135deg,
+    #{p.$blush} 0%,
+    #{p.$lavender-mist} 55%,
+    #{p.$sky-mist} 100%
+  );
+  --app-gradient-brand: linear-gradient(
+    135deg,
+    #{p.shade(p.$rose, 400)} 0%,
+    #{p.shade(p.$peach, 400)} 100%
+  );
+
+  // shadows (mauve ink)
+  --app-shadow-sm:
+    0 1px 2px #{color.change(p.$shadow-ink, $alpha: 0.06)},
+    0 2px 6px #{color.change(p.$shadow-ink, $alpha: 0.05)};
+  --app-shadow-md:
+    0 4px 12px #{color.change(p.$shadow-ink, $alpha: 0.08)},
+    0 6px 18px #{color.change(p.$shadow-ink, $alpha: 0.06)};
+  --app-shadow-lg:
+    0 12px 36px #{color.change(p.$shadow-ink, $alpha: 0.14)},
+    0 4px 12px #{color.change(p.$shadow-ink, $alpha: 0.06)};
+  --app-shadow-glow: 0 0 0 4px #{color.change(p.shade(p.$rose, 400), $alpha: 0.25)};
+  --app-shadow-focus: 0 0 0 var(--app-focus-ring-width) var(--app-color-focus-ring);
+
+  // vendor bridges needing RGB triplets (Ionic)
+  --app-color-primary-rgb:
+    #{color.channel(p.shade(p.$rose, 500), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$rose, 500), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$rose, 500), 'blue', $space: rgb)};
+  --app-color-secondary-rgb:
+    #{color.channel(p.shade(p.$lavender, 500), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$lavender, 500), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$lavender, 500), 'blue', $space: rgb)};
+  --app-color-danger-rgb:
+    #{color.channel(p.shade(p.$red, 600), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$red, 600), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$red, 600), 'blue', $space: rgb)};
+  --app-color-background-rgb:
+    #{color.channel(p.shade(p.$neutral, 50), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 50), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 50), 'blue', $space: rgb)};
+  --app-color-text-primary-rgb:
+    #{color.channel(p.shade(p.$neutral, 900), 'red', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 900), 'green', $space: rgb)},
+    #{color.channel(p.shade(p.$neutral, 900), 'blue', $space: rgb)};
+}

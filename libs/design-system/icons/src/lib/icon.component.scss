@@ -1,0 +1,47 @@
+.app-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--app-icon-size, var(--app-size-icon-md));
+  height: var(--app-icon-size, var(--app-size-icon-md));
+  color: inherit;
+  vertical-align: middle;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &[data-size='xs'] {
+    --app-icon-size: var(--app-size-icon-xs);
+  }
+  &[data-size='sm'] {
+    --app-icon-size: var(--app-size-icon-sm);
+  }
+  &[data-size='md'] {
+    --app-icon-size: var(--app-size-icon-md);
+  }
+  &[data-size='lg'] {
+    --app-icon-size: var(--app-size-icon-lg);
+  }
+  &[data-size='xl'] {
+    --app-icon-size: var(--app-size-icon-xl);
+  }
+
+  &--spin > svg {
+    animation: app-icon-spin 0.9s linear infinite;
+  }
+}
+
+@keyframes app-icon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-icon--spin > svg {
+    animation-duration: 2s;
+  }
+}

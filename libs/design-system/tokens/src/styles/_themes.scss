@@ -1,0 +1,23 @@
+@use 'themes/light' as light;
+@use 'themes/dark' as dark;
+@use 'themes/high-contrast' as hc;
+
+// Theme application. The ThemeService sets `data-theme` on <html>; the inline
+// bootstrap script in index.html does the same before first paint.
+// `system` is handled by ThemeService resolving to light/dark; CSS only sees the result.
+
+:root,
+:root[data-theme='light'] {
+  @include light.light-theme;
+}
+
+:root[data-theme='dark'] {
+  @include dark.dark-theme;
+}
+
+:root[data-contrast='high'] {
+  @include hc.high-contrast-overrides;
+}
+
+// Brand / client themes plug in here as extra files redefining slots:
+// :root[data-theme='brand-acme'] { @include acme.theme; }

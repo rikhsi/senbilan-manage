@@ -4,15 +4,19 @@
   "sourceRoot": "libs/entities/notification/src",
   "prefix": "entity",
   "projectType": "library",
-  "tags": [
-    "layer:entities",
-    "kind:entity"
-  ],
+  "tags": ["layer:entities", "kind:entity"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

@@ -38,11 +38,7 @@
     "typecheck": {
       "cache": true,
       "inputs": ["default", "^default"],
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{projectRoot}",
-        "command": "tsc -p tsconfig.json --noEmit"
-      }
+      "dependsOn": ["^typecheck"]
     },
     "lint-styles": {
       "cache": true,

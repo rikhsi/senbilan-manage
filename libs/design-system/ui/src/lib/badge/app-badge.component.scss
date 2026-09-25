@@ -1,0 +1,24 @@
+@use 'ds' as ds;
+@use 'tones' as tones;
+
+:host {
+  display: inline-flex;
+  gap: var(--app-space-1);
+  align-items: center;
+  height: 1.375rem;
+  padding: 0 var(--app-space-2);
+  white-space: nowrap;
+  border-radius: var(--app-radius-sm);
+  @include ds.text('caption');
+  @include tones.container-tones;
+
+  &[data-size='sm'] {
+    height: 1.125rem;
+    padding: 0 var(--app-space-1-5);
+    font-size: var(--app-font-size-2xs);
+  }
+
+  &.app-badge--pill {
+    border-radius: var(--app-radius-full);
+  }
+}

@@ -1,0 +1,127 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+}
+
+.app-radio-group__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+
+  :host[data-variant='cards'] & {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  }
+}
+
+.app-radio {
+  position: relative;
+  display: flex;
+  gap: var(--app-space-3);
+  align-items: flex-start;
+  min-height: var(--app-size-control-sm);
+  cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: var(--app-state-disabled-opacity);
+  }
+
+  :host[data-variant='cards'] & {
+    padding: var(--app-space-3);
+    background: var(--app-color-surface);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-lg);
+    transition:
+      border-color var(--app-duration-fast) var(--app-ease-out),
+      box-shadow var(--app-duration-fast) var(--app-ease-out);
+
+    @include ds.can-hover {
+      &:hover:not(.app-radio--disabled) {
+        border-color: var(--app-color-border-strong);
+      }
+    }
+    &.app-radio--checked {
+      border-color: var(--app-color-primary);
+      box-shadow: 0 0 0 1px var(--app-color-primary);
+    }
+  }
+}
+
+.app-radio__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.app-radio__control {
+  position: relative;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 1px;
+  background: var(--app-color-surface);
+  border: 1.5px solid var(--app-color-border-strong);
+  border-radius: var(--app-radius-full);
+  transition: border-color var(--app-duration-fast) var(--app-ease-out);
+
+  &::after {
+    position: absolute;
+    inset: 3px;
+    content: '';
+    background: var(--app-color-primary);
+    border-radius: inherit;
+    transition: transform var(--app-duration-fast) var(--app-ease-out-back);
+    transform: scale(0);
+  }
+
+  .app-radio--checked & {
+    border-color: var(--app-color-primary);
+    &::after {
+      transform: scale(1);
+    }
+  }
+
+  .app-radio__input:focus-visible ~ & {
+    @include ds.focus-ring;
+  }
+
+  :host[data-variant='cards'] & {
+    position: absolute;
+    top: var(--app-space-3);
+    right: var(--app-space-3);
+  }
+}
+
+.app-radio__icon {
+  flex-shrink: 0;
+  color: var(--app-color-icon);
+  .app-radio--checked & {
+    color: var(--app-color-primary);
+  }
+}
+
+.app-radio__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-0-5);
+  min-width: 0;
+  :host[data-variant='cards'] & {
+    padding-right: var(--app-space-6);
+  }
+}
+
+.app-radio__label {
+  color: var(--app-color-text-primary);
+  @include ds.text('body-strong');
+}
+
+.app-radio__description {
+  color: var(--app-color-text-secondary);
+  @include ds.text('body-sm');
+}

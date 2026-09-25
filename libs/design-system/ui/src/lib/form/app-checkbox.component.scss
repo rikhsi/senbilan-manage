@@ -1,0 +1,79 @@
+@use 'ds' as ds;
+
+:host {
+  position: relative;
+  display: inline-flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  min-height: var(--app-size-control-sm);
+  cursor: pointer;
+
+  &.app-checkbox--disabled {
+    cursor: not-allowed;
+    opacity: var(--app-state-disabled-opacity);
+  }
+  &.app-checkbox--no-label {
+    gap: 0;
+  }
+}
+
+.app-checkbox__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-checkbox__box {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--app-color-on-primary);
+  background: var(--app-color-surface);
+  border: 1.5px solid var(--app-color-border-strong);
+  border-radius: var(--app-radius-xs);
+  transition:
+    background-color var(--app-duration-fast) var(--app-ease-out),
+    border-color var(--app-duration-fast) var(--app-ease-out),
+    box-shadow var(--app-duration-fast) var(--app-ease-out);
+
+  :host:hover:not(.app-checkbox--disabled) & {
+    border-color: var(--app-color-primary);
+  }
+
+  :host.app-checkbox--checked &,
+  .app-checkbox__input:indeterminate ~ & {
+    background: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+  }
+
+  .app-checkbox__input:focus-visible ~ & {
+    @include ds.focus-ring;
+  }
+}
+
+.app-checkbox__label {
+  cursor: inherit;
+  user-select: none;
+  @include ds.text('body');
+
+  &:empty {
+    display: none;
+  }
+}
+
+@include ds.touch {
+  :host {
+    min-height: var(--app-size-control-lg);
+  }
+  .app-checkbox__box {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+}

@@ -1,0 +1,55 @@
+@use 'ds' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-1-5);
+  min-width: 0;
+}
+
+.app-form-field__label {
+  display: inline-flex;
+  gap: var(--app-space-1);
+  align-items: baseline;
+  color: var(--app-color-text-primary);
+  @include ds.text('body-strong');
+  font-size: var(--app-font-size-sm);
+}
+
+.app-form-field__required {
+  color: var(--app-color-danger);
+}
+
+.app-form-field__optional {
+  color: var(--app-color-text-tertiary);
+  @include ds.text('caption');
+  font-weight: var(--app-font-weight-regular);
+}
+
+.app-form-field__control {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-form-field__message {
+  display: flex;
+  gap: var(--app-space-1);
+  align-items: flex-start;
+  color: var(--app-color-text-tertiary);
+  @include ds.text('caption');
+  font-weight: var(--app-font-weight-regular);
+
+  &--error {
+    color: var(--app-color-danger);
+    animation: app-slide-up var(--app-duration-fast) var(--app-ease-out);
+  }
+
+  app-icon {
+    margin-top: 1px;
+  }
+}
+
+:host.app-form-field--disabled .app-form-field__label {
+  color: var(--app-color-text-disabled);
+}

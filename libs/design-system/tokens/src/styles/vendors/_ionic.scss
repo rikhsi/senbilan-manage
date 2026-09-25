@@ -1,0 +1,72 @@
+// Ionic bridge: Ionic components used in mobile layouts inherit our theme.
+// Ionic requires rgb triplets for some colors; those are produced by the theme files.
+:root {
+  --ion-font-family: var(--app-font-family-sans);
+
+  --ion-color-primary: var(--app-color-primary);
+  --ion-color-primary-rgb: var(--app-color-primary-rgb);
+  --ion-color-primary-contrast: var(--app-color-on-primary);
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--app-color-primary-hover);
+  --ion-color-primary-tint: var(--app-color-primary-container);
+
+  --ion-color-secondary: var(--app-color-secondary);
+  --ion-color-secondary-rgb: var(--app-color-secondary-rgb);
+  --ion-color-secondary-contrast: var(--app-color-on-secondary);
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: var(--app-color-secondary);
+  --ion-color-secondary-tint: var(--app-color-secondary-container);
+
+  --ion-color-danger: var(--app-color-danger);
+  --ion-color-danger-rgb: var(--app-color-danger-rgb);
+  --ion-color-danger-contrast: var(--app-color-on-danger);
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: var(--app-color-danger-hover);
+  --ion-color-danger-tint: var(--app-color-danger-container);
+
+  --ion-color-success: var(--app-color-success);
+  --ion-color-warning: var(--app-color-warning);
+  --ion-color-medium: var(--app-color-text-tertiary);
+  --ion-color-light: var(--app-color-surface-muted);
+  --ion-color-dark: var(--app-color-text-primary);
+
+  --ion-background-color: var(--app-color-background);
+  --ion-background-color-rgb: var(--app-color-background-rgb);
+  --ion-text-color: var(--app-color-text-primary);
+  --ion-text-color-rgb: var(--app-color-text-primary-rgb);
+  --ion-border-color: var(--app-color-border);
+  --ion-backdrop-color: var(--app-color-overlay);
+  --ion-backdrop-opacity: 1;
+
+  --ion-toolbar-background: var(--app-color-surface);
+  --ion-toolbar-color: var(--app-color-text-primary);
+  --ion-toolbar-border-color: var(--app-color-border);
+  --ion-tab-bar-background: var(--app-color-surface);
+  --ion-tab-bar-color: var(--app-color-icon-muted);
+  --ion-tab-bar-color-selected: var(--app-color-primary);
+  --ion-item-background: var(--app-color-surface);
+  --ion-item-border-color: var(--app-color-divider);
+  --ion-card-background: var(--app-color-surface);
+  --ion-placeholder-color: var(--app-color-text-tertiary);
+
+  --ion-safe-area-top: env(safe-area-inset-top, 0px);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+// Ionic sheets/action sheets adopt our radius and surface.
+ion-modal.app-sheet {
+  --border-radius: var(--app-radius-2xl) var(--app-radius-2xl) 0 0;
+  --background: var(--app-color-surface-elevated);
+  --box-shadow: var(--app-shadow-lg);
+}
+
+ion-action-sheet.app-action-sheet {
+  --background: var(--app-color-surface-elevated);
+  --button-color: var(--app-color-text-primary);
+  --color: var(--app-color-text-secondary);
+}
+
+ion-menu.app-mobile-drawer {
+  --background: var(--app-color-surface);
+  --width: min(85vw, 20rem);
+}

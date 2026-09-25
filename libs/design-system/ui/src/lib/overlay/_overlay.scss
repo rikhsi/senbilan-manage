@@ -1,0 +1,72 @@
+@use 'ds' as ds;
+
+// Global overlay styling for CDK Dialog panels created by AppModalService.
+// CDK overlay container must sit above everything in our z-index scale.
+.cdk-overlay-container {
+  z-index: var(--app-z-modal);
+}
+
+.app-overlay-backdrop {
+  background: var(--app-color-overlay);
+  backdrop-filter: blur(2px);
+  animation: app-fade-in var(--app-duration-normal) var(--app-ease-out);
+}
+
+.app-overlay-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: var(--app-color-text-primary);
+  background: var(--app-color-surface-elevated);
+  box-shadow: var(--app-shadow-lg);
+  outline: none;
+
+  > * {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: inherit;
+  }
+}
+
+.app-modal-panel {
+  border-radius: var(--app-radius-xl);
+  animation: app-scale-in var(--app-duration-normal) var(--app-ease-out-back);
+
+  // On small screens modals become bottom sheets.
+  @include ds.down('md') {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    width: 100vw !important;
+    max-height: 92dvh !important;
+    border-radius: var(--app-radius-2xl) var(--app-radius-2xl) 0 0;
+    animation: app-slide-in-bottom var(--app-duration-slow) var(--app-ease-out);
+  }
+}
+
+.app-drawer-panel {
+  height: 100dvh;
+  border-radius: 0;
+
+  &--right {
+    border-left: 1px solid var(--app-color-border);
+    animation: app-slide-in-right var(--app-duration-slow) var(--app-ease-out);
+  }
+  &--left {
+    border-right: 1px solid var(--app-color-border);
+    animation: app-slide-in-left var(--app-duration-slow) var(--app-ease-out);
+  }
+}
+
+// Menus and tooltips (CDK / Taiga) sit above modals.
+.app-menu-panel {
+  z-index: var(--app-z-popover);
+}
+
+@include ds.reduced-motion {
+  .app-overlay-backdrop,
+  .app-modal-panel,
+  .app-drawer-panel {
+    animation: none;
+  }
+}

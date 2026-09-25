@@ -1,0 +1,43 @@
+@use 'ds' as ds;
+@use 'tones' as tones;
+
+:host {
+  display: inline-flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  color: var(--app-color-text-primary);
+  white-space: nowrap;
+  @include ds.text('body-sm');
+  @include tones.solid-tones;
+}
+
+.app-status__dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--_tone-solid);
+  border-radius: var(--app-radius-full);
+
+  &--pulse::after {
+    position: absolute;
+    inset: -3px;
+    content: '';
+    border: 1px solid var(--_tone-solid);
+    border-radius: inherit;
+    animation: app-status-pulse 1.6s var(--app-ease-out) infinite;
+    @include ds.reduced-motion {
+      animation: none;
+    }
+  }
+}
+
+@keyframes app-status-pulse {
+  from {
+    opacity: 0.8;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}

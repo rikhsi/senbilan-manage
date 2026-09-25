@@ -4,15 +4,19 @@
   "sourceRoot": "libs/features/profile/src",
   "prefix": "profile",
   "projectType": "library",
-  "tags": [
-    "layer:features",
-    "kind:feature"
-  ],
+  "tags": ["layer:features", "kind:feature"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

@@ -3,11 +3,16 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/design-system/tokens/src",
   "projectType": "library",
-  "tags": [
-    "layer:shared",
-    "kind:tokens"
-  ],
+  "tags": ["layer:shared", "kind:tokens"],
   "targets": {
-    "typecheck": {}
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["tsc -b tsconfig.json --noEmit"],
+        "parallel": false
+      }
+    },
+    "lint-styles": {}
   }
 }

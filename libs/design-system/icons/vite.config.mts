@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitest/config';
-import { angularConfig } from '../../../tools/vitest/presets.mts';
+import { angularConfig } from '../../../tools/vitest/presets';
 
 export default defineConfig(
-  angularConfig({ name: 'design-system-icons', root: import.meta.dirname, workspaceRoot: '../../..' }),
+  angularConfig({
+    name: 'design-system-icons',
+    root: import.meta.dirname,
+    workspaceRoot: '../../..',
+  }),
 );

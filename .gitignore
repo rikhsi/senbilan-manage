@@ -46,4 +46,8 @@ Thumbs.db
 
 .angular
 
+# local secrets — committed templates: .env.example, .env.development, .env.production
+.env.local
+.env.*.local
+
 vitest.config.*.timestamp*

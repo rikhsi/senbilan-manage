@@ -4,28 +4,27 @@
   "projectType": "application",
   "prefix": "admin",
   "sourceRoot": "apps/admin/src",
-  "tags": [],
+  "tags": ["layer:app", "kind:app", "platform:web"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/admin",
         "browser": "apps/admin/src/main.ts",
         "tsConfig": "apps/admin/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/design-system/tokens/src/styles"]
+        },
         "assets": [
           {
             "glob": "**/*",
             "input": "apps/admin/public"
           }
         ],
-        "styles": [
-          "apps/admin/src/styles.scss"
-        ]
+        "styles": ["node_modules/@fontsource-variable/inter/wght.css", "apps/admin/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -41,7 +40,13 @@
               "maximumError": "8kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/admin/src/environments/environment.ts",
+              "with": "apps/admin/src/environments/environment.production.ts"
+            }
+          ]
         },
         "development": {
           "optimization": false,
@@ -76,7 +81,14 @@
         "spa": true
       }
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.app.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

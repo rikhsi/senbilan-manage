@@ -4,16 +4,19 @@
   "sourceRoot": "libs/platform/mobile/src",
   "prefix": "app",
   "projectType": "library",
-  "tags": [
-    "layer:infra",
-    "kind:infrastructure",
-    "platform:mobile"
-  ],
+  "tags": ["layer:infra", "kind:infrastructure", "platform:mobile"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

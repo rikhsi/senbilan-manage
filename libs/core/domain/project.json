@@ -3,12 +3,16 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/core/domain/src",
   "projectType": "library",
-  "tags": [
-    "layer:core",
-    "kind:domain"
-  ],
+  "tags": ["layer:core", "kind:domain"],
   "targets": {
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["tsc -b tsconfig.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

@@ -4,15 +4,19 @@
   "sourceRoot": "libs/shared/config/src",
   "prefix": "app",
   "projectType": "library",
-  "tags": [
-    "layer:shared",
-    "kind:util-ng"
-  ],
+  "tags": ["layer:shared", "kind:util-ng"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
     "lint-styles": {}
   }
 }

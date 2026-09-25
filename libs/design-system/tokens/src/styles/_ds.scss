@@ -1,0 +1,4 @@
+// Public SCSS API for component stylesheets:
+//   @use 'ds' as ds;   (includePaths -> libs/design-system/tokens/src/styles)
+//   .x { @include ds.text('title'); @include ds.up('md') { … } }
+@forward 'mixins';

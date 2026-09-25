@@ -1,0 +1,22 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 11rem;
+  max-width: 20rem;
+  padding: var(--app-space-1);
+  background: var(--app-color-surface-elevated);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-shadow-md);
+  animation: app-scale-in var(--app-duration-fast) var(--app-ease-out);
+  @include ds.reduced-motion {
+    animation: none;
+  }
+}
+
+.app-menu__list {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}

@@ -1,0 +1,56 @@
+@use 'ds' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 28rem;
+  padding: var(--app-space-10) var(--app-space-6);
+  margin: 0 auto;
+  text-align: center;
+
+  &[data-size='sm'] {
+    padding: var(--app-space-6) var(--app-space-4);
+  }
+}
+
+.app-empty-state__icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: var(--app-space-4);
+  color: var(--app-color-text-tertiary);
+  background: var(--app-color-surface-muted);
+  border-radius: var(--app-radius-xl);
+
+  &[data-tone='danger'] {
+    color: var(--app-color-on-danger-container);
+    background: var(--app-color-danger-container);
+  }
+  &[data-tone='primary'] {
+    color: var(--app-color-on-primary-container);
+    background: var(--app-color-primary-container);
+  }
+}
+
+.app-empty-state__title {
+  color: var(--app-color-text-primary);
+  @include ds.text('title');
+}
+
+.app-empty-state__description {
+  margin-top: var(--app-space-1);
+  color: var(--app-color-text-secondary);
+  @include ds.text('body-sm');
+}
+
+.app-empty-state__actions {
+  display: flex;
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-5);
+
+  &:empty {
+    display: none;
+  }
+}

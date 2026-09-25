@@ -1,0 +1,305 @@
+@let cols = visibleColumns();
+@let l = labels();
+
+<!-- Toolbar: consumer filters on the left, bulk actions when something is selected, column picker on the right -->
+<div class="app-data-table__toolbar">
+  @if (selectable() && selected().length > 0) {
+    <div class="app-data-table__bulk" role="region" [attr.aria-label]="l.selectedCount(selected().length)">
+      <span class="app-data-table__bulk-count">{{ l.selectedCount(selected().length) }}</span>
+      <ng-content select="[bulkActions]" />
+      <button app-button variant="ghost" size="sm" icon="x" type="button" (click)="clearSelection()">
+        {{ l.clearSelection }}
+      </button>
+    </div>
+  } @else {
+    <div class="app-data-table__filters"><ng-content select="[toolbar]" /></div>
+  }
+
+  @if (columnPicker() && effectiveMode() === 'table') {
+    <button
+      app-icon-button
+      icon="columns"
+      [label]="l.columns"
+      size="sm"
+      type="button"
+      [appMenuTriggerFor]="columnMenu"
+    ></button>
+    <ng-template #columnMenu>
+      <app-menu [ariaLabel]="l.columns">
+        @for (column of hideableColumns(); track column.key) {
+          <label class="app-data-table__column-option">
+            <app-checkbox [checked]="!isHidden(column)" (checkedChange)="toggleColumn(column)">{{
+              column.header
+            }}</app-checkbox>
+          </label>
+        }
+      </app-menu>
+    </ng-template>
+  }
+</div>
+
+@if (showState()) {
+  <div class="app-data-table__state">
+    @if (error(); as message) {
+      <app-error-state [title]="l.errorTitle" [description]="message" [retryLabel]="l.retry" (retry)="retry.emit()" />
+    } @else {
+      <app-empty-state icon="search" [title]="l.emptyTitle" [description]="l.emptyDescription">
+        <ng-content select="[emptyActions]" />
+      </app-empty-state>
+    }
+  </div>
+} @else if (effectiveMode() === 'cards') {
+  <!-- ============================ CARD MODE (mobile) ============================ -->
+  <ul class="app-data-table__cards" [attr.aria-busy]="loading() || null">
+    @if (loading()) {
+      @for (i of skeletonIndexes(); track i) {
+        <li class="app-data-table__card app-data-table__card--skeleton">
+          <app-skeleton width="60%" />
+          <app-skeleton width="40%" />
+          <app-skeleton [lines]="2" />
+        </li>
+      }
+    } @else {
+      @for (row of sortedRows(); track rowId()(row)) {
+        <li
+          class="app-data-table__card"
+          [class.app-data-table__card--selected]="isSelected(row)"
+          [class.app-data-table__card--clickable]="rowClickable()"
+          [attr.tabindex]="rowClickable() ? 0 : null"
+          (click)="onRowClick(row, $event)"
+          (keydown)="onRowKeydown(row, $event)"
+        >
+          <div class="app-data-table__card-head">
+            @if (selectable()) {
+              <app-checkbox [noLabel]="true" [checked]="isSelected(row)" (checkedChange)="toggleRow(row)">{{
+                l.selectRow
+              }}</app-checkbox>
+            }
+            <div class="app-data-table__card-heading">
+              @if (cardTitleColumn(); as titleCol) {
+                <div class="app-data-table__card-title">
+                  <ng-container *ngTemplateOutlet="cell; context: { row, column: titleCol }" />
+                </div>
+              }
+              @if (cardSubtitleColumn(); as subCol) {
+                <div class="app-data-table__card-subtitle">
+                  <ng-container *ngTemplateOutlet="cell; context: { row, column: subCol }" />
+                </div>
+              }
+            </div>
+            @if (rowActions(); as actions) {
+              <div class="app-data-table__card-actions app-data-table__interactive">
+                <ng-container *ngTemplateOutlet="actions.template; context: { $implicit: row, row }" />
+              </div>
+            }
+          </div>
+
+          @if (cardDetailColumns().length > 0) {
+            <dl class="app-data-table__card-details">
+              @for (column of cardDetailColumns(); track column.key) {
+                <div class="app-data-table__card-detail">
+                  <dt>{{ column.header }}</dt>
+                  <dd><ng-container *ngTemplateOutlet="cell; context: { row, column }" /></dd>
+                </div>
+              }
+            </dl>
+          }
+
+          @if (rowExpansion(); as expansion) {
+            <button
+              type="button"
+              class="app-data-table__card-expand"
+              [attr.aria-expanded]="isExpanded(row)"
+              (click)="toggleExpanded(row)"
+            >
+              <app-icon [name]="isExpanded(row) ? 'chevron-up' : 'chevron-down'" size="sm" />
+              {{ isExpanded(row) ? l.collapse : l.expand }}
+            </button>
+            @if (isExpanded(row)) {
+              <div class="app-data-table__card-expansion">
+                <ng-container *ngTemplateOutlet="expansion.template; context: { $implicit: row, row }" />
+              </div>
+            }
+          }
+        </li>
+      }
+    }
+  </ul>
+} @else {
+  <!-- ============================ TABLE MODE ============================ -->
+  <div class="app-data-table__scroller" [class.app-data-table__scroller--sticky]="stickyHeader()">
+    <table
+      class="app-data-table__table"
+      [class.app-data-table__table--fixed]="hasFixedWidths()"
+      [attr.aria-busy]="loading() || null"
+    >
+      <colgroup>
+        @if (selectable()) {
+          <col class="app-data-table__col--select" />
+        }
+        @if (rowExpansion()) {
+          <col class="app-data-table__col--expand" />
+        }
+        @for (column of cols; track column.key) {
+          <col [style.width]="widthOf(column)" [style.min-width]="column.minWidth ?? null" />
+        }
+        @if (rowActions()) {
+          <col class="app-data-table__col--actions" />
+        }
+      </colgroup>
+
+      <thead class="app-data-table__head">
+        <tr>
+          @if (selectable()) {
+            <th scope="col" class="app-data-table__th app-data-table__th--select">
+              <app-checkbox
+                [noLabel]="true"
+                [checked]="allSelected()"
+                [indeterminate]="someSelected()"
+                [disabled]="loading() || rows().length === 0"
+                (checkedChange)="toggleAll()"
+              >
+                {{ l.selectAll }}
+              </app-checkbox>
+            </th>
+          }
+          @if (rowExpansion()) {
+            <th scope="col" class="app-data-table__th app-data-table__th--expand">
+              <span class="app-visually-hidden">{{ l.expand }}</span>
+            </th>
+          }
+          @for (column of cols; track column.key) {
+            <th
+              #header
+              scope="col"
+              class="app-data-table__th"
+              [class]="column.cssClass ?? ''"
+              [attr.data-align]="column.align ?? 'start'"
+              [attr.aria-sort]="ariaSort(column)"
+              [class.app-data-table__th--sorted]="sort()?.key === column.key"
+            >
+              @if (column.sortable) {
+                <button
+                  type="button"
+                  class="app-data-table__sort"
+                  (click)="toggleSort(column)"
+                  [attr.aria-label]="l.sortBy + ' ' + column.header"
+                >
+                  <span class="app-data-table__th-label">{{ column.header }}</span>
+                  <app-icon
+                    class="app-data-table__sort-icon"
+                    [name]="
+                      sort()?.key === column.key
+                        ? sort()?.direction === 'asc'
+                          ? 'arrow-up'
+                          : 'arrow-down'
+                        : 'chevrons-up-down'
+                    "
+                    size="xs"
+                  />
+                </button>
+              } @else {
+                <span class="app-data-table__th-label">{{ column.header }}</span>
+              }
+              @if (resizable()) {
+                <span
+                  class="app-data-table__resizer"
+                  role="separator"
+                  tabindex="0"
+                  aria-orientation="vertical"
+                  [attr.aria-label]="l.resizeColumn + ' ' + column.header"
+                  (pointerdown)="startResize($event, column, header)"
+                  (keydown)="resizeByKeyboard($event, column, header)"
+                ></span>
+              }
+            </th>
+          }
+          @if (rowActions()) {
+            <th scope="col" class="app-data-table__th app-data-table__th--actions">
+              <span class="app-visually-hidden">{{ l.actions }}</span>
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <tbody class="app-data-table__body">
+        @if (loading()) {
+          @for (i of skeletonIndexes(); track i) {
+            <tr class="app-data-table__row app-data-table__row--skeleton">
+              @for (n of skeletonCells(); track n) {
+                <td class="app-data-table__td"><app-skeleton [width]="n % 3 === 0 ? '70%' : '50%'" /></td>
+              }
+            </tr>
+          }
+        } @else {
+          @for (row of sortedRows(); track rowId()(row)) {
+            <tr
+              class="app-data-table__row"
+              [class.app-data-table__row--selected]="isSelected(row)"
+              [class.app-data-table__row--clickable]="rowClickable()"
+              [class.app-data-table__row--expanded]="isExpanded(row)"
+              [attr.tabindex]="rowClickable() ? 0 : null"
+              [attr.aria-selected]="selectable() ? isSelected(row) : null"
+              (click)="onRowClick(row, $event)"
+              (keydown)="onRowKeydown(row, $event)"
+            >
+              @if (selectable()) {
+                <td class="app-data-table__td app-data-table__td--select">
+                  <app-checkbox [noLabel]="true" [checked]="isSelected(row)" (checkedChange)="toggleRow(row)">{{
+                    l.selectRow
+                  }}</app-checkbox>
+                </td>
+              }
+              @if (rowExpansion()) {
+                <td class="app-data-table__td app-data-table__td--expand">
+                  <button
+                    app-icon-button
+                    size="sm"
+                    [icon]="isExpanded(row) ? 'chevron-up' : 'chevron-down'"
+                    [label]="isExpanded(row) ? l.collapse : l.expand"
+                    type="button"
+                    (click)="toggleExpanded(row)"
+                  ></button>
+                </td>
+              }
+              @for (column of cols; track column.key) {
+                <td
+                  class="app-data-table__td"
+                  [class]="column.cssClass ?? ''"
+                  [attr.data-align]="column.align ?? 'start'"
+                >
+                  <ng-container *ngTemplateOutlet="cell; context: { row, column }" />
+                </td>
+              }
+              @if (rowActions(); as actions) {
+                <td class="app-data-table__td app-data-table__td--actions app-data-table__interactive">
+                  <ng-container *ngTemplateOutlet="actions.template; context: { $implicit: row, row }" />
+                </td>
+              }
+            </tr>
+            @if (rowExpansion(); as expansion) {
+              @if (isExpanded(row)) {
+                <tr class="app-data-table__expansion-row">
+                  <td class="app-data-table__expansion" [attr.colspan]="cols.length + extraColumnCount()">
+                    <ng-container *ngTemplateOutlet="expansion.template; context: { $implicit: row, row }" />
+                  </td>
+                </tr>
+              }
+            }
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<div class="app-data-table__footer"><ng-content select="[footer]" /></div>
+
+<!-- Cell renderer shared by table and card modes -->
+<ng-template #cell let-row="row" let-column="column">
+  @if (templateFor(column); as template) {
+    <ng-container *ngTemplateOutlet="template; context: { $implicit: row, row, value: valueOf(row, column), column }" />
+  } @else {
+    <span class="app-data-table__text">{{ textOf(row, column) }}</span>
+  }
+</ng-template>

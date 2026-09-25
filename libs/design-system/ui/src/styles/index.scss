@@ -1,0 +1,6 @@
+// Global styles owned by design-system/ui (things that cannot live in component
+// encapsulation: native controls, CDK overlay panels). Import ONCE per app after tokens:
+//   @use 'index' as tokens;          // libs/design-system/tokens/src/styles
+//   @use '../../../libs/design-system/ui/src/styles/index' as ui;
+@use '../lib/form/controls';
+@use '../lib/overlay/overlay';
