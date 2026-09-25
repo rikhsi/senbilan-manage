@@ -1,0 +1,13 @@
+---
+description: Taiga / Ionic wrappers and theme bridges
+globs: libs/vendors/**
+alwaysApply: false
+---
+
+# vendors
+
+- `@senbilan/vendors/ui` holds customized Taiga/Ionic wrappers + `--tui-*` / `--ion-*` bridges.
+- Pure product primitives stay in `design-system/ui`.
+- Stock vendor (no API change) → import only from `apps/*`.
+- Features/entities consume wrappers from this lib or DS — never raw `@taiga-ui/*` / `@ionic/*`.
+- Goal: shrink this lib over time and drop Taiga.

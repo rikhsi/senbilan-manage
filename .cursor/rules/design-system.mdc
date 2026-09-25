@@ -13,3 +13,4 @@ alwaysApply: false
 - No feature business logic or feature i18n product copy inside DS — accept label inputs.
 - Add a Storybook `*.stories.ts` for new UI components.
 - Do not duplicate existing primitives (button, table, form field, toast, …).
+- **Vendor-free:** never import `@taiga-ui/*` or `@ionic/*` here. Wrappers → `@senbilan/vendors/ui`.

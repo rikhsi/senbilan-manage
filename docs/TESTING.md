@@ -1,11 +1,10 @@
-# Testing
+﻿# Testing
 
 | Layer                | Runner                                           | Location                                          |
 | -------------------- | ------------------------------------------------ | ------------------------------------------------- |
 | Unit / component     | **Vitest** (+ Analog Angular plugin)             | `*.spec.ts` colocated                             |
 | Component a11y / DOM | **Testing Library** (`@testing-library/angular`) | same specs                                        |
 | Storybook a11y       | **@storybook/test-runner** + **axe-playwright**  | `libs/design-system/ui/.storybook/test-runner.ts` |
-| E2E                  | **Playwright**                                   | `apps/admin-e2e`                                  |
 
 Shared presets: `tools/vitest/presets.ts` — `tsLibConfig` (node) vs `angularConfig` (jsdom + TestBed).
 Helpers: `@senbilan/shared/testing`.
@@ -13,7 +12,6 @@ Helpers: `@senbilan/shared/testing`.
 ```sh
 npm test                 # all projects
 npm run test:coverage
-npm run test:e2e         # nx e2e admin-e2e
 npm run storybook:a11y   # build (if needed) + axe against static Storybook
 ```
 
@@ -41,6 +39,11 @@ npm run storybook:a11y   # build (if needed) + axe against static Storybook
 - Rendering, variants, a11y attributes, keyboard where relevant.
 - Prefer Testing Library queries (`getByRole`, …).
 - Every new primitive needs a Storybook story; CI runs axe via `storybook:a11y`.
+- Must stay **vendor-free** (no `@taiga-ui/*` / `@ionic/*`).
+
+### `vendors/ui`
+
+- Thin wrappers and theme bridges only. Prefer unit coverage when behavior diverges from stock Taiga/Ionic.
 
 ### `entities/*` / `features/*`
 
@@ -51,13 +54,7 @@ npm run storybook:a11y   # build (if needed) + axe against static Storybook
 ### `apps/*`
 
 - Prefer thin; smoke / provider wiring only if necessary.
-- Real user flows → Playwright.
-- Desktop: Electron shell is `apps/admin-desktop` — no feature tests there; cover bridge via platform unit tests if logic grows.
-
-### E2E (`admin-e2e`)
-
-- Critical paths: login (mock), navigation, users list, **refresh-cookie** (no refresh token in web storage).
-- Use `data-testid` sparingly; prefer roles/labels (i18n-stable keys or test ids agreed in the feature).
+- Desktop: Electron shell is `apps/desktop` — no feature tests there; cover bridge via platform unit tests if logic grows.
 
 ## Conventions
 
@@ -73,8 +70,7 @@ Every PR (`.github/workflows/ci.yml`):
 1. lint / stylelint / typecheck
 2. depcruise / i18n:check
 3. unit tests
-4. build admin
+4. build web
 5. build-storybook + **storybook:a11y** (axe test-runner)
-6. Playwright e2e (chromium)
 
 See also [DEPLOYMENT.md](DEPLOYMENT.md).

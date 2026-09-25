@@ -5,8 +5,7 @@
 @use 'primitives';
 @use 'themes';
 @use 'typography';
-@use 'vendors/taiga';
-@use 'vendors/ionic';
+// Vendor bridges (--tui-*, --ion-*) live in @senbilan/vendors/ui styles — not here.
 
 @include typography.utilities;
 

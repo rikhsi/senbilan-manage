@@ -106,7 +106,6 @@ export {
   type ToastTone,
 } from './lib/toast/toast.service';
 export { AppToastContainerComponent } from './lib/toast/app-toast-container.component';
-export { AppTooltipDirective } from './lib/tooltip/app-tooltip.directive';
 export {
   AppMenuComponent,
   AppMenuDividerComponent,

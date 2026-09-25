@@ -1,0 +1,5 @@
+// Vendor theme bridges. Load AFTER design-system tokens in each app styles.scss:
+//   @use '../../../libs/design-system/tokens/src/styles/index.scss' as *;
+//   @use '../../../libs/vendors/ui/src/styles/index.scss' as *;
+@use 'taiga';
+@use 'ionic';

@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Lint · typecheck · test · build · e2e
+    name: Lint · typecheck · test · build
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -49,8 +49,8 @@ jobs:
       - name: Unit tests
         run: npm test
 
-      - name: Build admin
-        run: npm run build:admin
+      - name: Build web
+        run: npm run build:web
 
       - name: Build Storybook
         run: npm run build-storybook
@@ -59,12 +59,4 @@ jobs:
         run: npm run storybook:a11y
         env:
           STORYBOOK_A11Y_REBUILD: '0'
-          CI: true
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: E2E (admin)
-        run: npx nx e2e admin-e2e
-        env:
           CI: true

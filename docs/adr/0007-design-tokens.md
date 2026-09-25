@@ -13,8 +13,8 @@ density, and contrast variants.
 
 Own the look in **`@senbilan/design-system/tokens`**. Feature and DS SCSS use
 `@use 'ds' as ds;` and **only** `var(--app-*)` (plus local `--_*` slots).
-Stylelint enforces this. Vendor kits (Taiga) are bridged from tokens, not the
-other way around.
+Stylelint enforces this. Vendor kits (Taiga / Ionic) remap `--tui-*` / `--ion-*`
+onto `--app-*` inside `@senbilan/vendors/ui` styles — not inside design-system.
 
 ## Consequences
 

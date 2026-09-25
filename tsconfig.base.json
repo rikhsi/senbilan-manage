@@ -45,6 +45,7 @@
       "@senbilan/design-system/tokens": ["./libs/design-system/tokens/src/index.ts"],
       "@senbilan/design-system/icons": ["./libs/design-system/icons/src/index.ts"],
       "@senbilan/design-system/layout": ["./libs/design-system/layout/src/index.ts"],
+      "@senbilan/vendors/ui": ["./libs/vendors/ui/src/index.ts"],
       "@senbilan/platform/core": ["./libs/platform/core/src/index.ts"],
       "@senbilan/platform/mobile": ["./libs/platform/mobile/src/index.ts"],
       "@senbilan/platform/desktop": ["./libs/platform/desktop/src/index.ts"],

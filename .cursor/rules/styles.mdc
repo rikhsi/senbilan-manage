@@ -11,7 +11,8 @@ alwaysApply: false
 ```
 
 - Colors/spacing/radius/type/z-index/duration: `var(--app-*)` or local `--_*` slots only.
-- Forbidden outside `design-system/tokens`: hex, named colors, `rgb/rgba/hsl`, raw px on spacing/radius/font-size, hardcoded font-family.
+- Forbidden outside `design-system/tokens` (and `vendors/ui` theme bridges): hex, named colors, `rgb/rgba/hsl`, raw px on spacing/radius/font-size, hardcoded font-family.
+- Vendor CSS remaps live in `libs/vendors/ui/src/styles`, not in design-system.
 - Class names: BEM-ish kebab-case (`block__element--modifier`).
 - includePaths already point at `libs/design-system/tokens/src/styles` — do not invent parallel token files in features.
 - Do not disable Stylelint color rules to ship shortcuts.

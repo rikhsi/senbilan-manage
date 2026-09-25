@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { DesktopService } from '@senbilan/platform/core';
 import { type DesktopBridgeApi } from './desktop-bridge.types';
 
 /**
  * Browser / test fallback when Electron preload is absent.
  *
- * @see apps/admin-desktop/README.md
+ * @see apps/desktop/README.md
  */
 @Injectable()
 export class NoopDesktopBridge extends DesktopService implements DesktopBridgeApi {

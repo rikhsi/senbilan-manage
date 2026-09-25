@@ -1,0 +1,22 @@
+{
+  "name": "vendors-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/vendors/ui/src",
+  "prefix": "app",
+  "projectType": "library",
+  "tags": ["layer:shared", "kind:vendor"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit"],
+        "parallel": false
+      }
+    },
+    "lint-styles": {}
+  }
+}

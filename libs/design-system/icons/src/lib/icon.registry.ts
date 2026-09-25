@@ -1,6 +1,5 @@
 import { inject, Injectable, InjectionToken, type Provider } from '@angular/core';
-import { tuiIconsProvider } from '@taiga-ui/core';
-import { APP_ICONS, TAIGA_ICON_ALIASES } from './app-icons';
+import { APP_ICONS } from './app-icons';
 import { type IconDefinition, type IconMap, iconToSvg, svgToDataUri } from './icon.types';
 
 /** Multi-token: libraries/apps contribute icon maps; the registry merges them. */
@@ -57,19 +56,7 @@ export class IconRegistry {
   }
 }
 
-/**
- * Registers the design-system icon set plus optional extra sets, and bridges
- * Taiga UI's internal icons to the same Lucide nodes.
- */
-export const provideIcons = (...extraSets: readonly IconMap[]): Provider[] => {
-  const taigaIcons = Object.fromEntries(
-    Object.entries(TAIGA_ICON_ALIASES).map(([taigaName, appName]) => [
-      taigaName,
-      iconToSvg(APP_ICONS[appName]),
-    ]),
-  );
-  return [
-    { provide: ICON_SETS, useValue: [APP_ICONS, ...extraSets] },
-    tuiIconsProvider(taigaIcons),
-  ];
-};
+/** Registers the design-system icon set plus optional extra sets (vendor-free). */
+export const provideIcons = (...extraSets: readonly IconMap[]): Provider[] => [
+  { provide: ICON_SETS, useValue: [APP_ICONS, ...extraSets] },
+];

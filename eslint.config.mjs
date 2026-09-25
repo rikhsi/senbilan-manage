@@ -34,6 +34,18 @@ const depConstraints = [
     onlyDependOnLibsWithTags: ['kind:tokens', 'kind:ui', 'kind:util', 'kind:util-ng', 'kind:i18n'],
   },
   {
+    // Taiga / Ionic wrappers + theme bridges (disposable; not design-system).
+    sourceTag: 'kind:vendor',
+    onlyDependOnLibsWithTags: [
+      'kind:vendor',
+      'kind:ui',
+      'kind:tokens',
+      'kind:util',
+      'kind:util-ng',
+      'kind:i18n',
+    ],
+  },
+  {
     sourceTag: 'kind:platform',
     onlyDependOnLibsWithTags: [
       'kind:util',
@@ -77,6 +89,7 @@ const depConstraints = [
       'kind:application',
       'kind:domain',
       'kind:ui',
+      'kind:vendor',
       'kind:tokens',
       'kind:util',
       'kind:util-ng',
@@ -89,6 +102,7 @@ const depConstraints = [
     onlyDependOnLibsWithTags: [
       'kind:entity',
       'kind:ui',
+      'kind:vendor',
       'kind:tokens',
       'kind:state',
       'kind:application',
@@ -103,7 +117,24 @@ const depConstraints = [
   // --- composition roots ---------------------------------------------------
   { sourceTag: 'kind:testing', onlyDependOnLibsWithTags: ['*'] },
   { sourceTag: 'kind:app', onlyDependOnLibsWithTags: ['*'] },
-  { sourceTag: 'layer:e2e', onlyDependOnLibsWithTags: [] },
+];
+
+/** Design system must stay vendor-free (Taiga / Ionic only in vendors or apps). */
+const dsVendorForbidden = [
+  {
+    group: ['@taiga-ui/*', '@ionic/*'],
+    message:
+      'design-system is vendor-free. Put Taiga/Ionic wrappers in @senbilan/vendors/ui or import stock kits only from apps/*.',
+  },
+];
+
+/** Features/entities use DS or vendor wrappers — not raw kits. */
+const presentationVendorForbidden = [
+  {
+    group: ['@taiga-ui/*', '@ionic/*'],
+    message:
+      'Import vendor kits only via @senbilan/vendors/ui wrappers, or stock components directly from apps/*.',
+  },
 ];
 
 /** Framework / browser packages that must never leak into the pure core. */
@@ -188,6 +219,18 @@ export default [
         'fetch',
         'XMLHttpRequest',
       ],
+    },
+  },
+  {
+    files: ['libs/design-system/**/*.ts'],
+    rules: {
+      'no-restricted-imports': ['error', { patterns: dsVendorForbidden }],
+    },
+  },
+  {
+    files: ['libs/features/**/*.ts', 'libs/entities/**/*.ts'],
+    rules: {
+      'no-restricted-imports': ['error', { patterns: presentationVendorForbidden }],
     },
   },
   {

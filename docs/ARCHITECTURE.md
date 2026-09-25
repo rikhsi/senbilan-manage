@@ -1,4 +1,4 @@
-# Architecture
+﻿# Architecture
 
 Senbilan Manage combines **Clean Architecture** (core) with **Feature-Sliced Design** (presentation) inside an Nx monorepo.
 
@@ -11,7 +11,8 @@ Senbilan Manage combines **Clean Architecture** (core) with **Feature-Sliced Des
 │  features/*      screens, routes, feature UI            │
 │  entities/*      entity UI + entity-scoped state        │
 ├─────────────────────────────────────────────────────────┤
-│  design-system/* UI primitives, tokens, icons, layout   │
+│  design-system/* pure UI primitives, tokens, icons      │
+│  vendors/ui      Taiga/Ionic wrappers + theme bridges   │
 │  shared/*        util, i18n, query, auth, theme, config │
 ├─────────────────────────────────────────────────────────┤
 │  infra/*         HTTP, mock, storage, observability     │
@@ -50,27 +51,27 @@ Every project has two axes:
 | `layer:infra`    | `infra/*`, `platform/mobile`                     |
 | `layer:entities` | `entities/*`                                     |
 | `layer:features` | `features/*`                                     |
-| `layer:app`      | `admin`, `mobile`                                |
-| `layer:e2e`      | `admin-e2e`                                      |
+| `layer:app`      | `web`, `mobile`, `desktop`                       |
 
 ### `kind:*` (technical role — used by ESLint constraints)
 
-| Tag                   | Meaning                         | May depend on                                                                 |
-| --------------------- | ------------------------------- | ----------------------------------------------------------------------------- |
-| `kind:domain`         | Pure domain                     | `kind:util`                                                                   |
-| `kind:application`    | Use cases + ports               | `kind:domain`, `kind:util`                                                    |
-| `kind:util`           | Pure TS helpers                 | `kind:util`                                                                   |
-| `kind:util-ng`        | Angular helpers                 | util, util-ng, domain, application                                            |
-| `kind:tokens`         | Design tokens                   | _(none)_                                                                      |
-| `kind:i18n`           | Transloco setup / helpers       | util, util-ng, application, domain                                            |
-| `kind:ui`             | Design-system UI                | tokens, ui, util, util-ng, i18n                                               |
-| `kind:platform`       | Platform abstractions           | util, util-ng, application, domain                                            |
-| `kind:state`          | Auth/theme/query/command stores | application, domain, util, util-ng, i18n, platform, state                     |
-| `kind:infrastructure` | Adapters                        | application, domain, util, util-ng, platform, infrastructure                  |
-| `kind:entity`         | FSD entity libs                 | application, domain, ui, tokens, util, util-ng, i18n, state                   |
-| `kind:feature`        | FSD feature libs                | entity, ui, tokens, state, application, domain, util, util-ng, i18n, platform |
-| `kind:testing`        | Test helpers                    | `*`                                                                           |
-| `kind:app`            | Applications                    | `*`                                                                           |
+| Tag                   | Meaning                         | May depend on                                                                         |
+| --------------------- | ------------------------------- | ------------------------------------------------------------------------------------- |
+| `kind:domain`         | Pure domain                     | `kind:util`                                                                           |
+| `kind:application`    | Use cases + ports               | `kind:domain`, `kind:util`                                                            |
+| `kind:util`           | Pure TS helpers                 | `kind:util`                                                                           |
+| `kind:util-ng`        | Angular helpers                 | util, util-ng, domain, application                                                    |
+| `kind:tokens`         | Design tokens                   | _(none)_                                                                              |
+| `kind:i18n`           | Transloco setup / helpers       | util, util-ng, application, domain                                                    |
+| `kind:ui`             | Design-system UI (vendor-free)  | tokens, ui, util, util-ng, i18n                                                       |
+| `kind:vendor`         | Taiga/Ionic wrappers + bridges  | vendor, ui, tokens, util, util-ng, i18n                                               |
+| `kind:platform`       | Platform abstractions           | util, util-ng, application, domain                                                    |
+| `kind:state`          | Auth/theme/query/command stores | application, domain, util, util-ng, i18n, platform, state                             |
+| `kind:infrastructure` | Adapters                        | application, domain, util, util-ng, platform, infrastructure                          |
+| `kind:entity`         | FSD entity libs                 | application, domain, ui, vendor, tokens, util, util-ng, i18n, state                   |
+| `kind:feature`        | FSD feature libs                | entity, ui, vendor, tokens, state, application, domain, util, util-ng, i18n, platform |
+| `kind:testing`        | Test helpers                    | `*`                                                                                   |
+| `kind:app`            | Applications                    | `*`                                                                                   |
 
 Optional platform tags: `platform:web`, `platform:mobile`.
 
@@ -94,7 +95,7 @@ Adapters live in:
 
 Apps choose adapters from `environment.features.mockApi` and `provideAppConfig(environment)`.
 
-Desktop shell: `apps/admin-desktop` (Electron main/preload) — see [platform/desktop.md](platform/desktop.md).
+Desktop shell: `apps/desktop` (Electron main/preload) — see [platform/desktop.md](platform/desktop.md).
 
 ## Auth refresh (httpOnly cookie)
 

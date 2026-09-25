@@ -48,6 +48,7 @@ Fix failures locally; do not bypass hooks unless explicitly agreed.
 - Import only `@senbilan/...` public APIs.
 - Never import Angular / RxJS / UI / state libs from `libs/core/**`.
 - Do not deep-import another lib’s `src/lib`.
+- **Design system is vendor-free.** Taiga/Ionic wrappers → `@senbilan/vendors/ui`; stock kits only in `apps/*`. See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
 
 `nx lint` and `npm run depcruise` catch violations.
 

@@ -1,4 +1,4 @@
-# AGENTS.md — strict coding rules for Senbilan Manage
+﻿# AGENTS.md — strict coding rules for Senbilan Manage
 
 Any human or AI assistant editing this repository **must** follow these rules. Prefer matching existing patterns in neighboring files over inventing new ones. If a rule conflicts with a short-term shortcut, **keep the rule**.
 
@@ -10,23 +10,25 @@ Docs of record: `docs/ARCHITECTURE.md`, `docs/DESIGN-SYSTEM.md`, `docs/I18N.md`,
 
 ## 1. Folder structure (put code in the right place)
 
-| Need                                    | Put it in                          | Import as                                      |
-| --------------------------------------- | ---------------------------------- | ---------------------------------------------- |
-| Entity / VO / policy / `Result`         | `libs/core/domain`                 | `@senbilan/core/domain`                        |
-| Use case + port (abstract repo)         | `libs/core/application`            | `@senbilan/core/application`                   |
-| HTTP / mock / storage / Sentry adapter  | `libs/infra/*`                     | `@senbilan/infra/...`                          |
-| Capacitor / device                      | `libs/platform/*`                  | `@senbilan/platform/...`                       |
-| Reusable pure TS                        | `libs/shared/util`                 | `@senbilan/shared/util`                        |
-| Angular-only helper (no feature UI)     | `libs/shared/ng`                   | `@senbilan/shared/ng`                          |
-| AppConfig / tokens                      | `libs/shared/config`               | `@senbilan/shared/config`                      |
-| i18n providers / helpers                | `libs/shared/i18n`                 | `@senbilan/shared/i18n`                        |
-| TanStack Query setup / keys             | `libs/shared/query`                | `@senbilan/shared/query`                       |
-| Session / theme / command stores        | `libs/shared/{auth,theme,command}` | matching alias                                 |
-| Design tokens / SCSS API                | `libs/design-system/tokens`        | `@senbilan/design-system/tokens` + `@use 'ds'` |
-| UI primitive                            | `libs/design-system/ui`            | `@senbilan/design-system/ui`                   |
-| Entity-scoped UI / model mappers for UI | `libs/entities/<name>`             | `@senbilan/entities/<name>`                    |
-| Screen / route / feature flow           | `libs/features/<name>`             | `@senbilan/features/<name>`                    |
-| Providers, routes, env wiring           | `apps/admin` or `apps/mobile`      | —                                              |
+| Need                                    | Put it in                                 | Import as                                      |
+| --------------------------------------- | ----------------------------------------- | ---------------------------------------------- |
+| Entity / VO / policy / `Result`         | `libs/core/domain`                        | `@senbilan/core/domain`                        |
+| Use case + port (abstract repo)         | `libs/core/application`                   | `@senbilan/core/application`                   |
+| HTTP / mock / storage / Sentry adapter  | `libs/infra/*`                            | `@senbilan/infra/...`                          |
+| Capacitor / device                      | `libs/platform/*`                         | `@senbilan/platform/...`                       |
+| Reusable pure TS                        | `libs/shared/util`                        | `@senbilan/shared/util`                        |
+| Angular-only helper (no feature UI)     | `libs/shared/ng`                          | `@senbilan/shared/ng`                          |
+| AppConfig / tokens                      | `libs/shared/config`                      | `@senbilan/shared/config`                      |
+| i18n providers / helpers                | `libs/shared/i18n`                        | `@senbilan/shared/i18n`                        |
+| TanStack Query setup / keys             | `libs/shared/query`                       | `@senbilan/shared/query`                       |
+| Session / theme / command stores        | `libs/shared/{auth,theme,command}`        | matching alias                                 |
+| Design tokens / SCSS API                | `libs/design-system/tokens`               | `@senbilan/design-system/tokens` + `@use 'ds'` |
+| Pure UI primitive (no Taiga/Ionic)      | `libs/design-system/ui`                   | `@senbilan/design-system/ui`                   |
+| Taiga/Ionic wrapper or theme bridge     | `libs/vendors/ui`                         | `@senbilan/vendors/ui`                         |
+| Stock Taiga/Ionic (no customization)    | `apps/*` only                             | `@taiga-ui/*` / `@ionic/*`                     |
+| Entity-scoped UI / model mappers for UI | `libs/entities/<name>`                    | `@senbilan/entities/<name>`                    |
+| Screen / route / feature flow           | `libs/features/<name>`                    | `@senbilan/features/<name>`                    |
+| Providers, routes, env wiring           | `apps/web`, `apps/mobile`, `apps/desktop` | —                                              |
 
 **Do not** create new top-level lib groups without an explicit human decision. **Do not** put business rules in components.
 
@@ -38,14 +40,18 @@ Docs of record: `docs/ARCHITECTURE.md`, `docs/DESIGN-SYSTEM.md`, `docs/I18N.md`,
 domain        → util only
 application   → domain, util
 infrastructure→ application, domain, util, util-ng, platform, infrastructure
-entity        → application, domain, ui, tokens, util, util-ng, i18n, state
-feature       → entity, ui, tokens, state, application, domain, util, util-ng, i18n, platform
+entity        → application, domain, ui, vendor, tokens, util, util-ng, i18n, state
+feature       → entity, ui, vendor, tokens, state, application, domain, util, util-ng, i18n, platform
+vendor        → vendor, ui, tokens, util, util-ng, i18n
+ui (DS)       → tokens, ui, util, util-ng, i18n   (never taiga/ionic)
 app           → anything (composition root only)
 ```
 
 **Forbidden:**
 
-- `libs/core/**` importing `@angular/*`, `rxjs`, `@ngrx/*`, `@tanstack/*`, `@taiga-ui/*`, `@ionic/*`, `@capacitor/*`, `@sentry/*`, or any `libs/infra|features|entities|design-system`
+- `libs/core/**` importing `@angular/*`, `rxjs`, `@ngrx/*`, `@tanstack/*`, `@taiga-ui/*`, `@ionic/*`, `@capacitor/*`, `@sentry/*`, or any `libs/infra|features|entities|design-system|vendors`
+- `libs/design-system/**` importing `@taiga-ui/*` or `@ionic/*` (use `vendors/ui` or apps)
+- `libs/features/**` / `libs/entities/**` importing `@taiga-ui/*` or `@ionic/*` (use DS / vendors wrappers)
 - Feature A importing Feature B internals (or deep paths)
 - Deep imports: `libs/.../src/lib/...` from outside that project — **only** `@senbilan/...` public API / `src/index.ts`
 - Circular dependencies (dependency-cruiser errors)
@@ -162,7 +168,6 @@ Do you only need to bridge an Observable API?
 
 - Domain/application: Vitest, no TestBed, fake ports.
 - UI: Vitest + Testing Library; query by role/label.
-- E2E: Playwright in `admin-e2e` for critical flows only.
 - Colocate `*.spec.ts`. Do not import specs from prod code.
 
 ---
@@ -175,6 +180,7 @@ Do you only need to bridge an Observable API?
 - Do not bypass ESLint module boundaries or Husky hooks.
 - Do not add purple/glow “AI slop” styles — use the design tokens and existing DS.
 - Do not invent parallel button/input/table components when DS already exports them.
+- Do not put Taiga/Ionic inside `design-system/*` — use `vendors/ui` or apps.
 - Do not expand scope (drive-by refactors) beyond the requested task.
 - Do not regenerate entire libs when a small edit suffices.
 
