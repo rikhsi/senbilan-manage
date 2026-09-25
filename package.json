@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "private": true,
-  "nx": {
-    "includedScripts": []
-  },
   "engines": {
     "node": ">=22.12.0",
     "npm": ">=10.0.0"
