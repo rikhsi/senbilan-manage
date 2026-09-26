@@ -1,0 +1,35 @@
+<div class="profile-shell">
+  <header class="profile-shell__hero">
+    <div class="profile-shell__hero-copy">
+      <p class="profile-shell__eyebrow">{{ 'profile.eyebrow' | transloco }}</p>
+      <h1 class="profile-shell__title">{{ 'profile.title' | transloco }}</h1>
+      <p class="profile-shell__subtitle">{{ 'profile.subtitle' | transloco }}</p>
+    </div>
+  </header>
+
+  <div class="profile-shell__panel">
+    <div class="profile-shell__toolbar">
+      <nav class="profile-shell__nav" [attr.aria-label]="'profile.title' | transloco">
+        @for (item of navItems; track item.id) {
+          <a
+            class="profile-shell__nav-link"
+            [routerLink]="item.route"
+            routerLinkActive="profile-shell__nav-link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <app-icon [name]="item.icon" size="sm" />
+            <span>{{ item.labelKey | transloco }}</span>
+          </a>
+        }
+      </nav>
+
+      <button app-button type="button" variant="ghost" icon="log-out" size="sm" (click)="onLogout()">
+        {{ 'profile.logout' | transloco }}
+      </button>
+    </div>
+
+    <div class="profile-shell__content">
+      <router-outlet />
+    </div>
+  </div>
+</div>

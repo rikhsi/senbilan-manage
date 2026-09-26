@@ -8,16 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, type ControlValueAccessor } from '@angular/forms';
-import { type AppIconName, AppIconComponent } from '@senbilan/design-system/icons';
+import { AppIconComponent } from '@senbilan/design-system/icons';
 import { APP_CONTROL, nextControlId, type AppControl } from './app-control';
+import { type RadioOption } from './radio-group.types';
 
-export interface RadioOption<T extends string = string> {
-  readonly value: T;
-  readonly label: string;
-  readonly description?: string;
-  readonly icon?: AppIconName;
-  readonly disabled?: boolean;
-}
+export type { RadioOption } from './radio-group.types';
 
 /**
  * Radio group rendered as a list or as segmented cards (`variant="cards"`) —

@@ -1,13 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
-import { AppIconComponent, type AppIconName } from '@senbilan/design-system/icons';
+import { AppIconComponent } from '@senbilan/design-system/icons';
+import { type TabItem } from './tabs.types';
 
-export interface TabItem<TId extends string = string> {
-  readonly id: TId;
-  readonly label: string;
-  readonly icon?: AppIconName;
-  readonly badge?: string | number;
-  readonly disabled?: boolean;
-}
+export type { TabItem } from './tabs.types';
 
 /**
  * Accessible tab list (WAI-ARIA tabs pattern, roving tabindex). Content is

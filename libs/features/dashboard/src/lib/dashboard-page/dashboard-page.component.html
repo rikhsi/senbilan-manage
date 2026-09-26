@@ -1,98 +1,51 @@
 <div class="dashboard-page">
   <header class="dashboard-page__header">
     <div>
+      <p class="dashboard-page__eyebrow">{{ 'dashboard.eyebrow' | transloco }}</p>
       <h1 class="dashboard-page__title">{{ 'dashboard.title' | transloco }}</h1>
       <p class="dashboard-page__subtitle">{{ 'dashboard.subtitle' | transloco }}</p>
     </div>
-    <div class="dashboard-page__actions">
-      <button
-        app-button
-        type="button"
-        size="sm"
-        [variant]="range() === '7d' ? 'primary' : 'ghost'"
-        (click)="setRange('7d')"
-      >
-        {{ 'dashboard.range7d' | transloco }}
-      </button>
-      <button
-        app-button
-        type="button"
-        size="sm"
-        [variant]="range() === '30d' ? 'primary' : 'ghost'"
-        (click)="setRange('30d')"
-      >
-        {{ 'dashboard.range30d' | transloco }}
-      </button>
-      <button
-        app-button
-        type="button"
-        size="sm"
-        [variant]="range() === '90d' ? 'primary' : 'ghost'"
-        (click)="setRange('90d')"
-      >
-        {{ 'dashboard.range90d' | transloco }}
-      </button>
-    </div>
+    <button
+      app-button
+      type="button"
+      variant="secondary"
+      size="sm"
+      icon="refresh"
+      [loading]="loading()"
+      (click)="reload()"
+    >
+      {{ 'common.retry' | transloco }}
+    </button>
   </header>
 
-  <section class="dashboard-page__grid" aria-label="{{ 'dashboard.title' | transloco }}">
-    @for (metric of overview()?.metrics ?? []; track metric.key) {
-      <app-stat-card
-        [label]="metricLabel(metric.key)"
-        [value]="'' + metric.value"
-        [delta]="metric.delta"
-        [deltaLabel]="formatDelta(metric.delta)"
-        [deltaHint]="'dashboard.deltaHint' | transloco"
-        [icon]="metricIcon(metric.key)"
-        [loading]="loading()"
-      />
-    } @empty {
-      @for (_ of [1, 2, 3, 4]; track $index) {
-        <app-stat-card [label]="'…'" value="—" [loading]="true" icon="users" />
-      }
-    }
-  </section>
-
-  <div class="dashboard-page__split">
-    <section class="dashboard-page__section">
-      <h2 class="dashboard-page__section-title">{{ 'dashboard.chartTitle' | transloco }}</h2>
-      <app-card padding="md">
-        <app-chart type="line" [data]="chartData()" [height]="260" [ariaLabel]="'dashboard.chartAria' | transloco" />
-      </app-card>
-    </section>
-
-    <section class="dashboard-page__section">
-      <h2 class="dashboard-page__section-title">{{ 'dashboard.quickActions' | transloco }}</h2>
-      <div class="dashboard-page__actions">
-        <a app-button variant="secondary" icon="users" routerLink="/users">
-          {{ 'dashboard.actionUsers' | transloco }}
-        </a>
-        <a app-button variant="secondary" icon="shield" routerLink="/roles">
-          {{ 'dashboard.actionRoles' | transloco }}
-        </a>
-        <a app-button variant="secondary" icon="settings" routerLink="/settings">
-          {{ 'dashboard.actionSettings' | transloco }}
-        </a>
-      </div>
-
-      <h2 class="dashboard-page__section-title">{{ 'dashboard.activityTitle' | transloco }}</h2>
-      <ul class="dashboard-page__list">
-        @for (entry of activity(); track entry.id) {
-          <li>
-            <app-card padding="sm" variant="outlined">
-              <div class="dashboard-page__activity-row">
-                <entity-user-avatar [user]="entry.actor" size="sm" />
-                <div>
-                  <p class="dashboard-page__activity-text">{{ activityLabel(entry) }}</p>
-                  <time [attr.datetime]="entry.at">{{ entry.at | date: 'short' }}</time>
-                </div>
-              </div>
-            </app-card>
-          </li>
-        } @empty {
-          <li class="dashboard-page__empty">{{ 'dashboard.activityEmpty' | transloco }}</li>
+  @if (error() && !loading()) {
+    <app-empty-state
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'dashboard.errorTitle' | transloco"
+      [description]="'dashboard.errorHint' | transloco"
+    >
+      <button app-button variant="primary" type="button" (click)="reload()">
+        {{ 'common.retry' | transloco }}
+      </button>
+    </app-empty-state>
+  } @else {
+    <section class="dashboard-page__grid" [attr.aria-label]="'dashboard.title' | transloco">
+      @if (loading()) {
+        @for (_ of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track $index) {
+          <app-stat-card [label]="'…'" value="—" [loading]="true" icon="users" />
         }
-      </ul>
+      } @else {
+        @for (card of cards(); track card.key) {
+          <app-stat-card [label]="card.label" [value]="'' + card.value" [icon]="card.icon" [loading]="false" />
+        } @empty {
+          <app-empty-state
+            icon="layout-dashboard"
+            [title]="'dashboard.emptyTitle' | transloco"
+            [description]="'dashboard.emptyHint' | transloco"
+          />
+        }
+      }
     </section>
-  </div>
+  }
 </div>

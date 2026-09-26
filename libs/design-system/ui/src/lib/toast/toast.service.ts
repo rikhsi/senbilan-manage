@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { type Tone } from '../badge/app-badge.component';
+import { type Tone } from '../badge/badge.types';
 
 export type ToastTone = Extract<Tone, 'neutral' | 'success' | 'warning' | 'danger' | 'info'>;
 

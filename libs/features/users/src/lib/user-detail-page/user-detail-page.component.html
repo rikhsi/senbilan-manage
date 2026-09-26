@@ -1,40 +1,70 @@
-<div class="users-detail-page">
-  <header class="users-detail-page__header">
-    <a app-button variant="ghost" icon="arrow-left" routerLink="/users">
-      {{ 'users.back' | transloco }}
-    </a>
-  </header>
+<div class="user-detail">
+  <a app-button variant="ghost" icon="arrow-left" routerLink="/users">
+    {{ 'users.back' | transloco }}
+  </a>
 
-  @if (loading()) {
-    <app-skeleton height="12rem" />
-  } @else if (user(); as u) {
-    <app-card padding="lg">
-      <div class="users-detail-page__profile">
-        <entity-user-avatar [user]="u" size="xl" />
-        <div>
-          <h1 class="users-detail-page__title">{{ viewOf(u).fullName }}</h1>
-          <p class="users-detail-page__subtitle">{{ u.email }}</p>
-          <app-status [tone]="statusTone(u.status)">
-            {{ 'users.statuses.' + u.status | transloco }}
-          </app-status>
-        </div>
-      </div>
-      <div class="users-detail-page__roles">
-        <h2 class="users-detail-page__section-title">{{ 'users.roles' | transloco }}</h2>
-        <div class="users-detail-page__actions">
-          @for (role of u.roles; track role.id) {
-            <entity-role-badge [role]="role" />
-          } @empty {
-            <span class="users-detail-page__empty">—</span>
-          }
-        </div>
-      </div>
-    </app-card>
-  } @else {
+  @if (error() && !loading()) {
     <app-empty-state
-      icon="user-x"
-      [title]="'users.empty' | transloco"
-      [description]="'users.table.emptyDescription' | transloco"
-    />
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'users.errorTitle' | transloco"
+      [description]="'users.errorHint' | transloco"
+    >
+      <button app-button variant="primary" type="button" (click)="reload()">
+        {{ 'common.retry' | transloco }}
+      </button>
+    </app-empty-state>
+  } @else if (detail(); as data) {
+    <header class="user-detail__header">
+      <div>
+        <p class="user-detail__eyebrow">{{ 'users.detailEyebrow' | transloco }}</p>
+        <h1 class="user-detail__title">
+          {{ data.user.name || data.user.email || data.user.id }}
+        </h1>
+        <p class="user-detail__subtitle">{{ data.user.email || data.user.phone || '—' }}</p>
+      </div>
+      <app-status>{{ data.user.status || '—' }}</app-status>
+    </header>
+
+    <section class="user-detail__grid">
+      <div class="user-detail__field">
+        <span>{{ 'users.phone' | transloco }}</span>
+        <strong>{{ data.user.phone || '—' }}</strong>
+      </div>
+      <div class="user-detail__field">
+        <span>{{ 'users.role' | transloco }}</span>
+        <strong>{{ data.user.role || '—' }}</strong>
+      </div>
+      <div class="user-detail__field">
+        <span>{{ 'users.plan' | transloco }}</span>
+        <strong>{{ data.user.plan || '—' }}</strong>
+      </div>
+      <div class="user-detail__field">
+        <span>{{ 'users.sessions' | transloco }}</span>
+        <strong>{{ data.activeSessions }}</strong>
+      </div>
+      <div class="user-detail__field">
+        <span>{{ 'users.devices' | transloco }}</span>
+        <strong>{{ data.pushDevices }}</strong>
+      </div>
+      <div class="user-detail__field">
+        <span>{{ 'users.couple' | transloco }}</span>
+        <strong>{{ data.coupleId || '—' }}</strong>
+      </div>
+    </section>
+
+    <div class="user-detail__actions">
+      <button app-button type="button" variant="secondary" [loading]="busy()" (click)="block()">
+        {{ 'users.block' | transloco }}
+      </button>
+      <button app-button type="button" variant="secondary" [loading]="busy()" (click)="unblock()">
+        {{ 'users.unblock' | transloco }}
+      </button>
+      <button app-button type="button" variant="danger" [loading]="busy()" (click)="remove()">
+        {{ 'users.delete' | transloco }}
+      </button>
+    </div>
+  } @else if (loading()) {
+    <p class="user-detail__loading">{{ 'common.loading' | transloco }}</p>
   }
 </div>

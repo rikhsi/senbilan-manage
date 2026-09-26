@@ -162,6 +162,8 @@ export default [
       '**/android',
       '**/ios',
       '**/vitest.config.*.timestamp*',
+      'libs/infra/openapi/src/lib/generated/**',
+      'libs/infra/openapi/openapi/**',
     ],
   },
   {

@@ -1,0 +1,2138 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "admin/v1/broadcast.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "broadcast",
+      "description": "AdminBroadcastService manages pushes the team sends to every user. Every RPC requires the\nadmin role; other callers get FORBIDDEN before the request is validated."
+    },
+    {
+      "name": "content",
+      "description": "AdminContentService manages the team's content. Every RPC requires the admin role; other\ncallers get FORBIDDEN before the request is validated."
+    },
+    {
+      "name": "user",
+      "description": "AdminUserService finds accounts and acts on them. Every RPC requires the admin role; other\ncallers get FORBIDDEN before the request is validated. No RPC returns private couple content."
+    },
+    {
+      "name": "couple",
+      "description": "AdminCoupleService lists couples and forces an unpair. Every RPC requires the admin role;\nother callers get FORBIDDEN before the request is validated. Couple content is never\nreturned, only counts."
+    },
+    {
+      "name": "stats",
+      "description": "AdminStatsService returns the dashboard summary. Requires the admin role; other callers get\nFORBIDDEN."
+    }
+  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/admin/v1/broadcasts": {
+      "get": {
+        "summary": "ListBroadcasts returns broadcasts newest created first.",
+        "operationId": "ListBroadcasts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListBroadcastsResponseEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cursor",
+            "description": "next_cursor of the previous page; empty for the first page.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Page size; 0 means 30.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["broadcast"]
+      },
+      "post": {
+        "summary": "CreateBroadcast adds a draft. At most one of content_id and url is set; content_id must\nname published content (NOT_FOUND otherwise).",
+        "operationId": "CreateBroadcast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BroadcastEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateBroadcastRequest"
+            }
+          }
+        ],
+        "tags": ["broadcast"]
+      }
+    },
+    "/admin/v1/broadcasts/{broadcast_id}": {
+      "get": {
+        "summary": "GetBroadcast returns one broadcast with its delivery counters.",
+        "operationId": "GetBroadcast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BroadcastEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "broadcast_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["broadcast"]
+      },
+      "delete": {
+        "summary": "DeleteBroadcast deletes a draft; otherwise BROADCAST_NOT_DRAFT.",
+        "operationId": "DeleteBroadcast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/EmptyEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "broadcast_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["broadcast"]
+      },
+      "patch": {
+        "summary": "UpdateBroadcast edits the set fields of a draft; otherwise BROADCAST_NOT_DRAFT.",
+        "operationId": "UpdateBroadcast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BroadcastEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "broadcast_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateBroadcastBody"
+            }
+          }
+        ],
+        "tags": ["broadcast"]
+      }
+    },
+    "/admin/v1/broadcasts/{broadcast_id}/send": {
+      "post": {
+        "summary": "SendBroadcast queues a draft for delivery to every user; otherwise BROADCAST_NOT_DRAFT.\nDelivery runs in the background; poll GetBroadcast for status and counters.",
+        "operationId": "SendBroadcast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BroadcastEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "broadcast_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SendBroadcastBody"
+            }
+          }
+        ],
+        "tags": ["broadcast"]
+      }
+    },
+    "/admin/v1/contents": {
+      "get": {
+        "summary": "ListContents returns content newest updated first, without units.",
+        "operationId": "ListContents",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListContentsResponseEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "status",
+            "description": "Unspecified lists every status.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CONTENT_STATUS_UNSPECIFIED",
+              "CONTENT_STATUS_DRAFT",
+              "CONTENT_STATUS_PUBLISHED",
+              "CONTENT_STATUS_UNPUBLISHED"
+            ],
+            "default": "CONTENT_STATUS_UNSPECIFIED"
+          },
+          {
+            "name": "kind",
+            "description": "Unspecified lists every kind.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CONTENT_KIND_UNSPECIFIED",
+              "CONTENT_KIND_ARTICLE",
+              "CONTENT_KIND_BOOK",
+              "CONTENT_KIND_PODCAST",
+              "CONTENT_KIND_VIDEO"
+            ],
+            "default": "CONTENT_KIND_UNSPECIFIED"
+          },
+          {
+            "name": "language",
+            "description": "Unspecified lists every language.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": ["LANGUAGE_UNSPECIFIED", "LANGUAGE_UZ", "LANGUAGE_RU"],
+            "default": "LANGUAGE_UNSPECIFIED"
+          },
+          {
+            "name": "cursor",
+            "description": "next_cursor of the previous page; empty for the first page.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Page size; 0 means 30.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["content"]
+      },
+      "post": {
+        "summary": "CreateContent adds a draft with its units numbered 1..n in the given order.",
+        "operationId": "CreateContent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateContentRequest"
+            }
+          }
+        ],
+        "tags": ["content"]
+      }
+    },
+    "/admin/v1/contents/{content_id}": {
+      "get": {
+        "summary": "GetContent returns one content with its units.",
+        "operationId": "GetContent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["content"]
+      },
+      "delete": {
+        "summary": "DeleteContent deletes content that was never published; otherwise CONTENT_PUBLISHED.",
+        "operationId": "DeleteContent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/EmptyEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["content"]
+      },
+      "patch": {
+        "summary": "UpdateContent edits the set fields. Published content must stay complete (CONTENT_INCOMPLETE).",
+        "operationId": "UpdateContent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateContentBody"
+            }
+          }
+        ],
+        "tags": ["content"]
+      }
+    },
+    "/admin/v1/contents/{content_id}/publish": {
+      "post": {
+        "summary": "PublishContent publishes complete content (else CONTENT_INCOMPLETE). Idempotent;\npublished_at is set on the first publish only.",
+        "operationId": "PublishContent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PublishContentBody"
+            }
+          }
+        ],
+        "tags": ["content"]
+      }
+    },
+    "/admin/v1/contents/{content_id}/units": {
+      "post": {
+        "summary": "AddUnit appends a unit after the last one.",
+        "operationId": "AddUnit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddUnitBody"
+            }
+          }
+        ],
+        "tags": ["content"]
+      }
+    },
+    "/admin/v1/contents/{content_id}/units/{index}": {
+      "delete": {
+        "summary": "DeleteUnit deletes a unit of never-published content and renumbers the rest 1..n;\notherwise CONTENT_PUBLISHED.",
+        "operationId": "DeleteUnit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["content"]
+      },
+      "patch": {
+        "summary": "UpdateUnit edits the set fields of one unit.",
+        "operationId": "UpdateUnit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUnitBody"
+            }
+          }
+        ],
+        "tags": ["content"]
+      }
+    },
+    "/admin/v1/contents/{content_id}/unpublish": {
+      "post": {
+        "summary": "UnpublishContent hides published content from the catalogue. Idempotent; a draft stays a draft.",
+        "operationId": "UnpublishContent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ContentEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "content_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UnpublishContentBody"
+            }
+          }
+        ],
+        "tags": ["content"]
+      }
+    },
+    "/admin/v1/couples": {
+      "get": {
+        "summary": "ListCouples returns couples newest created first.",
+        "operationId": "ListCouples",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListCouplesResponseEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "status",
+            "description": "\"waiting\" or \"paired\"; empty matches any status.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "cursor",
+            "description": "next_cursor of the previous page; empty for the first page.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Page size; 0 means 30.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["couple"]
+      }
+    },
+    "/admin/v1/couples/{couple_id}": {
+      "get": {
+        "summary": "GetCouple returns one couple with per-feature content counts.",
+        "operationId": "GetCouple",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminCoupleDetailEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "couple_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["couple"]
+      }
+    },
+    "/admin/v1/couples/{couple_id}/unpair": {
+      "post": {
+        "summary": "UnpairCouple makes the non-creator member leave through the app's own leave flow; the\ncouple returns to waiting with the creator and all of its content intact. The creator never\nleaves. Idempotent: a waiting couple (creator alone) is returned unchanged.",
+        "operationId": "UnpairCouple",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminCoupleSummaryEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "couple_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UnpairCoupleBody"
+            }
+          }
+        ],
+        "tags": ["couple"]
+      }
+    },
+    "/admin/v1/stats": {
+      "get": {
+        "summary": "GetStats returns counters computed on request.",
+        "operationId": "GetStats",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/StatsEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "tags": ["stats"]
+      }
+    },
+    "/admin/v1/users": {
+      "get": {
+        "summary": "ListUsers searches accounts newest first. q matches phone, email and name as a\ncase-insensitive substring, and telegram_id exactly when it is a number.",
+        "operationId": "ListUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListUsersResponseEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "description": "Search text; empty matches every account.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "description": "UNSPECIFIED matches any status.\n\n - USER_STATUS_BLOCKED: Refused at sign-in and on every authenticated request.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": ["USER_STATUS_UNSPECIFIED", "USER_STATUS_ACTIVE", "USER_STATUS_BLOCKED"],
+            "default": "USER_STATUS_UNSPECIFIED"
+          },
+          {
+            "name": "role",
+            "description": "UNSPECIFIED matches any role.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": ["USER_ROLE_UNSPECIFIED", "USER_ROLE_USER", "USER_ROLE_ADMIN"],
+            "default": "USER_ROLE_UNSPECIFIED"
+          },
+          {
+            "name": "plan",
+            "description": "UNSPECIFIED matches any plan.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": ["USER_PLAN_UNSPECIFIED", "USER_PLAN_FREE", "USER_PLAN_PRO"],
+            "default": "USER_PLAN_UNSPECIFIED"
+          },
+          {
+            "name": "include_deleted",
+            "description": "Also return deleted accounts.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "cursor",
+            "description": "next_cursor of the previous page; empty for the first page.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Page size; 0 means 30.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}": {
+      "get": {
+        "summary": "GetUser returns one account card; deleted accounts are returned with deleted_at set.",
+        "operationId": "GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminUserDetailEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}/block": {
+      "post": {
+        "summary": "BlockUser blocks an account and revokes every session; its access tokens stop working on\nthe next request. Idempotent. ADMIN_SELF_ACTION on the caller, CONFLICT on a deleted account.",
+        "operationId": "BlockUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminUserEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BlockUserBody"
+            }
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}/delete": {
+      "post": {
+        "summary": "DeleteUser deletes an account through the same flow as the user's own deletion.\nADMIN_SELF_ACTION on the caller, CONFLICT when already deleted.",
+        "operationId": "DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/EmptyEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBody"
+            }
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}/plan": {
+      "put": {
+        "summary": "SetUserPlan sets the plan. expires_at is allowed only with PRO and must be in the future\n(INVALID_INPUT otherwise); FREE clears it. CONFLICT on a deleted account.",
+        "operationId": "SetUserPlan",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminUserEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetUserPlanBody"
+            }
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}/role": {
+      "put": {
+        "summary": "SetUserRole grants or removes the admin role. ADMIN_SELF_ACTION on the caller, CONFLICT\non a deleted account.",
+        "operationId": "SetUserRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminUserEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetUserRoleBody"
+            }
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}/unblock": {
+      "post": {
+        "summary": "UnblockUser lets a blocked account sign in again. Idempotent. CONFLICT on a deleted account.",
+        "operationId": "UnblockUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminUserEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UnblockUserBody"
+            }
+          }
+        ],
+        "tags": ["user"]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "Date": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Year of the date. Must be from 1 to 9999, or 0 to specify a date without\na year."
+        },
+        "month": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Month of a year. Must be from 1 to 12, or 0 to specify a year without a\nmonth and day."
+        },
+        "day": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0\nto specify a year by itself or a year and month where the day isn't\nsignificant."
+        }
+      },
+      "description": "* A full date, with non-zero year, month, and day values.\n* A month and day, with a zero year (for example, an anniversary).\n* A year on its own, with a zero month and a zero day.\n* A year and month, with a zero day (for example, a credit card expiration\n  date).\n\nRelated types:\n\n* [google.type.TimeOfDay][google.type.TimeOfDay]\n* [google.type.DateTime][google.type.DateTime]\n* [google.protobuf.Timestamp][google.protobuf.Timestamp]",
+      "title": "Represents a whole or partial calendar date, such as a birthday. The time of\nday and time zone are either specified elsewhere or are insignificant. The\ndate is relative to the Gregorian Calendar. This can represent one of the\nfollowing:"
+    },
+    "SendBroadcastBody": {
+      "type": "object"
+    },
+    "UpdateBroadcastBody": {
+      "type": "object",
+      "properties": {
+        "text_uz": {
+          "type": "string"
+        },
+        "text_ru": {
+          "type": "string"
+        },
+        "content_id": {
+          "type": "string",
+          "description": "Empty string clears the content."
+        },
+        "url": {
+          "type": "string",
+          "description": "Empty string clears the url."
+        }
+      }
+    },
+    "AddUnitBody": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "Markdown."
+        },
+        "url": {
+          "type": "string",
+          "description": "http(s) URL."
+        }
+      }
+    },
+    "PublishContentBody": {
+      "type": "object"
+    },
+    "UnpublishContentBody": {
+      "type": "object"
+    },
+    "UpdateContentBody": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "language": {
+          "$ref": "#/definitions/Language"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Replaces the whole list when update_tags is true; ignored otherwise."
+        },
+        "update_tags": {
+          "type": "boolean"
+        },
+        "url": {
+          "type": "string",
+          "description": "Empty string clears the url."
+        },
+        "cover_media_id": {
+          "type": "string",
+          "description": "Empty string clears the cover."
+        }
+      }
+    },
+    "UpdateUnitBody": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "Empty string clears the body."
+        },
+        "url": {
+          "type": "string",
+          "description": "Empty string clears the url."
+        }
+      }
+    },
+    "AdminCoupleDetail": {
+      "type": "object",
+      "properties": {
+        "couple": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/AdminCoupleSummary"
+            }
+          ],
+          "x-nullable": true
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": "Rows per feature: events, lists, wishes, goals, album_photos, documents, letters,\nmessages, cards, contacts, shelf_items. Every key is always present."
+        }
+      },
+      "description": "AdminCoupleDetail is the couple card."
+    },
+    "UnpairCoupleBody": {
+      "type": "object"
+    },
+    "AdminCoupleSummary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "description": "The stored couple status: \"waiting\" or \"paired\"."
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/AdminUser"
+          },
+          "description": "Zero to two members."
+        },
+        "started_on": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/Date"
+            }
+          ],
+          "description": "Absent when unset.",
+          "x-nullable": true
+        },
+        "paired_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Absent until a partner joins.",
+          "x-nullable": true
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        }
+      },
+      "description": "AdminCoupleSummary is a couple and its members, without any of its content. It lives here,\nnot in couples.proto, because it embeds AdminUser and proto imports cannot be circular."
+    },
+    "AdminUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Empty when unset."
+        },
+        "email": {
+          "type": "string",
+          "description": "Empty when unset."
+        },
+        "telegram_id": {
+          "type": "string",
+          "format": "int64",
+          "description": "0 when unset."
+        },
+        "language": {
+          "$ref": "#/definitions/Language"
+        },
+        "status": {
+          "$ref": "#/definitions/UserStatus"
+        },
+        "role": {
+          "$ref": "#/definitions/UserRole"
+        },
+        "plan": {
+          "$ref": "#/definitions/UserPlan"
+        },
+        "plan_expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Absent when the plan does not expire.",
+          "x-nullable": true
+        },
+        "couple_id": {
+          "type": "string",
+          "description": "Empty when not in a couple."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "deleted_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Absent unless the account is deleted.",
+          "x-nullable": true
+        }
+      },
+      "description": "AdminUser is an account as the admin panel sees it."
+    },
+    "AdminUserDetail": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/AdminUser"
+            }
+          ],
+          "x-nullable": true
+        },
+        "photo": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/Media"
+            }
+          ],
+          "description": "Absent when there is no profile photo.",
+          "x-nullable": true
+        },
+        "couple": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/AdminCoupleSummary"
+            }
+          ],
+          "description": "Absent when not in a couple.",
+          "x-nullable": true
+        },
+        "active_sessions": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Refresh sessions not revoked and not expired."
+        },
+        "push_devices": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Devices registered for push."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        }
+      },
+      "description": "AdminUserDetail is the account card."
+    },
+    "BlockUserBody": {
+      "type": "object"
+    },
+    "DeleteUserBody": {
+      "type": "object"
+    },
+    "SetUserPlanBody": {
+      "type": "object",
+      "properties": {
+        "plan": {
+          "$ref": "#/definitions/UserPlan"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Only with PRO; absent means the plan does not expire.",
+          "x-nullable": true
+        }
+      }
+    },
+    "SetUserRoleBody": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "$ref": "#/definitions/UserRole"
+        }
+      }
+    },
+    "UnblockUserBody": {
+      "type": "object"
+    },
+    "Broadcast": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/BroadcastStatus"
+        },
+        "text_uz": {
+          "type": "string"
+        },
+        "text_ru": {
+          "type": "string"
+        },
+        "content_id": {
+          "type": "string",
+          "description": "Library content the push opens; empty when unset."
+        },
+        "url": {
+          "type": "string",
+          "description": "External link the push opens; empty when unset."
+        },
+        "sent_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "History rows written (the push may still have failed on a device)."
+        },
+        "muted_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Users who muted broadcasts."
+        },
+        "failed_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Users the delivery failed for."
+        },
+        "created_by": {
+          "type": "string"
+        },
+        "requested_by": {
+          "type": "string",
+          "description": "Admin who sent it; empty for a draft."
+        },
+        "queued_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "sent_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        }
+      },
+      "description": "Broadcast is a push to every user, in each user's language."
+    },
+    "BroadcastStatus": {
+      "type": "string",
+      "enum": [
+        "BROADCAST_STATUS_UNSPECIFIED",
+        "BROADCAST_STATUS_DRAFT",
+        "BROADCAST_STATUS_QUEUED",
+        "BROADCAST_STATUS_SENDING",
+        "BROADCAST_STATUS_SENT"
+      ],
+      "default": "BROADCAST_STATUS_UNSPECIFIED",
+      "description": "BroadcastStatus is the delivery state of a broadcast.\n\n - BROADCAST_STATUS_DRAFT: Editable; not sent.\n - BROADCAST_STATUS_QUEUED: Waiting for the delivery job.\n - BROADCAST_STATUS_SENDING: Being delivered page by page.\n - BROADCAST_STATUS_SENT: Delivered to every user."
+    },
+    "CreateBroadcastRequest": {
+      "type": "object",
+      "properties": {
+        "text_uz": {
+          "type": "string"
+        },
+        "text_ru": {
+          "type": "string"
+        },
+        "content_id": {
+          "type": "string",
+          "description": "Id of published library content; optional."
+        },
+        "url": {
+          "type": "string",
+          "description": "http(s) URL; optional."
+        }
+      }
+    },
+    "CreateContentRequest": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/ContentKind"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "language": {
+          "$ref": "#/definitions/Language"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Lowercased, trimmed and de-duplicated; 1–30 characters each, at most 10."
+        },
+        "url": {
+          "type": "string",
+          "description": "http(s) URL; optional."
+        },
+        "cover_media_id": {
+          "type": "string",
+          "description": "Id of a Media uploaded via MediaService with MEDIA_PURPOSE_CONTENT_COVER; optional."
+        },
+        "units": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/UnitInput"
+          },
+          "description": "May be empty; numbered 1..n in this order."
+        }
+      }
+    },
+    "DeleteBroadcastResponse": {
+      "type": "object"
+    },
+    "DeleteContentResponse": {
+      "type": "object"
+    },
+    "DeleteUserResponse": {
+      "type": "object"
+    },
+    "ListBroadcastsResponse": {
+      "type": "object",
+      "properties": {
+        "broadcasts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Broadcast"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Empty when there are no more broadcasts."
+        }
+      }
+    },
+    "ListContentsResponse": {
+      "type": "object",
+      "properties": {
+        "contents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Content"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Empty when there are no more contents."
+        }
+      }
+    },
+    "ListCouplesResponse": {
+      "type": "object",
+      "properties": {
+        "couples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/AdminCoupleSummary"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Empty when there are no more couples."
+        }
+      }
+    },
+    "ListUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/AdminUser"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Empty when there are no more accounts."
+        }
+      }
+    },
+    "Stats": {
+      "type": "object",
+      "properties": {
+        "users_total": {
+          "type": "string",
+          "format": "int64"
+        },
+        "users_new_1d": {
+          "type": "string",
+          "format": "int64",
+          "description": "Accounts created in the last day."
+        },
+        "users_new_7d": {
+          "type": "string",
+          "format": "int64",
+          "description": "Accounts created in the last 7 days."
+        },
+        "users_new_30d": {
+          "type": "string",
+          "format": "int64",
+          "description": "Accounts created in the last 30 days."
+        },
+        "users_blocked": {
+          "type": "string",
+          "format": "int64"
+        },
+        "couples_paired": {
+          "type": "string",
+          "format": "int64"
+        },
+        "couples_waiting": {
+          "type": "string",
+          "format": "int64"
+        },
+        "pushes_sent_24h": {
+          "type": "string",
+          "format": "int64",
+          "description": "Notification history rows written in the last 24 hours."
+        },
+        "broadcasts_queued": {
+          "type": "string",
+          "format": "int64"
+        },
+        "content_published": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "Stats is the dashboard summary. Deleted accounts are not counted."
+    },
+    "UnitInput": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "Markdown."
+        },
+        "url": {
+          "type": "string",
+          "description": "http(s) URL."
+        }
+      },
+      "description": "UnitInput holds a new unit. Units need a body and/or a url depending on the content kind."
+    },
+    "UserPlan": {
+      "type": "string",
+      "enum": ["USER_PLAN_UNSPECIFIED", "USER_PLAN_FREE", "USER_PLAN_PRO"],
+      "default": "USER_PLAN_UNSPECIFIED",
+      "description": "UserPlan is the subscription tier of an account."
+    },
+    "UserRole": {
+      "type": "string",
+      "enum": ["USER_ROLE_UNSPECIFIED", "USER_ROLE_USER", "USER_ROLE_ADMIN"],
+      "default": "USER_ROLE_UNSPECIFIED",
+      "description": "UserRole is the access level of an account."
+    },
+    "UserStatus": {
+      "type": "string",
+      "enum": ["USER_STATUS_UNSPECIFIED", "USER_STATUS_ACTIVE", "USER_STATUS_BLOCKED"],
+      "default": "USER_STATUS_UNSPECIFIED",
+      "description": "UserStatus is the moderation state of an account.\n\n - USER_STATUS_BLOCKED: Refused at sign-in and on every authenticated request."
+    },
+    "Content": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/definitions/ContentKind"
+        },
+        "status": {
+          "$ref": "#/definitions/ContentStatus"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "language": {
+          "$ref": "#/definitions/Language"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "type": "string",
+          "description": "Empty when the content has none."
+        },
+        "cover": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/Media"
+            }
+          ],
+          "description": "Unset when the content has no cover.",
+          "x-nullable": true
+        },
+        "units": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Unit"
+          },
+          "description": "Ordered by index; empty in list responses."
+        },
+        "published_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Set on the first publish and never changed; unset for content never published.",
+          "x-nullable": true
+        },
+        "created_by": {
+          "type": "string"
+        },
+        "updated_by": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "unit_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Number of units. The app API fills it everywhere; admin responses fill it only where units are included."
+        }
+      },
+      "description": "Content is an article, book, podcast or video published by the senbilan team."
+    },
+    "ContentKind": {
+      "type": "string",
+      "enum": [
+        "CONTENT_KIND_UNSPECIFIED",
+        "CONTENT_KIND_ARTICLE",
+        "CONTENT_KIND_BOOK",
+        "CONTENT_KIND_PODCAST",
+        "CONTENT_KIND_VIDEO"
+      ],
+      "default": "CONTENT_KIND_UNSPECIFIED",
+      "description": "ContentKind is the format of a piece of content."
+    },
+    "ContentStatus": {
+      "type": "string",
+      "enum": [
+        "CONTENT_STATUS_UNSPECIFIED",
+        "CONTENT_STATUS_DRAFT",
+        "CONTENT_STATUS_PUBLISHED",
+        "CONTENT_STATUS_UNPUBLISHED"
+      ],
+      "default": "CONTENT_STATUS_UNSPECIFIED",
+      "description": "ContentStatus is the lifecycle state of a piece of content: draft → published → unpublished."
+    },
+    "Language": {
+      "type": "string",
+      "enum": ["LANGUAGE_UNSPECIFIED", "LANGUAGE_UZ", "LANGUAGE_RU"],
+      "default": "LANGUAGE_UNSPECIFIED",
+      "description": "Language is the interface language chosen by the user."
+    },
+    "Media": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "description": "Public URL valid for reading; may be time-limited."
+        },
+        "content_type": {
+          "type": "string"
+        },
+        "size_bytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "description": "Media is an uploaded file (profile photo, wish photo, message photo) referenced by id."
+    },
+    "Unit": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "1-based, contiguous within the content."
+        },
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "Markdown; empty when the unit has none."
+        },
+        "url": {
+          "type": "string",
+          "description": "Empty when the unit has none."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        }
+      },
+      "description": "Unit is one ordered part of a content: a chapter, an episode or a course part."
+    },
+    "ErrorEnvelope": {
+      "type": "object",
+      "description": "Error envelope returned with every non-2xx status.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always false."
+        },
+        "error": {
+          "$ref": "#/definitions/ErrorBody"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "error", "request_id"],
+      "additionalProperties": false
+    },
+    "ErrorBody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Stable UPPER_SNAKE app error code; clients branch on it, never on message."
+        },
+        "details": {
+          "type": "array",
+          "description": "Field violations; empty unless code is VALIDATION_FAILED.",
+          "items": {
+            "$ref": "#/definitions/ErrorDetail"
+          }
+        },
+        "retry_after_seconds": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Seconds to wait before retrying; present only for rate-limited errors."
+        }
+      },
+      "required": ["code", "details"],
+      "additionalProperties": false
+    },
+    "ErrorDetail": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Request field path, e.g. items[0].title."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Broken validation rule id, e.g. string.min_len."
+        }
+      },
+      "required": ["field", "reason"],
+      "additionalProperties": false
+    },
+    "ListBroadcastsResponseEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/ListBroadcastsResponse"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "BroadcastEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/Broadcast"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "EmptyEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "type": "object",
+          "description": "Always null: this action returns no data.",
+          "x-nullable": true
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "ListContentsResponseEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/ListContentsResponse"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "ContentEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/Content"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "ListCouplesResponseEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/ListCouplesResponse"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "AdminCoupleDetailEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/AdminCoupleDetail"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "AdminCoupleSummaryEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/AdminCoupleSummary"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "StatsEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/Stats"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "ListUsersResponseEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/ListUsersResponse"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "AdminUserDetailEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/AdminUserDetail"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "AdminUserEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/AdminUser"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    }
+  }
+}

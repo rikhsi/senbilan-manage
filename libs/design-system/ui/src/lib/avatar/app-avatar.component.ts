@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { AVATAR_TINT_COUNT, type AvatarRing, type AvatarSize } from './avatar.types';
 
-export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type AvatarRing = 'none' | 'primary' | 'secondary';
-
-const TINT_COUNT = 5;
+export type { AvatarRing, AvatarSize } from './avatar.types';
 
 /**
  * User avatar with initials fallback and a deterministic palette tint per name.
@@ -58,6 +56,6 @@ export class AppAvatarComponent {
     for (const char of this.name()) {
       hash = (hash * 31 + char.charCodeAt(0)) | 0;
     }
-    return (Math.abs(hash) % TINT_COUNT) + 1;
+    return (Math.abs(hash) % AVATAR_TINT_COUNT) + 1;
   });
 }

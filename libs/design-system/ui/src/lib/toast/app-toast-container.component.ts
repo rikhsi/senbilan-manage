@@ -1,14 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { type AppIconName, AppIconComponent } from '@senbilan/design-system/icons';
-import { type Toast, ToastService, type ToastTone } from './toast.service';
-
-const TONE_ICONS: Readonly<Record<ToastTone, AppIconName>> = {
-  neutral: 'info',
-  info: 'info',
-  success: 'check-circle',
-  warning: 'alert-triangle',
-  danger: 'circle-alert',
-};
+import { type Toast, ToastService } from './toast.service';
+import { TOAST_TONE_ICONS } from './toast-icons';
 
 /** Place once in the app shell. Announces toasts via a polite live region. */
 @Component({
@@ -51,7 +44,7 @@ export class AppToastContainerComponent {
   readonly regionLabel = input('');
 
   protected iconFor(toast: Toast): AppIconName {
-    return TONE_ICONS[toast.tone];
+    return TOAST_TONE_ICONS[toast.tone];
   }
 
   protected run(toast: Toast): void {

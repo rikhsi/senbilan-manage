@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { type SkeletonShape } from './skeleton.types';
 
-export type SkeletonShape = 'text' | 'rect' | 'circle';
+export type { SkeletonShape } from './skeleton.types';
 
 /** Loading placeholder. Width/height accept any CSS length; `lines` repeats text rows. */
 @Component({

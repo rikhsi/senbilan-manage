@@ -5,6 +5,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { AppIconComponent } from '@senbilan/design-system/icons';
 import { LAYOUT_CAN_ACCESS } from '../layout-bridges';
 import { type NavigationItem } from '../navigation.types';
+import { SIDEBAR_BRAND_LOGO_SRC } from './sidebar.brand';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,11 +13,16 @@ import { type NavigationItem } from '../navigation.types';
   template: `
     <ng-container *transloco="let t">
       <aside class="app-sidebar" [class.app-sidebar--collapsed]="collapsed()">
-        <div class="app-sidebar__brand">
-          <span class="app-sidebar__brand-mark" aria-hidden="true">S</span>
-          @if (!collapsed()) {
-            <span class="app-sidebar__brand-name">{{ t('app.name') }}</span>
-          }
+        <div class="app-sidebar__brand" [attr.aria-label]="t('app.brand')">
+          <img
+            class="app-sidebar__brand-logo"
+            [src]="logoSrc"
+            alt=""
+            width="32"
+            height="32"
+            decoding="async"
+          />
+          <span class="app-sidebar__brand-name" aria-hidden="true">{{ t('app.brand') }}</span>
         </div>
 
         <nav class="app-sidebar__nav" [attr.aria-label]="t('nav.menu')">
@@ -43,20 +49,20 @@ import { type NavigationItem } from '../navigation.types';
                   @if (item.icon; as icon) {
                     <app-icon class="app-sidebar__icon" [name]="icon" size="sm" />
                   }
-                  @if (!collapsed()) {
-                    <span class="app-sidebar__label">{{ t(item.labelKey) }}</span>
-                  }
+                  <span class="app-sidebar__label">{{ t(item.labelKey) }}</span>
                 </a>
-              } @else if (!collapsed()) {
+              } @else {
                 <div class="app-sidebar__group-label">{{ t(item.labelKey) }}</div>
               }
-              @if (item.children?.length && !collapsed()) {
-                <ng-container
-                  *ngTemplateOutlet="
-                    navList;
-                    context: { $implicit: filterItems(item.children ?? []), depth: depth + 1 }
-                  "
-                />
+              @if (item.children?.length) {
+                <div class="app-sidebar__children">
+                  <ng-container
+                    *ngTemplateOutlet="
+                      navList;
+                      context: { $implicit: filterItems(item.children ?? []), depth: depth + 1 }
+                    "
+                  />
+                </div>
               }
             </li>
           }
@@ -74,6 +80,8 @@ import { type NavigationItem } from '../navigation.types';
 export class AppSidebarComponent {
   private readonly canAccessFn = inject(LAYOUT_CAN_ACCESS, { optional: true });
 
+  protected readonly logoSrc = SIDEBAR_BRAND_LOGO_SRC;
+
   readonly items = input.required<readonly NavigationItem[]>();
   readonly collapsed = input(false);
 
@@ -83,19 +91,19 @@ export class AppSidebarComponent {
     return items
       .filter((item) => this.canAccess(item.permission))
       .map((item) => {
-        const children = item.children ? this.filterItems(item.children) : undefined;
-        if (children === undefined) {
+        if (!item.children?.length) {
           return item;
         }
+        const children = this.filterItems(item.children);
         return { ...item, children };
       })
       .filter((item) => item.route !== undefined || (item.children?.length ?? 0) > 0);
   }
 
   private canAccess(permission: string | undefined): boolean {
-    if (permission === undefined) {
+    if (permission === undefined || !this.canAccessFn) {
       return true;
     }
-    return this.canAccessFn?.(permission) ?? true;
+    return this.canAccessFn(permission);
   }
 }

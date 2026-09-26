@@ -5,9 +5,51 @@
     <title>Senbilan Manage</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0f172a" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta name="theme-color" content="#FBD2DC" />
+    <link rel="icon" type="image/png" href="/assets/auth/splash_heart.png" />
+    <link rel="apple-touch-icon" href="/assets/auth/splash_heart.png" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <style>
+      /* Native splash before Angular boots — first stop of --app-gradient-aurora. */
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-items: center;
+        margin: 0;
+        background: #fbd2dc;
+        transition:
+          opacity 350ms cubic-bezier(0.33, 1, 0.68, 1),
+          visibility 350ms;
+      }
+      #app-splash.is-done {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #app-splash img {
+        width: 7.5rem;
+        height: 7.5rem;
+        border-radius: 999px;
+        box-shadow: 0 12px 36px rgba(45, 26, 34, 0.14);
+        animation: app-splash-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes app-splash-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.04);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #app-splash img {
+          animation: none;
+        }
+      }
+    </style>
     <!-- Theme bootstrap: apply data-theme before first paint (see ThemeService). -->
     <script>
       (function () {
@@ -30,6 +72,9 @@
     </script>
   </head>
   <body>
+    <div id="app-splash" aria-hidden="true">
+      <img src="/assets/auth/splash_heart.png" alt="" width="120" height="120" />
+    </div>
     <web-root></web-root>
   </body>
 </html>

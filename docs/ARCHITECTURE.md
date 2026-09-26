@@ -84,14 +84,15 @@ Ports live in `@senbilan/core/application` as **abstract classes** (DI-friendly)
 
 Adapters live in:
 
-| Lib                             | Responsibility                             |
-| ------------------------------- | ------------------------------------------ |
-| `@senbilan/infra/api`           | Real HTTP implementations                  |
-| `@senbilan/infra/mock`          | In-memory / MSW-backed mocks for local/dev |
-| `@senbilan/infra/storage`       | Browser / Capacitor storage                |
-| `@senbilan/infra/observability` | Sentry / logging adapters                  |
-| `@senbilan/platform/mobile`     | Capacitor-specific services                |
-| `@senbilan/platform/desktop`    | Electron bridge (`provideDesktopPlatform`) |
+| Lib                             | Responsibility                                                                    |
+| ------------------------------- | --------------------------------------------------------------------------------- |
+| `@senbilan/infra/api`           | Real HTTP implementations (hand-written ports)                                    |
+| `@senbilan/infra/openapi`       | Generated admin OpenAPI clients (per service) — [openapi.md](platform/openapi.md) |
+| `@senbilan/infra/mock`          | In-memory / MSW-backed mocks for local/dev                                        |
+| `@senbilan/infra/storage`       | Browser / Capacitor storage                                                       |
+| `@senbilan/infra/observability` | Sentry / logging adapters                                                         |
+| `@senbilan/platform/mobile`     | Capacitor-specific services                                                       |
+| `@senbilan/platform/desktop`    | Electron bridge (`provideDesktopPlatform`)                                        |
 
 Apps choose adapters from `environment.features.mockApi` and `provideAppConfig(environment)`.
 

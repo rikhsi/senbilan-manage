@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { AppIconComponent, type AppIconName } from '@senbilan/design-system/icons';
-import { type ButtonSize } from './app-button.component';
+import { type ButtonSize, type IconButtonVariant } from './button.types';
 
-export type IconButtonVariant = 'ghost' | 'secondary' | 'primary' | 'danger';
+export type { IconButtonVariant } from './button.types';
 
 /**
  * Square icon-only button. `label` is mandatory: it becomes the accessible name.

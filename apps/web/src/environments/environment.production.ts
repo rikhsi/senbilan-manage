@@ -7,7 +7,7 @@ import { type AppConfig } from '@senbilan/shared/config';
 export const environment: AppConfig = {
   production: true,
   appName: 'Senbilan Manage',
-  apiBaseUrl: '/api',
+  apiBaseUrl: 'https://api.senbilan.uz',
   defaultLocale: 'ru',
   availableLocales: ['ru', 'en', 'uz'],
   sentry: {

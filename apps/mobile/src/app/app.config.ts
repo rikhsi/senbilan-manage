@@ -1,11 +1,11 @@
-import {
+﻿import {
   type ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { provideIonicAngular } from '@ionic/angular';
 import { provideDesignSystem } from '@senbilan/design-system/ui';
 import { provideApi } from '@senbilan/infra/api';
 import { provideMockApi } from '@senbilan/infra/mock';

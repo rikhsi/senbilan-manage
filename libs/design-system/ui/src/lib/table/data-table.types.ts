@@ -1,5 +1,7 @@
 import { type TemplateRef } from '@angular/core';
 
+export type DataTableMode = 'auto' | 'table' | 'cards';
+
 export type SortDirection = 'asc' | 'desc';
 
 export interface SortState {

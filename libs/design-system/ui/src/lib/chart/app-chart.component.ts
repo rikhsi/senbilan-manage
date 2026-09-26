@@ -12,28 +12,12 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import type { Chart, ChartData, ChartOptions, ChartType } from 'chart.js';
-import { CHART_COLOR_VARS, readCssVar } from '@senbilan/design-system/tokens';
+import type { Chart, ChartData, ChartOptions } from 'chart.js';
 import { AppSkeletonComponent } from '../skeleton/app-skeleton.component';
+import { type AppChartType, readChartPalette } from './chart.types';
 
-export type AppChartType = Extract<ChartType, 'line' | 'bar' | 'doughnut' | 'pie'>;
-
-/** Palette resolved from CSS custom properties at render time (theme-aware). */
-export interface ChartPalette {
-  readonly series: readonly string[];
-  readonly text: string;
-  readonly grid: string;
-  readonly surface: string;
-  readonly fontFamily: string;
-}
-
-export const readChartPalette = (element: Element): ChartPalette => ({
-  series: CHART_COLOR_VARS.map((name) => readCssVar(name, element)),
-  text: readCssVar('--app-color-text-secondary', element),
-  grid: readCssVar('--app-color-divider', element),
-  surface: readCssVar('--app-color-surface-elevated', element),
-  fontFamily: readCssVar('--app-font-family-sans', element),
-});
+export type { AppChartType, ChartPalette } from './chart.types';
+export { readChartPalette } from './chart.types';
 
 /**
  * Chart.js wrapper. Loads chart.js lazily (it is ~60 kB) on first render,

@@ -1,10 +1,14 @@
 {
   "app": {
-    "name": "Senbilan Manage"
+    "name": "Senbilan Manage",
+    "brand": "SenBilan"
   },
   "nav": {
     "dashboard": "Dashboard",
     "users": "Users",
+    "couples": "Couples",
+    "content": "Content",
+    "broadcasts": "Broadcasts",
     "roles": "Roles",
     "permissions": "Permissions",
     "notifications": "Notifications",
@@ -29,12 +33,16 @@
     "actions": "Actions",
     "loading": "Loading…",
     "empty": "Nothing here yet",
+    "emptyHint": "When there is something to show, it will appear here.",
     "error": "Something went wrong",
     "selectedCount": "{count} selected",
     "clearSelection": "Clear selection",
     "yes": "Yes",
     "no": "No",
     "logout": "Log out",
+    "logoutConfirmTitle": "Log out?",
+    "logoutConfirmMessage": "Your session will end. Sign in again to continue.",
+    "welcome": "Hello, {name}",
     "profile": "Profile",
     "settings": "Settings",
     "theme": "Theme",

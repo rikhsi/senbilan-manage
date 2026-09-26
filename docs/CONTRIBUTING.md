@@ -60,6 +60,17 @@ Fix failures locally; do not bypass hooks unless explicitly agreed.
 - All UI copy via Transloco — [I18N.md](I18N.md).
 - Follow [AGENTS.md](../AGENTS.md) when using AI assistance.
 
+## Admin OpenAPI clients
+
+Generated clients live in `@senbilan/infra/openapi` (one Angular service per backend tag).
+
+```sh
+# credentials in .env.local — see .env.example
+npm run openapi:sync
+```
+
+Details: [`libs/infra/openapi/README.md`](../libs/infra/openapi/README.md).
+
 ## Generators
 
 Scaffold via local plugin `@senbilan/workspace` (see `tools/generators/README.md`):

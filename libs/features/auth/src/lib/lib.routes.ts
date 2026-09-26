@@ -4,6 +4,7 @@ import { provideAuthI18n } from './i18n/provide-auth-i18n';
 export const FEATURE_AUTH_ROUTES: Routes = [
   {
     path: '',
+    title: 'auth.title',
     providers: [provideAuthI18n()],
     loadComponent: () =>
       import('./login-page/login-page.component').then((m) => m.LoginPageComponent),

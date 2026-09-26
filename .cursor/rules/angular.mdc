@@ -13,4 +13,5 @@ alwaysApply: false
 - Use `provideDesignSystem()`, `provideAppConfig(environment)` in app composition roots.
 - Prefer Signals for local UI; bridge RxJS with `toSignal` at edges.
 - Follow Nx tags / `@nx/enforce-module-boundaries`.
+- Never put `interface` / `type` / models / lookup maps / nav constants inside `*.component.ts` — use sibling `*.model.ts` / `*.types.ts` / `*.defs.ts`.
 - Full AI rules: see root `AGENTS.md`.

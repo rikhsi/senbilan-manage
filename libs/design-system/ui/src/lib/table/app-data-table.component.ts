@@ -31,11 +31,12 @@ import {
   type ColumnDef,
   compareValues,
   type DataTableLabels,
+  type DataTableMode,
   nextSort,
   type SortState,
 } from './data-table.types';
 
-export type DataTableMode = 'auto' | 'table' | 'cards';
+export type { DataTableMode } from './data-table.types';
 
 /**
  * Data table for admin screens.

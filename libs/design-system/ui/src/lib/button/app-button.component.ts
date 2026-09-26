@@ -1,18 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { AppIconComponent, type AppIconName } from '@senbilan/design-system/icons';
+import { type ButtonSize, type ButtonVariant } from './button.types';
 
-export const BUTTON_VARIANTS = [
-  'primary',
-  'secondary',
-  'ghost',
-  'surface',
-  'danger',
-  'link',
-] as const;
-export type ButtonVariant = (typeof BUTTON_VARIANTS)[number];
-
-export const BUTTON_SIZES = ['sm', 'md', 'lg'] as const;
-export type ButtonSize = (typeof BUTTON_SIZES)[number];
+export type { ButtonSize, ButtonVariant } from './button.types';
+export { BUTTON_SIZES, BUTTON_VARIANTS } from './button.types';
 
 /**
  * Primary action component. One `primary` per screen region.

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { type CardPadding, type CardVariant } from './card.types';
 
-export type CardVariant = 'elevated' | 'outlined' | 'filled' | 'tinted';
-export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
+export type { CardPadding, CardVariant } from './card.types';
 
 /**
  * Surface container. Elevated by default (depth by shadow, not border); use

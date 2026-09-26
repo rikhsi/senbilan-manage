@@ -4,17 +4,16 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ValidationError } from '@senbilan/core/application';
 import {
   AppButtonComponent,
-  AppCardComponent,
   AppFormFieldComponent,
+  AppIconButtonComponent,
   AppInputDirective,
+  AppLocaleToggleComponent,
+  AppThemeToggleComponent,
 } from '@senbilan/design-system/ui';
 import { AuthStore } from '@senbilan/shared/auth';
 import { email, form, FormField, required, submit } from '@senbilan/shared/ng';
-
-interface LoginModel {
-  email: string;
-  password: string;
-}
+import { OrbitHeroComponent } from '../orbit-hero/orbit-hero.component';
+import { LOGIN_DEMO_MODEL } from './login.model';
 
 @Component({
   selector: 'auth-login-page',
@@ -22,9 +21,12 @@ interface LoginModel {
     FormField,
     TranslocoPipe,
     AppButtonComponent,
-    AppCardComponent,
     AppFormFieldComponent,
+    AppIconButtonComponent,
     AppInputDirective,
+    AppLocaleToggleComponent,
+    AppThemeToggleComponent,
+    OrbitHeroComponent,
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
@@ -37,17 +39,19 @@ export class LoginPageComponent {
 
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
+  protected readonly showPassword = signal(false);
 
-  protected readonly model = signal<LoginModel>({
-    email: 'admin@senbilan.dev',
-    password: 'password123',
-  });
+  protected readonly model = signal({ ...LOGIN_DEMO_MODEL });
 
   protected readonly loginForm = form(this.model, (path) => {
     required(path.email, { message: () => this.i18n.translate('auth.emailRequired') });
     email(path.email, { message: () => this.i18n.translate('auth.error') });
     required(path.password, { message: () => this.i18n.translate('auth.passwordRequired') });
   });
+
+  protected togglePassword(): void {
+    this.showPassword.update((value) => !value);
+  }
 
   protected errorFor(control: 'email' | 'password'): string {
     const field = this.loginForm[control];

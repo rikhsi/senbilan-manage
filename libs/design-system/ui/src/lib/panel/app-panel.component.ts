@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { type PanelPadding } from './panel.types';
 
-export type PanelPadding = 'none' | 'sm' | 'md' | 'lg';
+export type { PanelPadding } from './panel.types';
 
 /** Flat panel for dense admin zones (tables, filter bars). Prefer over Card when no elevation needed. */
 @Component({

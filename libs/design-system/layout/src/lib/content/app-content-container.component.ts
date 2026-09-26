@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { type ContentWidth } from './content.types';
 
-export type ContentWidth = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type { ContentWidth } from './content.types';
 
 @Component({
   selector: 'app-content-container',

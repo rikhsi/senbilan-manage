@@ -11,6 +11,7 @@ export { mapHttpErrorToAppError, type ApiErrorBody } from './lib/http/map-http-e
 export { toHttpParams } from './lib/http/page-params';
 export {
   correlationIdInterceptor,
+  apiBaseUrlInterceptor,
   authInterceptor,
   timeoutInterceptor,
   retryInterceptor,
@@ -40,4 +41,5 @@ export { HttpRoleRepository } from './lib/repositories/http-role.repository';
 export { HttpPermissionRepository } from './lib/repositories/http-permission.repository';
 export { HttpNotificationRepository } from './lib/repositories/http-notification.repository';
 export { HttpDashboardRepository } from './lib/repositories/http-dashboard.repository';
+export { HttpAdminCatalogRepository } from './lib/repositories/http-admin-catalog.repository';
 export { provideApi } from './lib/provide-api';

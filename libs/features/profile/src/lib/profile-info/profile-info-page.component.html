@@ -1,0 +1,33 @@
+<div class="profile-info">
+  <div class="profile-info__hero">
+    <entity-user-avatar [name]="info().displayName" [src]="info().avatarUrl" size="xl" ring="primary" />
+    <div class="profile-info__hero-text">
+      <p class="profile-info__name">
+        {{ info().displayName || ('profile.info.empty' | transloco) }}
+      </p>
+      <p class="profile-info__role-chip">{{ info().roleLabel }}</p>
+    </div>
+  </div>
+
+  <section class="profile-info__card" [attr.aria-label]="'profile.nav.info' | transloco">
+    <h2 class="profile-info__card-title">{{ 'profile.info.sectionTitle' | transloco }}</h2>
+    <dl class="profile-info__fields">
+      <div class="profile-info__field">
+        <dt>{{ 'profile.info.firstName' | transloco }}</dt>
+        <dd>{{ info().firstName || ('profile.info.empty' | transloco) }}</dd>
+      </div>
+      <div class="profile-info__field">
+        <dt>{{ 'profile.info.middleName' | transloco }}</dt>
+        <dd>{{ info().middleName || ('profile.info.empty' | transloco) }}</dd>
+      </div>
+      <div class="profile-info__field">
+        <dt>{{ 'profile.info.lastName' | transloco }}</dt>
+        <dd>{{ info().lastName || ('profile.info.empty' | transloco) }}</dd>
+      </div>
+      <div class="profile-info__field">
+        <dt>{{ 'profile.info.role' | transloco }}</dt>
+        <dd>{{ info().roleLabel }}</dd>
+      </div>
+    </dl>
+  </section>
+</div>

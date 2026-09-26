@@ -4,9 +4,12 @@ import {
   inject,
   makeEnvironmentProviders,
 } from '@angular/core';
+import { TitleStrategy } from '@angular/router';
 import { provideTransloco, provideTranslocoScope, TranslocoService } from '@jsverse/transloco';
 import { APP_CONFIG } from '@senbilan/shared/config';
+import { AppTitleStrategy } from './app-title.strategy';
 import { AssetsTranslocoLoader } from './assets-transloco.loader';
+import { PageTitleService } from './page-title.service';
 
 export type AppLocale = 'ru' | 'en' | 'uz';
 
@@ -22,17 +25,15 @@ export interface I18nConfig {
  * Wires Transloco with ru/en/uz, default language from `APP_CONFIG` (or override),
  * and a `common` scope loaded from `assets/i18n/common.{lang}.json`.
  *
- * Root messages live in `assets/i18n/{lang}.json`. Feature libraries ship additional
- * scopes (e.g. `users.ru.json`) under the same folder and call
- * `provideTranslocoScope('users')` from their routes/providers.
- *
- * Requires `provideHttpClient()` in the application providers.
+ * Also registers browser-tab title strategy (`PageTitleService` + `AppTitleStrategy`).
  */
 export const provideI18n = (config: I18nConfig = {}): EnvironmentProviders => {
   const availableLangs = [...(config.availableLocales ?? (['ru', 'en', 'uz'] as const))];
   const defaultLang = config.defaultLocale ?? 'ru';
 
   return makeEnvironmentProviders([
+    PageTitleService,
+    { provide: TitleStrategy, useClass: AppTitleStrategy },
     ...provideTransloco({
       config: {
         availableLangs,

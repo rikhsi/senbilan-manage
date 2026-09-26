@@ -1,0 +1,91 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-6);
+  animation: app-fade-in var(--app-duration-normal) var(--app-ease-out);
+}
+
+.profile-info__hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-4);
+}
+
+.profile-info__hero-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-info__name {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('title');
+}
+
+.profile-info__role-chip {
+  display: inline-flex;
+  margin: var(--app-space-2) 0 0;
+  padding: var(--app-space-1) var(--app-space-3);
+  color: var(--app-color-primary);
+  background: var(--app-color-primary-muted);
+  border-radius: var(--app-radius-full);
+  @include ds.text('caption-strong');
+}
+
+.profile-info__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  padding: var(--app-space-4);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-color-surface-muted);
+  border: 1px solid var(--app-color-border);
+}
+
+.profile-info__card-title {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('body-strong');
+}
+
+.profile-info__fields {
+  display: grid;
+  gap: var(--app-space-3);
+  margin: 0;
+  padding: 0;
+
+  @include ds.up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.profile-info__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-1);
+  min-width: 0;
+  padding: var(--app-space-3);
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-surface);
+
+  dt {
+    margin: 0;
+    color: var(--app-color-text-tertiary);
+    @include ds.text('caption-strong');
+  }
+
+  dd {
+    margin: 0;
+    color: var(--app-color-text-primary);
+    @include ds.text('body');
+    overflow-wrap: anywhere;
+  }
+}

@@ -30,29 +30,6 @@ export const appRoutes: Routes = [
         loadChildren: () => import('@senbilan/features/users').then((m) => m.FEATURE_USERS_ROUTES),
       },
       {
-        path: 'roles',
-        canMatch: [permissionGuard('roles:read')],
-        loadChildren: () => import('@senbilan/features/roles').then((m) => m.FEATURE_ROLES_ROUTES),
-      },
-      {
-        path: 'permissions',
-        canMatch: [permissionGuard('permissions:read')],
-        loadChildren: () =>
-          import('@senbilan/features/permissions').then((m) => m.FEATURE_PERMISSIONS_ROUTES),
-      },
-      {
-        path: 'notifications',
-        canMatch: [permissionGuard('notifications:read')],
-        loadChildren: () =>
-          import('@senbilan/features/notifications').then((m) => m.FEATURE_NOTIFICATIONS_ROUTES),
-      },
-      {
-        path: 'settings',
-        canMatch: [permissionGuard('settings:read')],
-        loadChildren: () =>
-          import('@senbilan/features/settings').then((m) => m.FEATURE_SETTINGS_ROUTES),
-      },
-      {
         path: 'profile',
         canMatch: [permissionGuard('profile:write')],
         loadChildren: () =>

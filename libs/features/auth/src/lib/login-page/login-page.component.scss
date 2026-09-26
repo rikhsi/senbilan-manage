@@ -1,51 +1,169 @@
+@use 'ds' as ds;
+
 :host {
   display: block;
   min-height: 100dvh;
 }
 
-.auth-login-page__frame {
-  display: grid;
-  place-items: center;
+.auth-login {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
+  background: var(--app-color-background);
+  box-sizing: border-box;
+
+  @include ds.up('lg') {
+    flex-direction: row;
+  }
+}
+
+.auth-login__brand {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  background: var(--app-gradient-aurora);
+  color: var(--app-color-text-primary);
+
+  @include ds.up('lg') {
+    display: flex;
+    flex: 1 1 55%;
+    align-items: center;
+    justify-content: center;
+    padding: var(--app-space-10);
+  }
+}
+
+.auth-login__visual {
+  width: min(100%, 30rem);
+  animation: auth-login-brand-in var(--app-duration-slow) var(--app-ease-out) both;
+}
+
+.auth-login__main {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  justify-content: center;
   padding: var(--app-space-6);
-  background:
-    radial-gradient(circle at top left, var(--app-color-primary-muted), transparent 45%),
-    var(--app-color-surface-muted);
+  background: var(--app-color-surface);
+
+  @include ds.up('md') {
+    padding: var(--app-space-10);
+  }
+
+  @include ds.up('lg') {
+    flex: 0 0 min(28rem, 42vw);
+    align-items: center;
+    border-left: 1px solid var(--app-color-border);
+    box-shadow: var(--app-shadow-lg);
+  }
 }
 
-.auth-login-page__card {
-  width: min(24rem, 100%);
+.auth-login__prefs {
+  position: absolute;
+  top: var(--app-space-4);
+  right: var(--app-space-4);
+  z-index: var(--app-z-raised);
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-1);
 }
 
-.auth-login-page__header {
-  margin-bottom: var(--app-space-6);
-  text-align: center;
+.auth-login__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-8);
+  width: min(100%, 24rem);
+  margin-inline: auto;
+  padding-top: var(--app-space-10);
+  animation: auth-login-panel-in var(--app-duration-slow) var(--app-ease-out) both;
+
+  @include ds.up('lg') {
+    padding-top: 0;
+  }
 }
 
-.auth-login-page__title {
+.auth-login__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+}
+
+.auth-login__title {
   margin: 0;
-  font-size: var(--app-font-size-2xl);
-  font-weight: var(--app-font-weight-semibold);
+  font-size: var(--app-font-size-3xl);
+  font-weight: var(--app-font-weight-bold);
+  letter-spacing: -0.02em;
+  line-height: var(--app-line-height-tight);
   color: var(--app-color-text-primary);
 }
 
-.auth-login-page__subtitle {
-  margin: var(--app-space-2) 0 0;
-  font-size: var(--app-font-size-sm);
+.auth-login__subtitle {
+  margin: 0;
+  font-size: var(--app-font-size-md);
+  line-height: var(--app-line-height-normal);
   color: var(--app-color-text-secondary);
 }
 
-.auth-login-page__form {
+.auth-login__form {
   display: flex;
   flex-direction: column;
-  gap: var(--app-space-4);
+  gap: var(--app-space-5);
 }
 
-.auth-login-page__error {
+.auth-login__password-control {
+  position: relative;
+  display: grid;
+}
+
+.auth-login__password-control input {
+  padding-inline-end: var(--app-space-10);
+}
+
+.auth-login__password-toggle {
+  position: absolute;
+  top: 50%;
+  right: var(--app-space-1);
+  z-index: var(--app-z-raised);
+  transform: translateY(-50%);
+}
+
+.auth-login__error {
   margin: 0;
-  padding: var(--app-space-3);
+  padding: var(--app-space-3) var(--app-space-4);
   border-radius: var(--app-radius-md);
-  background: var(--app-color-surface-muted);
-  color: var(--app-color-text-primary);
+  background: var(--app-color-danger-container);
+  color: var(--app-color-on-danger-container);
   font-size: var(--app-font-size-sm);
+}
+
+@keyframes auth-login-brand-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--app-space-4)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes auth-login-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--app-space-3));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@include ds.reduced-motion {
+  .auth-login__visual,
+  .auth-login__panel {
+    animation: none;
+  }
 }

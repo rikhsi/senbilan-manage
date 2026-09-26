@@ -2,26 +2,15 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { type Role, type User } from '@senbilan/core/domain';
 import {
   AppButtonComponent,
   AppDialogShellComponent,
   AppFormFieldComponent,
   AppInputDirective,
 } from '@senbilan/design-system/ui';
+import { type UserFormDrawerData, type UserFormDrawerResult } from './user-form-drawer.model';
 
-export interface UserFormDrawerData {
-  readonly mode: 'create' | 'edit';
-  readonly user?: User;
-  readonly roles: readonly Role[];
-}
-
-export interface UserFormDrawerResult {
-  readonly firstName: string;
-  readonly lastName: string;
-  readonly email: string;
-  readonly roleIds: readonly string[];
-}
+export type { UserFormDrawerData, UserFormDrawerResult } from './user-form-drawer.model';
 
 @Component({
   selector: 'users-form-drawer',

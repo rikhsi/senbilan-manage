@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+﻿import { afterNextRender, ChangeDetectionStrategy, Component } from '@angular/core';
+import { IonApp, IonRouterOutlet } from '@ionic/angular';
 
 @Component({
   selector: 'mobile-root',
@@ -8,4 +8,17 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {}
+export class App {
+  constructor() {
+    afterNextRender(() => {
+      const splash = document.getElementById('app-splash');
+      if (!splash) {
+        return;
+      }
+      splash.classList.add('is-done');
+      const remove = () => splash.remove();
+      splash.addEventListener('transitionend', remove, { once: true });
+      window.setTimeout(remove, 500);
+    });
+  }
+}

@@ -1,5 +1,6 @@
 import { type EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import {
+  AdminCatalogRepository,
   AuthRepository,
   DashboardRepository,
   NotificationRepository,
@@ -8,7 +9,7 @@ import {
   UserRepository,
 } from '@senbilan/core/application';
 import {
-  HttpAuthRepository,
+  HttpAdminCatalogRepository,
   HttpDashboardRepository,
   HttpNotificationRepository,
   HttpPermissionRepository,
@@ -38,19 +39,11 @@ const pick =
     select(config, mock, http);
 
 /**
- * Registers mock repository implementations and binds application ports to
- * mock **or** HTTP depending on `APP_CONFIG.features.mockApi`.
+ * Registers mock repository implementations and binds application ports.
  *
- * ```ts
- * provideObservability(),
- * provideStorage(),
- * provideApi(),      // HttpClient + interceptors + Http*Repository classes
- * provideMockApi(),  // rebinds ports: mock when mockApi, else HTTP
- * ```
- *
- * Unit tests can inject `Mock*Repository` / `MockDataStore` directly without MSW.
- * For browser HTTP + MSW, keep `mockApi: false` (or skip mock repo binding) and
- * call `startMockWorker(environment.apiBaseUrl)`.
+ * - **Auth** always uses `MockAuthRepository` until an auth OpenAPI surface exists.
+ * - Other classic ports: mock when `APP_CONFIG.features.mockApi`, otherwise HTTP.
+ * - **AdminCatalogRepository** always uses the OpenAPI HTTP adapter.
  */
 export const provideMockApi = (_options: ProvideMockApiOptions = {}): EnvironmentProviders =>
   makeEnvironmentProviders([
@@ -63,8 +56,7 @@ export const provideMockApi = (_options: ProvideMockApiOptions = {}): Environmen
     MockDashboardRepository,
     {
       provide: AuthRepository,
-      useFactory: pick((c, mock, http) => (c.features.mockApi ? mock : http)),
-      deps: [APP_CONFIG, MockAuthRepository, HttpAuthRepository],
+      useExisting: MockAuthRepository,
     },
     {
       provide: UserRepository,
@@ -90,5 +82,9 @@ export const provideMockApi = (_options: ProvideMockApiOptions = {}): Environmen
       provide: DashboardRepository,
       useFactory: pick((c, mock, http) => (c.features.mockApi ? mock : http)),
       deps: [APP_CONFIG, MockDashboardRepository, HttpDashboardRepository],
+    },
+    {
+      provide: AdminCatalogRepository,
+      useExisting: HttpAdminCatalogRepository,
     },
   ]);

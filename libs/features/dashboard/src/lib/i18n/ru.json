@@ -1,24 +1,21 @@
 {
-  "dashboard": {
-    "title": "Панель",
-    "subtitle": "Обзор пользователей, ролей и активности",
-    "metrics": {
-      "users.total": "Всего пользователей",
-      "users.active": "Активные",
-      "users.invited": "Приглашённые",
-      "roles.total": "Роли"
-    },
-    "chartTitle": "Регистрации",
-    "chartAria": "Регистрации пользователей во времени",
-    "activityTitle": "Недавняя активность",
-    "activityEmpty": "Пока нет активности",
-    "quickActions": "Быстрые действия",
-    "actionUsers": "Пользователи",
-    "actionRoles": "Роли",
-    "actionSettings": "Настройки",
-    "deltaHint": "к прошлому периоду",
-    "range7d": "7 дней",
-    "range30d": "30 дней",
-    "range90d": "90 дней"
+  "eyebrow": "Обзор",
+  "title": "Панель",
+  "subtitle": "Ключевые метрики продукта в реальном времени",
+  "errorTitle": "Не удалось загрузить статистику",
+  "errorHint": "Проверьте доступ к API и попробуйте снова.",
+  "emptyTitle": "Пока нет данных",
+  "emptyHint": "Когда появятся события, метрики отобразятся здесь.",
+  "metrics": {
+    "usersTotal": "Пользователи",
+    "usersNew1d": "Новые за сутки",
+    "usersNew7d": "Новые за 7 дней",
+    "usersNew30d": "Новые за 30 дней",
+    "usersBlocked": "Заблокированные",
+    "couplesPaired": "Пары",
+    "couplesWaiting": "Ожидают пару",
+    "pushesSent24h": "Пуши за 24ч",
+    "broadcastsQueued": "Рассылки в очереди",
+    "contentPublished": "Опубликованный контент"
   }
 }

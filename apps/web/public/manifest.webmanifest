@@ -2,16 +2,23 @@
   "name": "Senbilan Manage",
   "short_name": "Senbilan",
   "description": "Senbilan admin console",
-  "theme_color": "#0f172a",
-  "background_color": "#ffffff",
+  "theme_color": "#FBD2DC",
+  "background_color": "#FBD2DC",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
+      "src": "/assets/auth/splash_heart.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

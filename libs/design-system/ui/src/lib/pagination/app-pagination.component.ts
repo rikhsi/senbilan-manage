@@ -1,16 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { AppIconComponent } from '@senbilan/design-system/icons';
 import { AppInputDirective } from '../form/app-input.directive';
+import { type PaginationLabels } from './pagination.types';
 
-export interface PaginationLabels {
-  readonly previous: string;
-  readonly next: string;
-  readonly first: string;
-  readonly last: string;
-  readonly pageSize: string;
-  /** e.g. "{{from}}–{{to}} of {{total}}" already interpolated by the caller. */
-  readonly summary: string;
-}
+export type { PaginationLabels } from './pagination.types';
 
 /**
  * Server-side friendly pagination: emits page and page-size changes, renders a

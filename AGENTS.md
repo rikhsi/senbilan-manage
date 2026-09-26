@@ -10,25 +10,25 @@ Docs of record: `docs/ARCHITECTURE.md`, `docs/DESIGN-SYSTEM.md`, `docs/I18N.md`,
 
 ## 1. Folder structure (put code in the right place)
 
-| Need                                    | Put it in                                 | Import as                                      |
-| --------------------------------------- | ----------------------------------------- | ---------------------------------------------- |
-| Entity / VO / policy / `Result`         | `libs/core/domain`                        | `@senbilan/core/domain`                        |
-| Use case + port (abstract repo)         | `libs/core/application`                   | `@senbilan/core/application`                   |
-| HTTP / mock / storage / Sentry adapter  | `libs/infra/*`                            | `@senbilan/infra/...`                          |
-| Capacitor / device                      | `libs/platform/*`                         | `@senbilan/platform/...`                       |
-| Reusable pure TS                        | `libs/shared/util`                        | `@senbilan/shared/util`                        |
-| Angular-only helper (no feature UI)     | `libs/shared/ng`                          | `@senbilan/shared/ng`                          |
-| AppConfig / tokens                      | `libs/shared/config`                      | `@senbilan/shared/config`                      |
-| i18n providers / helpers                | `libs/shared/i18n`                        | `@senbilan/shared/i18n`                        |
-| TanStack Query setup / keys             | `libs/shared/query`                       | `@senbilan/shared/query`                       |
-| Session / theme / command stores        | `libs/shared/{auth,theme,command}`        | matching alias                                 |
-| Design tokens / SCSS API                | `libs/design-system/tokens`               | `@senbilan/design-system/tokens` + `@use 'ds'` |
-| Pure UI primitive (no Taiga/Ionic)      | `libs/design-system/ui`                   | `@senbilan/design-system/ui`                   |
-| Taiga/Ionic wrapper or theme bridge     | `libs/vendors/ui`                         | `@senbilan/vendors/ui`                         |
-| Stock Taiga/Ionic (no customization)    | `apps/*` only                             | `@taiga-ui/*` / `@ionic/*`                     |
-| Entity-scoped UI / model mappers for UI | `libs/entities/<name>`                    | `@senbilan/entities/<name>`                    |
-| Screen / route / feature flow           | `libs/features/<name>`                    | `@senbilan/features/<name>`                    |
-| Providers, routes, env wiring           | `apps/web`, `apps/mobile`, `apps/desktop` | —                                              |
+| Need                                     | Put it in                                 | Import as                                      |
+| ---------------------------------------- | ----------------------------------------- | ---------------------------------------------- |
+| Entity / VO / policy / `Result`          | `libs/core/domain`                        | `@senbilan/core/domain`                        |
+| Use case + port (abstract repo)          | `libs/core/application`                   | `@senbilan/core/application`                   |
+| HTTP / mock / OpenAPI / storage / Sentry | `libs/infra/*`                            | `@senbilan/infra/...`                          |
+| Capacitor / device                       | `libs/platform/*`                         | `@senbilan/platform/...`                       |
+| Reusable pure TS                         | `libs/shared/util`                        | `@senbilan/shared/util`                        |
+| Angular-only helper (no feature UI)      | `libs/shared/ng`                          | `@senbilan/shared/ng`                          |
+| AppConfig / tokens                       | `libs/shared/config`                      | `@senbilan/shared/config`                      |
+| i18n providers / helpers                 | `libs/shared/i18n`                        | `@senbilan/shared/i18n`                        |
+| TanStack Query setup / keys              | `libs/shared/query`                       | `@senbilan/shared/query`                       |
+| Session / theme / command stores         | `libs/shared/{auth,theme,command}`        | matching alias                                 |
+| Design tokens / SCSS API                 | `libs/design-system/tokens`               | `@senbilan/design-system/tokens` + `@use 'ds'` |
+| Pure UI primitive (no Taiga/Ionic)       | `libs/design-system/ui`                   | `@senbilan/design-system/ui`                   |
+| Taiga/Ionic wrapper or theme bridge      | `libs/vendors/ui`                         | `@senbilan/vendors/ui`                         |
+| Stock Taiga/Ionic (no customization)     | `apps/*` only                             | `@taiga-ui/*` / `@ionic/*`                     |
+| Entity-scoped UI / model mappers for UI  | `libs/entities/<name>`                    | `@senbilan/entities/<name>`                    |
+| Screen / route / feature flow            | `libs/features/<name>`                    | `@senbilan/features/<name>`                    |
+| Providers, routes, env wiring            | `apps/web`, `apps/mobile`, `apps/desktop` | —                                              |
 
 **Do not** create new top-level lib groups without an explicit human decision. **Do not** put business rules in components.
 
@@ -87,6 +87,11 @@ Tags on every project: `layer:*` + `kind:*` — keep them accurate when generati
 - Templates: control flow `@if` / `@for` / `@switch` (not `*ngIf` / `*ngFor`).
 - No `any`. No non-null assertions (`!`) in production code.
 - Keep files focused; ESLint warns at ~400 lines.
+- **Never** declare `interface` / `type` / domain models / lookup maps / nav or command constants inside `*.component.ts`. Put them in a sibling file:
+  - Feature/entity UI models → `*.model.ts` (or `*-metrics.ts` / `*-maps.ts` for pure maps)
+  - DS public API types/constants → `*.types.ts` next to the component; export from `src/index.ts`
+  - App shell nav / command defs → `apps/<host>/src/app/*-nav.ts`, `*-command.defs.ts` (composition root)
+  - Re-export from the component only when the public API historically lived there (prefer exporting types from `index.ts` / `*.model.ts`).
 
 ---
 

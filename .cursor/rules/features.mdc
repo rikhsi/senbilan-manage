@@ -14,3 +14,4 @@ alwaysApply: false
 - Forms: DS field controls + i18n validation messages.
 - Tables: `AppDataTableComponent` + column defs.
 - Export feature routes/providers from `src/index.ts` only.
+- No types/models/constants inside page/drawer components — sibling `*.model.ts` (or maps/metrics files).

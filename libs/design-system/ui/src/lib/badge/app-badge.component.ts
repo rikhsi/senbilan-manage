@@ -1,17 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { AppIconComponent, type AppIconName } from '@senbilan/design-system/icons';
+import { type Tone } from './badge.types';
 
-export const TONES = [
-  'neutral',
-  'primary',
-  'secondary',
-  'accent',
-  'success',
-  'warning',
-  'danger',
-  'info',
-] as const;
-export type Tone = (typeof TONES)[number];
+export type { Tone } from './badge.types';
+export { TONES } from './badge.types';
 
 /**
  * Compact label for counts and categories. Uses `*-container` / `on-*-container`

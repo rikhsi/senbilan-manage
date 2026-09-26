@@ -12,4 +12,5 @@ alwaysApply: false
 - Do not put use cases here — those stay in `core/application`.
 - Do not put pure domain entities here — those stay in `core/domain`.
 - Keep public API small via `src/index.ts`.
+- No models/lookup maps inside entity components — sibling `*.model.ts` / `*-maps.ts`.
 - i18n + tokens for any visible text/styles.

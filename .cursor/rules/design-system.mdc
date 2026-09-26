@@ -10,6 +10,7 @@ alwaysApply: false
 - Styles: `@use 'ds' as ds;` + `var(--app-*)` only — no hex/rgb/raw px.
 - Prefer native element + attribute selector when semantics matter (`button[app-button]`).
 - Export new public symbols from `ui` / `icons` / `layout` / `tokens` `src/index.ts`.
+- Public `type` / `interface` / variant constants live in sibling `*.types.ts` (not inside `*.component.ts`); re-export via `index.ts`.
 - No feature business logic or feature i18n product copy inside DS — accept label inputs.
 - Add a Storybook `*.stories.ts` for new UI components.
 - Do not duplicate existing primitives (button, table, form field, toast, …).

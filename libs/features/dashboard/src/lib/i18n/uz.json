@@ -1,24 +1,21 @@
 {
-  "dashboard": {
-    "title": "Boshqaruv paneli",
-    "subtitle": "Foydalanuvchilar, rollar va faoliyat sharhi",
-    "metrics": {
-      "users.total": "Jami foydalanuvchilar",
-      "users.active": "Faol",
-      "users.invited": "Taklif qilingan",
-      "roles.total": "Rollar"
-    },
-    "chartTitle": "Ro‘yxatdan o‘tishlar",
-    "chartAria": "Vaqt bo‘yicha ro‘yxatdan o‘tishlar",
-    "activityTitle": "So‘nggi faoliyat",
-    "activityEmpty": "Hali faoliyat yo‘q",
-    "quickActions": "Tezkor amallar",
-    "actionUsers": "Foydalanuvchilar",
-    "actionRoles": "Rollar",
-    "actionSettings": "Sozlamalar",
-    "deltaHint": "oldingi davrga nisbatan",
-    "range7d": "7 kun",
-    "range30d": "30 kun",
-    "range90d": "90 kun"
+  "eyebrow": "Umumiy",
+  "title": "Boshqaruv paneli",
+  "subtitle": "Admin API dan jonli mahsulot metrikasi",
+  "errorTitle": "Statistikani yuklab bo‘lmadi",
+  "errorHint": "API kirishini tekshirib, qayta urinib ko‘ring.",
+  "emptyTitle": "Hali ma’lumot yo‘q",
+  "emptyHint": "Hodisalar paydo bo‘lganda metrikalar shu yerda ko‘rinadi.",
+  "metrics": {
+    "usersTotal": "Foydalanuvchilar",
+    "usersNew1d": "Yangi (1 kun)",
+    "usersNew7d": "Yangi (7 kun)",
+    "usersNew30d": "Yangi (30 kun)",
+    "usersBlocked": "Bloklangan",
+    "couplesPaired": "Juftliklar",
+    "couplesWaiting": "Kutyapti",
+    "pushesSent24h": "Push (24 soat)",
+    "broadcastsQueued": "Navbatdagi broadcast",
+    "contentPublished": "Nashr qilingan kontent"
   }
 }

@@ -50,6 +50,7 @@
       "@senbilan/platform/mobile": ["./libs/platform/mobile/src/index.ts"],
       "@senbilan/platform/desktop": ["./libs/platform/desktop/src/index.ts"],
       "@senbilan/infra/api": ["./libs/infra/api/src/index.ts"],
+      "@senbilan/infra/openapi": ["./libs/infra/openapi/src/index.ts"],
       "@senbilan/infra/storage": ["./libs/infra/storage/src/index.ts"],
       "@senbilan/infra/mock": ["./libs/infra/mock/src/index.ts"],
       "@senbilan/infra/observability": ["./libs/infra/observability/src/index.ts"],

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { AppIconComponent } from '@senbilan/design-system/icons';
-import { type Tone } from '../badge/app-badge.component';
+import { type Tone } from '../badge/badge.types';
 
 /** Removable chip for filters and multi-select values. */
 @Component({

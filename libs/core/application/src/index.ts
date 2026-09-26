@@ -13,6 +13,7 @@ export * from './lib/ports/permission.repository';
 export * from './lib/ports/role.repository';
 export * from './lib/ports/session-storage.port';
 export * from './lib/ports/user.repository';
+export * from './lib/ports/admin-catalog.repository';
 
 // use cases
 export * from './lib/use-cases/auth/auth.use-cases';

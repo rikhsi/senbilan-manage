@@ -1,0 +1,48 @@
+<div class="profile-settings">
+  <section class="profile-settings__card" aria-labelledby="profile-theme-label">
+    <div class="profile-settings__card-head">
+      <h2 class="profile-settings__heading" id="profile-theme-label">
+        {{ 'profile.settings.theme.label' | transloco }}
+      </h2>
+      <p class="profile-settings__hint">{{ 'profile.settings.theme.hint' | transloco }}</p>
+    </div>
+    <app-radio-group
+      variant="cards"
+      [options]="themeOptions()"
+      [value]="themeMode()"
+      [labelledBy]="'profile-theme-label'"
+      (valueChange)="onThemeChange($event ?? 'system')"
+    />
+  </section>
+
+  <section class="profile-settings__card" aria-labelledby="profile-density-label">
+    <div class="profile-settings__card-head">
+      <h2 class="profile-settings__heading" id="profile-density-label">
+        {{ 'profile.settings.density.label' | transloco }}
+      </h2>
+      <p class="profile-settings__hint">{{ 'profile.settings.density.hint' | transloco }}</p>
+    </div>
+    <app-radio-group
+      variant="cards"
+      [options]="densityOptions()"
+      [value]="density()"
+      [labelledBy]="'profile-density-label'"
+      (valueChange)="onDensityChange($event ?? 'comfortable')"
+    />
+  </section>
+
+  <section class="profile-settings__card" aria-labelledby="profile-language-label">
+    <div class="profile-settings__card-head">
+      <h2 class="profile-settings__heading" id="profile-language-label">
+        {{ 'profile.settings.language.label' | transloco }}
+      </h2>
+      <p class="profile-settings__hint">{{ 'profile.settings.language.hint' | transloco }}</p>
+    </div>
+    <app-radio-group
+      [options]="languageOptions()"
+      [value]="language()"
+      [labelledBy]="'profile-language-label'"
+      (valueChange)="onLanguageChange($event ?? language())"
+    />
+  </section>
+</div>

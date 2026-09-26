@@ -4,7 +4,7 @@ import { type AppConfig } from '@senbilan/shared/config';
 export const environment: AppConfig = {
   production: false,
   appName: 'Senbilan Manage',
-  apiBaseUrl: 'http://localhost:3000/api',
+  apiBaseUrl: 'https://api.senbilan.uz',
   defaultLocale: 'ru',
   availableLocales: ['ru', 'en', 'uz'],
   sentry: {
@@ -14,7 +14,7 @@ export const environment: AppConfig = {
     tracesSampleRate: 0,
   },
   features: {
-    mockApi: true,
+    mockApi: false,
     pwa: false,
     commandPalette: true,
   },

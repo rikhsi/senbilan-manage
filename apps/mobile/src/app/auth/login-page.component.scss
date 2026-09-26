@@ -1,0 +1,98 @@
+@use 'ds' as ds;
+@use 'themes/light' as light;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.mobile-login {
+  @include light.light-theme;
+  --background: var(--app-gradient-aurora);
+}
+
+.mobile-login__shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-8);
+  justify-content: center;
+  min-height: 100%;
+  padding: var(--app-space-6);
+  padding-top: max(var(--app-space-10), env(safe-area-inset-top, 0px));
+  padding-bottom: max(var(--app-space-8), env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+
+.mobile-login__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+}
+
+.mobile-login__brand {
+  margin: 0;
+  font-size: var(--app-font-size-2xl);
+  font-weight: var(--app-font-weight-bold);
+  letter-spacing: -0.03em;
+  color: var(--app-color-text-primary);
+}
+
+.mobile-login__title {
+  margin: 0;
+  font-size: var(--app-font-size-3xl);
+  font-weight: var(--app-font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--app-color-text-primary);
+}
+
+.mobile-login__subtitle {
+  margin: 0;
+  font-size: var(--app-font-size-md);
+  color: var(--app-color-text-secondary);
+}
+
+.mobile-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-5);
+}
+
+.mobile-login__list {
+  margin: 0;
+  padding: var(--app-space-2);
+  border-radius: var(--app-radius-xl);
+  background: var(--app-color-surface);
+  box-shadow: var(--app-shadow-md);
+}
+
+.mobile-login__item {
+  --background: transparent;
+  --border-color: var(--app-color-divider);
+  --highlight-color: var(--app-color-primary);
+  --padding-start: var(--app-space-3);
+  --inner-padding-end: var(--app-space-2);
+}
+
+.mobile-login__error {
+  display: block;
+  padding: var(--app-space-3) var(--app-space-4);
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-danger-container);
+  color: var(--app-color-on-danger-container);
+  font-size: var(--app-font-size-sm);
+}
+
+.mobile-login__submit {
+  margin: 0;
+  --border-radius: var(--app-radius-lg);
+  --box-shadow: var(--app-shadow-sm);
+  min-height: var(--app-size-control-lg);
+  font-weight: var(--app-font-weight-semibold);
+}
+
+.mobile-login__hint {
+  margin: 0;
+  text-align: center;
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}

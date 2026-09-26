@@ -4,10 +4,8 @@ export {
   AppCommandPaletteComponent,
   AppCommandPalettePanelComponent,
 } from './lib/command-palette/app-command-palette.component';
-export {
-  AppContentContainerComponent,
-  type ContentWidth,
-} from './lib/content/app-content-container.component';
+export { AppContentContainerComponent } from './lib/content/app-content-container.component';
+export { type ContentWidth } from './lib/content/content.types';
 export { AppHeaderComponent } from './lib/header/app-header.component';
 export {
   LAYOUT_CAN_ACCESS,

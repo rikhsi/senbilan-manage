@@ -7,9 +7,11 @@ import {
   PermissionRepository,
   RoleRepository,
   UserRepository,
+  AdminCatalogRepository,
 } from '@senbilan/core/application';
 import { ApiClient } from './http/api-client';
 import {
+  apiBaseUrlInterceptor,
   authInterceptor,
   correlationIdInterceptor,
   errorNormalizationInterceptor,
@@ -17,6 +19,7 @@ import {
   retryInterceptor,
   timeoutInterceptor,
 } from './http/interceptors';
+import { HttpAdminCatalogRepository } from './repositories/http-admin-catalog.repository';
 import { HttpAuthRepository } from './repositories/http-auth.repository';
 import { HttpDashboardRepository } from './repositories/http-dashboard.repository';
 import { HttpNotificationRepository } from './repositories/http-notification.repository';
@@ -25,17 +28,19 @@ import { HttpRoleRepository } from './repositories/http-role.repository';
 import { HttpUserRepository } from './repositories/http-user.repository';
 
 /**
- * Registers HttpClient, interceptors (order: correlation → auth → timeout →
+ * Registers HttpClient, interceptors (order: correlation → baseUrl → auth → timeout →
  * retry → errorNormalization → logging), ApiClient, and HTTP repository bindings.
  *
  * Compose with `provideMockApi()` after this call when `features.mockApi` is true
- * so mock repositories override the HTTP ones.
+ * so mock repositories override the HTTP ones. Auth stays mock-bound until an
+ * auth OpenAPI surface exists.
  */
 export const provideApi = (): EnvironmentProviders =>
   makeEnvironmentProviders([
     provideHttpClient(
       withInterceptors([
         correlationIdInterceptor,
+        apiBaseUrlInterceptor,
         authInterceptor,
         timeoutInterceptor,
         retryInterceptor,
@@ -50,10 +55,12 @@ export const provideApi = (): EnvironmentProviders =>
     HttpPermissionRepository,
     HttpNotificationRepository,
     HttpDashboardRepository,
+    HttpAdminCatalogRepository,
     { provide: AuthRepository, useExisting: HttpAuthRepository },
     { provide: UserRepository, useExisting: HttpUserRepository },
     { provide: RoleRepository, useExisting: HttpRoleRepository },
     { provide: PermissionRepository, useExisting: HttpPermissionRepository },
     { provide: NotificationRepository, useExisting: HttpNotificationRepository },
     { provide: DashboardRepository, useExisting: HttpDashboardRepository },
+    { provide: AdminCatalogRepository, useExisting: HttpAdminCatalogRepository },
   ]);

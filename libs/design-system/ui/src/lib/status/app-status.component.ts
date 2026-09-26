@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { type Tone } from '../badge/app-badge.component';
+import { type Tone } from '../badge/badge.types';
 
 /** Dot + text status indicator (table cells, list items). */
 @Component({

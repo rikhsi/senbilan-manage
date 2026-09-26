@@ -7,10 +7,11 @@ import {
   LAYOUT_USER,
   type LayoutCommandItem,
 } from '@senbilan/design-system/layout';
+import { APP_THEME_MODE } from '@senbilan/design-system/ui';
 import { AuthStore } from '@senbilan/shared/auth';
 import { CommandPaletteService } from '@senbilan/shared/command';
 import { ShellStore } from '@senbilan/shared/shell';
-import { ThemeService } from '@senbilan/shared/theme';
+import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
 
 /**
  * Bridges AuthStore / ThemeService / ShellStore / CommandPaletteService into layout tokens
@@ -47,6 +48,17 @@ export const provideLayoutShell = (): EnvironmentProviders =>
         const theme = inject(ThemeService);
         return {
           mode: () => theme.mode(),
+          cycleMode: () => theme.cycleMode(),
+        };
+      },
+    },
+    {
+      provide: APP_THEME_MODE,
+      useFactory: () => {
+        const theme = inject(ThemeService);
+        return {
+          mode: () => theme.mode(),
+          setMode: (mode: ThemeMode) => theme.setMode(mode),
           cycleMode: () => theme.cycleMode(),
         };
       },

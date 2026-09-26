@@ -1,13 +1,45 @@
 {
-  "profile": {
-    "title": "Profile",
-    "subtitle": "Update your personal details",
+  "eyebrow": "Account",
+  "title": "Profile",
+  "subtitle": "Personal details, appearance, and language",
+  "pageInfo": "Profile — information",
+  "pageSettings": "Profile — settings",
+  "logout": "Log out",
+  "logoutConfirmTitle": "Log out?",
+  "logoutConfirmMessage": "Your session will end. Sign in again to continue.",
+  "nav": {
+    "info": "Information",
+    "settings": "Settings"
+  },
+  "info": {
+    "sectionTitle": "Basic details",
     "firstName": "First name",
+    "middleName": "Middle name",
     "lastName": "Last name",
-    "email": "Email",
-    "avatarUrl": "Avatar URL",
-    "save": "Save changes",
-    "saved": "Profile updated",
-    "saveFailed": "Could not save profile"
+    "role": "Role",
+    "empty": "—",
+    "roleEmpty": "No role assigned"
+  },
+  "settings": {
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "hint": "Theme applies immediately across the app."
+    },
+    "density": {
+      "label": "Density",
+      "comfortable": "Comfortable",
+      "compact": "Compact",
+      "hint": "Density is saved in this browser."
+    },
+    "language": {
+      "label": "Language",
+      "hint": "Interface language applies immediately.",
+      "ru": "Русский",
+      "en": "English",
+      "uz": "Oʻzbekcha"
+    }
   }
 }

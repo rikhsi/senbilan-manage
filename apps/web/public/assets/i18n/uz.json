@@ -1,10 +1,14 @@
 {
   "app": {
-    "name": "Senbilan Manage"
+    "name": "Senbilan Manage",
+    "brand": "SenBilan"
   },
   "nav": {
     "dashboard": "Boshqaruv paneli",
     "users": "Foydalanuvchilar",
+    "couples": "Juftliklar",
+    "content": "Kontent",
+    "broadcasts": "Broadcastlar",
     "roles": "Rollar",
     "permissions": "Huquqlar",
     "notifications": "Bildirishnomalar",
@@ -29,12 +33,16 @@
     "actions": "Amallar",
     "loading": "Yuklanmoqda…",
     "empty": "Hozircha hech narsa yo‘q",
+    "emptyHint": "Ma’lumot paydo bo‘lganda shu yerda ko‘rinadi.",
     "error": "Xatolik yuz berdi",
     "selectedCount": "{count} ta tanlandi",
     "clearSelection": "Tanlovni tozalash",
     "yes": "Ha",
     "no": "Yo‘q",
     "logout": "Chiqish",
+    "logoutConfirmTitle": "Akkountdan chiqilsinmi?",
+    "logoutConfirmMessage": "Sessiya yakunlanadi. Davom etish uchun qayta kiring.",
+    "welcome": "Salom, {name}",
     "profile": "Profil",
     "settings": "Sozlamalar",
     "theme": "Mavzu",

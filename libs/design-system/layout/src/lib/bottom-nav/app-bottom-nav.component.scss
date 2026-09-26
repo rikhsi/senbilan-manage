@@ -2,6 +2,10 @@
 
 :host {
   display: block;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: var(--app-z-header);
 }
 
 .app-bottom-nav {

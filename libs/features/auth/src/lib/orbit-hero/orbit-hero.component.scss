@@ -1,0 +1,211 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.auth-orbit {
+  --_period-inner: 28s;
+  --_period-outer: 42s;
+  container-type: inline-size;
+  aspect-ratio: 1;
+  width: 100%;
+}
+
+.auth-orbit__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.auth-orbit__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--app-color-primary) 28%, transparent);
+  border-radius: var(--app-radius-full);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.auth-orbit__ring--inner {
+  width: 60cqi;
+  height: 60cqi;
+}
+
+.auth-orbit__ring--outer {
+  width: 84cqi;
+  height: 84cqi;
+}
+
+.auth-orbit__portrait {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40cqi;
+  height: 40cqi;
+  overflow: hidden;
+  border: 5px solid var(--app-color-surface);
+  border-radius: var(--app-radius-full);
+  background: var(--app-color-surface);
+  box-shadow: var(--app-shadow-lg);
+  transform: translate(-50%, -50%);
+  animation: auth-orbit-pulse 4s var(--app-ease-in-out) infinite;
+}
+
+.auth-orbit__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12);
+}
+
+.auth-orbit__spin {
+  position: absolute;
+  inset: 0;
+  animation: auth-orbit-spin var(--_period-inner) linear infinite;
+}
+
+.auth-orbit__spin--outer {
+  animation-duration: var(--_period-outer);
+  animation-direction: reverse;
+}
+
+.auth-orbit__sat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--_angle));
+}
+
+.auth-orbit__arm {
+  transform: translate(-50%, -50%) translateY(-30cqi);
+}
+
+.auth-orbit__arm--outer {
+  transform: translate(-50%, -50%) translateY(-42cqi);
+}
+
+.auth-orbit__level {
+  // Cancel the satellite's own angle so the icon stays upright.
+  transform: rotate(calc(-1 * var(--_angle)));
+}
+
+.auth-orbit__bubble {
+  display: grid;
+  place-items: center;
+  width: 12cqi;
+  height: 12cqi;
+  border-radius: var(--app-radius-full);
+  background: var(--app-color-surface);
+  box-shadow: var(--app-shadow-md);
+  color: var(--app-color-primary);
+  // Cancel the parent ring spin so the icon stays upright.
+  animation: auth-orbit-spin-reverse var(--_period-inner) linear infinite;
+}
+
+.auth-orbit__spin--outer .auth-orbit__bubble {
+  animation-name: auth-orbit-spin;
+  animation-duration: var(--_period-outer);
+}
+
+.auth-orbit__hearts {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.auth-orbit__heart {
+  position: absolute;
+  bottom: 8%;
+  left: var(--_left);
+  display: grid;
+  place-items: center;
+  width: var(--app-size-avatar-sm);
+  height: var(--app-size-avatar-sm);
+  border-radius: var(--app-radius-full);
+  background: color-mix(in srgb, var(--app-color-surface) 85%, transparent);
+  color: var(--app-color-primary);
+  box-shadow: var(--app-shadow-sm);
+  opacity: 0;
+  animation: auth-orbit-float var(--_duration) var(--app-ease-out) var(--_delay) infinite;
+}
+
+.auth-orbit__heart--sm {
+  width: var(--app-size-icon-xl);
+  height: var(--app-size-icon-xl);
+}
+
+@keyframes auth-orbit-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes auth-orbit-spin-reverse {
+  to {
+    transform: rotate(-1turn);
+  }
+}
+
+@keyframes auth-orbit-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.03);
+  }
+}
+
+@keyframes auth-orbit-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.7);
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  70% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-120%) scale(1.05);
+  }
+}
+
+@include ds.reduced-motion {
+  .auth-orbit__portrait,
+  .auth-orbit__spin,
+  .auth-orbit__bubble,
+  .auth-orbit__heart {
+    animation: none;
+  }
+
+  .auth-orbit__heart {
+    display: none;
+  }
+}
+
+:host-context([data-motion='reduced']) {
+  .auth-orbit__portrait,
+  .auth-orbit__spin,
+  .auth-orbit__bubble,
+  .auth-orbit__heart {
+    animation: none;
+  }
+
+  .auth-orbit__heart {
+    display: none;
+  }
+}

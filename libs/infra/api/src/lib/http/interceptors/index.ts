@@ -1,4 +1,5 @@
 export { correlationIdInterceptor } from './correlation-id.interceptor';
+export { apiBaseUrlInterceptor } from './api-base-url.interceptor';
 export { authInterceptor } from './auth.interceptor';
 export { timeoutInterceptor } from './timeout.interceptor';
 export { retryInterceptor } from './retry.interceptor';

@@ -16,15 +16,7 @@ import { APP_CONFIG } from '@senbilan/shared/config';
 import { disabled, form, FormField, required, submit } from '@senbilan/shared/ng';
 import { ShellStore, type ShellDensity } from '@senbilan/shared/shell';
 import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
-
-type SettingsTab = 'theme' | 'language' | 'density' | 'profile';
-type AppLocale = 'ru' | 'en' | 'uz';
-
-interface SettingsProfileModel {
-  firstName: string;
-  lastName: string;
-  email: string;
-}
+import { type AppLocale, type SettingsProfileModel, type SettingsTab } from './settings.model';
 
 @Component({
   selector: 'settings-page',

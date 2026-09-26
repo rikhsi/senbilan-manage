@@ -1,22 +1,9 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { isUnread, type Notification, type NotificationKind } from '@senbilan/core/domain';
-import { AppIconComponent, type AppIconName } from '@senbilan/design-system/icons';
-import { AppButtonComponent, type Tone } from '@senbilan/design-system/ui';
-
-const KIND_TONE: Record<NotificationKind, Tone> = {
-  info: 'info',
-  success: 'success',
-  warning: 'warning',
-  danger: 'danger',
-};
-
-const KIND_ICON: Record<NotificationKind, AppIconName> = {
-  info: 'info',
-  success: 'check-circle',
-  warning: 'alert-triangle',
-  danger: 'circle-alert',
-};
+import { isUnread, type Notification } from '@senbilan/core/domain';
+import { AppIconComponent } from '@senbilan/design-system/icons';
+import { AppButtonComponent } from '@senbilan/design-system/ui';
+import { NOTIFICATION_KIND_ICON, NOTIFICATION_KIND_TONE } from './notification-kind.maps';
 
 @Component({
   selector: 'entity-notification-item',
@@ -26,7 +13,9 @@ const KIND_ICON: Record<NotificationKind, AppIconName> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'entity-notification-item',
+    // eslint-disable-next-line @senbilan/no-hardcoded-text-ts -- host binding expression, not UI copy
     '[class.entity-notification-item--unread]': 'unread()',
+    // eslint-disable-next-line @senbilan/no-hardcoded-text-ts -- host binding expression, not UI copy
     '[attr.data-tone]': 'tone()',
   },
 })
@@ -36,8 +25,8 @@ export class NotificationItemComponent {
   readonly markRead = output<Notification>();
 
   protected readonly unread = computed(() => isUnread(this.notification()));
-  protected readonly tone = computed(() => KIND_TONE[this.notification().kind]);
-  protected readonly icon = computed(() => KIND_ICON[this.notification().kind]);
+  protected readonly tone = computed(() => NOTIFICATION_KIND_TONE[this.notification().kind]);
+  protected readonly icon = computed(() => NOTIFICATION_KIND_ICON[this.notification().kind]);
 
   protected onMarkRead(): void {
     if (this.unread()) {

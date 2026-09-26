@@ -1,0 +1,43 @@
+{
+  "name": "infra-openapi",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/infra/openapi/src",
+  "prefix": "app",
+  "projectType": "library",
+  "tags": ["layer:infra", "kind:infrastructure"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["ngc -p tsconfig.lib.json --noEmit", "tsc -p tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
+    },
+    "openapi-sync": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/openapi-sync.mjs sync",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "openapi-fetch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/openapi-sync.mjs fetch",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "openapi-generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/openapi-sync.mjs generate",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "lint-styles": {}
+  }
+}

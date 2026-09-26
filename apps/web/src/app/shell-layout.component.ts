@@ -10,11 +10,18 @@ import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { type PermissionKey } from '@senbilan/core/domain';
 import { AppShellComponent, type NavigationItem } from '@senbilan/design-system/layout';
-import { AppToastContainerComponent } from '@senbilan/design-system/ui';
+import {
+  AppConfirmDialogService,
+  AppModalService,
+  AppToastContainerComponent,
+} from '@senbilan/design-system/ui';
+import { openNotificationsInbox } from '@senbilan/features/notifications';
 import { AuthStore } from '@senbilan/shared/auth';
 import { CommandPaletteService, type Command } from '@senbilan/shared/command';
 import { ShellStore } from '@senbilan/shared/shell';
 import { ThemeService } from '@senbilan/shared/theme';
+import { WEB_SHELL_ACTION_COMMANDS } from './shell-command.defs';
+import { WEB_SHELL_NAV } from './shell-nav';
 
 /** Authenticated application chrome. Nav is permission-filtered via AuthStore. */
 @Component({
@@ -25,10 +32,8 @@ import { ThemeService } from '@senbilan/shared/theme';
       [navItems]="navItems()"
       [sidebarCollapsed]="shell.sidebarCollapsed()"
       (sidebarCollapsedChange)="shell.setSidebarCollapsed($event)"
-      (notifications)="go('/notifications')"
+      (notifications)="openNotifications()"
       (profile)="go('/profile')"
-      (settings)="go('/settings')"
-      (logout)="onLogout()"
     />
     <app-toast-container />
   `,
@@ -37,6 +42,12 @@ import { ThemeService } from '@senbilan/shared/theme';
     class: 'web-shell-layout',
     '[attr.data-density]': 'shell.density()',
   },
+  styles: `
+    :host {
+      display: block;
+      min-height: 100%;
+    }
+  `,
 })
 export class ShellLayoutComponent implements OnInit {
   private readonly auth = inject(AuthStore);
@@ -45,55 +56,11 @@ export class ShellLayoutComponent implements OnInit {
   private readonly i18n = inject(TranslocoService);
   private readonly palette = inject(CommandPaletteService);
   private readonly theme = inject(ThemeService);
+  private readonly modal = inject(AppModalService);
+  private readonly confirm = inject(AppConfirmDialogService);
   protected readonly shell = inject(ShellStore);
 
-  private readonly allNav: readonly NavigationItem[] = [
-    {
-      id: 'dashboard',
-      labelKey: 'nav.dashboard',
-      route: '/dashboard',
-      icon: 'layout-dashboard',
-      permission: 'dashboard:read',
-      exact: true,
-    },
-    {
-      id: 'users',
-      labelKey: 'nav.users',
-      route: '/users',
-      icon: 'users',
-      permission: 'users:read',
-    },
-    {
-      id: 'roles',
-      labelKey: 'nav.roles',
-      route: '/roles',
-      icon: 'shield',
-      permission: 'roles:read',
-    },
-    {
-      id: 'permissions',
-      labelKey: 'nav.permissions',
-      route: '/permissions',
-      icon: 'key',
-      permission: 'permissions:read',
-    },
-    {
-      id: 'notifications',
-      labelKey: 'nav.notifications',
-      route: '/notifications',
-      icon: 'bell',
-      permission: 'notifications:read',
-    },
-    {
-      id: 'settings',
-      labelKey: 'nav.settings',
-      route: '/settings',
-      icon: 'settings',
-      permission: 'settings:read',
-    },
-  ];
-
-  protected readonly navItems = computed(() => this.filterNav(this.allNav));
+  protected readonly navItems = computed(() => this.filterNav(WEB_SHELL_NAV));
 
   ngOnInit(): void {
     const dispose = this.palette.registerMany(this.buildCommands());
@@ -104,63 +71,68 @@ export class ShellLayoutComponent implements OnInit {
     void this.router.navigateByUrl(path);
   }
 
+  protected openNotifications(): void {
+    openNotificationsInbox(this.modal, this.i18n.translate('common.notifications'));
+  }
+
   protected async onLogout(): Promise<void> {
+    const ok = await this.confirm.ask({
+      title: this.i18n.translate('common.logoutConfirmTitle'),
+      message: this.i18n.translate('common.logoutConfirmMessage'),
+      confirmLabel: this.i18n.translate('common.logout'),
+      cancelLabel: this.i18n.translate('common.cancel'),
+      tone: 'danger',
+      icon: 'log-out',
+    });
+    if (!ok) {
+      return;
+    }
     await this.auth.logout();
     void this.router.navigateByUrl('/auth/login');
   }
 
   private buildCommands(): readonly Command[] {
-    const navCommands: Command[] = this.allNav
-      .filter((item): item is NavigationItem & { route: string } => item.route !== undefined)
-      .map((item) => {
-        const base = {
-          id: `nav.${item.id}`,
-          label: this.i18n.translate(item.labelKey),
-          labelKey: item.labelKey,
-          keywords: [item.id, item.route],
-          action: () => {
-            this.shell.closeCommandPalette();
-            void this.router.navigateByUrl(item.route);
-          },
-        };
-        return {
-          ...base,
-          ...(item.icon !== undefined ? { icon: item.icon } : {}),
-          ...(item.permission !== undefined
-            ? { permission: item.permission as PermissionKey }
-            : {}),
-        };
-      });
-
-    const actionCommands: Command[] = [
-      {
-        id: 'action.profile',
-        label: this.i18n.translate('common.profile'),
-        labelKey: 'common.profile',
-        icon: 'user',
-        keywords: ['account', 'me'],
+    const navCommands: Command[] = WEB_SHELL_NAV.filter(
+      (item): item is NavigationItem & { route: string } => item.route !== undefined,
+    ).map((item) => {
+      const base = {
+        id: `nav.${item.id}`,
+        label: this.i18n.translate(item.labelKey),
+        labelKey: item.labelKey,
+        keywords: [item.id, item.route],
         action: () => {
           this.shell.closeCommandPalette();
-          void this.router.navigateByUrl('/profile');
+          void this.router.navigateByUrl(item.route);
         },
+      };
+      return {
+        ...base,
+        ...(item.icon !== undefined ? { icon: item.icon } : {}),
+        ...(item.permission !== undefined ? { permission: item.permission as PermissionKey } : {}),
+      };
+    });
+
+    const actionCommands: Command[] = WEB_SHELL_ACTION_COMMANDS.map((def) => ({
+      id: def.id,
+      label: this.i18n.translate(def.labelKey),
+      labelKey: def.labelKey,
+      icon: def.icon,
+      keywords: [...def.keywords],
+      action: () => {
+        if (def.kind === 'theme') {
+          this.theme.cycleMode();
+          return;
+        }
+        if (def.kind === 'logout') {
+          void this.onLogout();
+          return;
+        }
+        this.shell.closeCommandPalette();
+        if (def.route !== undefined) {
+          void this.router.navigateByUrl(def.route);
+        }
       },
-      {
-        id: 'action.theme',
-        label: this.i18n.translate('common.cycleTheme'),
-        labelKey: 'common.cycleTheme',
-        icon: 'sun',
-        keywords: ['dark', 'light', 'theme'],
-        action: () => this.theme.cycleMode(),
-      },
-      {
-        id: 'action.logout',
-        label: this.i18n.translate('common.logout'),
-        labelKey: 'common.logout',
-        icon: 'log-out',
-        keywords: ['sign out', 'exit'],
-        action: () => void this.onLogout(),
-      },
-    ];
+    }));
 
     return [...navCommands, ...actionCommands];
   }

@@ -10,7 +10,6 @@ import {
   type Role,
   type User,
   type Notification,
-  NotificationId,
   type DashboardOverview,
   type UserStatus,
 } from '@senbilan/core/domain';
@@ -187,18 +186,8 @@ const buildRoles = (users: readonly User[]): Role[] =>
     updatedAt: NOW,
   }));
 
-const buildNotifications = (): Notification[] => {
-  const kinds = ['info', 'success', 'warning', 'danger'] as const;
-  return Array.from({ length: 24 }, (_, i) => ({
-    id: NotificationId(`notif-${String(i + 1).padStart(3, '0')}`),
-    kind: kinds[i % kinds.length] ?? 'info',
-    title: `notification.${kinds[i % kinds.length] ?? 'info'}.${i + 1}`,
-    body: `Mock notification body #${i + 1}`,
-    link: i % 3 === 0 ? '/users' : null,
-    readAt: i % 4 === 0 ? null : NOW,
-    createdAt: IsoDateTime(`2026-03-${String((i % 20) + 1).padStart(2, '0')}T12:00:00.000Z`),
-  }));
-};
+/** Empty until a real notifications API is available. */
+const buildNotifications = (): Notification[] => [];
 
 const buildDashboard = (users: readonly User[], roles: readonly Role[]): DashboardOverview => {
   const active = users.filter((u) => u.status === 'active').length;

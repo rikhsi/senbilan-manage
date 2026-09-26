@@ -1,0 +1,52 @@
+<div class="auth-orbit" aria-hidden="true">
+  <div class="auth-orbit__stage">
+    <div class="auth-orbit__ring auth-orbit__ring--inner"></div>
+    <div class="auth-orbit__ring auth-orbit__ring--outer"></div>
+
+    <div class="auth-orbit__portrait">
+      <img class="auth-orbit__image" [src]="imageSrc" alt="" width="320" height="320" />
+    </div>
+
+    <div class="auth-orbit__spin auth-orbit__spin--inner">
+      @for (sat of innerSatellites(); track sat.icon) {
+        <div class="auth-orbit__sat" [style.--_angle]="sat.angle + 'deg'">
+          <div class="auth-orbit__arm">
+            <div class="auth-orbit__level">
+              <div class="auth-orbit__bubble">
+                <app-icon [name]="sat.icon" size="sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="auth-orbit__spin auth-orbit__spin--outer">
+      @for (sat of outerSatellites(); track sat.icon) {
+        <div class="auth-orbit__sat" [style.--_angle]="sat.angle + 'deg'">
+          <div class="auth-orbit__arm auth-orbit__arm--outer">
+            <div class="auth-orbit__level">
+              <div class="auth-orbit__bubble">
+                <app-icon [name]="sat.icon" size="sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="auth-orbit__hearts">
+      @for (heart of hearts; track heart.left) {
+        <span
+          class="auth-orbit__heart"
+          [class.auth-orbit__heart--sm]="heart.size === 'sm'"
+          [style.--_left]="heart.left"
+          [style.--_delay]="heart.delay"
+          [style.--_duration]="heart.duration"
+        >
+          <app-icon name="heart" size="sm" />
+        </span>
+      }
+    </div>
+  </div>
+</div>

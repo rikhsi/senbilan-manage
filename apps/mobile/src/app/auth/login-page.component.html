@@ -1,0 +1,70 @@
+<ion-content [fullscreen]="true" class="mobile-login">
+  <div class="mobile-login__shell">
+    <header class="mobile-login__header">
+      <p class="mobile-login__brand">{{ 'auth.brand' | transloco }}</p>
+      <h1 class="mobile-login__title">{{ 'auth.title' | transloco }}</h1>
+      <p class="mobile-login__subtitle">{{ 'auth.subtitle' | transloco }}</p>
+    </header>
+
+    <form class="mobile-login__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <ion-list lines="full" class="mobile-login__list">
+        <ion-item class="mobile-login__item">
+          <ion-input
+            formControlName="email"
+            type="email"
+            autocomplete="username"
+            [label]="'auth.email' | transloco"
+            labelPlacement="stacked"
+            [errorText]="
+              form.controls.email.touched && form.controls.email.invalid
+                ? ('auth.emailRequired' | transloco)
+                : undefined
+            "
+          />
+        </ion-item>
+
+        <ion-item class="mobile-login__item">
+          <ion-input
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            autocomplete="current-password"
+            [label]="'auth.password' | transloco"
+            labelPlacement="stacked"
+            [errorText]="
+              form.controls.password.touched && form.controls.password.invalid
+                ? ('auth.passwordRequired' | transloco)
+                : undefined
+            "
+          >
+            <ion-button
+              fill="clear"
+              slot="end"
+              type="button"
+              [attr.aria-label]="(showPassword() ? 'auth.hidePassword' : 'auth.showPassword') | transloco"
+              (click)="togglePassword()"
+            >
+              <ion-icon slot="icon-only" [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'" />
+            </ion-button>
+          </ion-input>
+        </ion-item>
+      </ion-list>
+
+      @if (formError(); as message) {
+        <ion-note color="danger" class="mobile-login__error" role="alert">{{ message }}</ion-note>
+      }
+
+      <ion-button type="submit" expand="block" class="mobile-login__submit" [disabled]="submitting()">
+        @if (submitting()) {
+          <ion-spinner name="crescent" />
+        } @else {
+          <ion-icon slot="start" name="lock-closed-outline" />
+          {{ 'auth.submit' | transloco }}
+        }
+      </ion-button>
+    </form>
+
+    <ion-text color="medium">
+      <p class="mobile-login__hint">{{ 'auth.demoHint' | transloco }}</p>
+    </ion-text>
+  </div>
+</ion-content>

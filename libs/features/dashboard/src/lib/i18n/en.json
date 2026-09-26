@@ -1,24 +1,21 @@
 {
-  "dashboard": {
-    "title": "Dashboard",
-    "subtitle": "Overview of users, roles and recent activity",
-    "metrics": {
-      "users.total": "Total users",
-      "users.active": "Active users",
-      "users.invited": "Invited users",
-      "roles.total": "Roles"
-    },
-    "chartTitle": "Signups",
-    "chartAria": "User signups over time",
-    "activityTitle": "Recent activity",
-    "activityEmpty": "No recent activity yet",
-    "quickActions": "Quick actions",
-    "actionUsers": "Manage users",
-    "actionRoles": "Manage roles",
-    "actionSettings": "Open settings",
-    "deltaHint": "vs previous period",
-    "range7d": "7 days",
-    "range30d": "30 days",
-    "range90d": "90 days"
+  "eyebrow": "Overview",
+  "title": "Dashboard",
+  "subtitle": "Live product metrics from the admin API",
+  "errorTitle": "Could not load stats",
+  "errorHint": "Check API access and try again.",
+  "emptyTitle": "No data yet",
+  "emptyHint": "Metrics will appear here once events are available.",
+  "metrics": {
+    "usersTotal": "Users",
+    "usersNew1d": "New (1 day)",
+    "usersNew7d": "New (7 days)",
+    "usersNew30d": "New (30 days)",
+    "usersBlocked": "Blocked",
+    "couplesPaired": "Couples",
+    "couplesWaiting": "Waiting",
+    "pushesSent24h": "Pushes (24h)",
+    "broadcastsQueued": "Broadcasts queued",
+    "contentPublished": "Published content"
   }
 }

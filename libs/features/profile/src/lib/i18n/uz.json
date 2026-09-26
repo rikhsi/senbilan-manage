@@ -1,13 +1,45 @@
 {
-  "profile": {
-    "title": "Profil",
-    "subtitle": "Shaxsiy ma’lumotlar",
+  "eyebrow": "Akkount",
+  "title": "Profil",
+  "subtitle": "Shaxsiy ma’lumotlar, ko‘rinish va til",
+  "pageInfo": "Profil — ma’lumot",
+  "pageSettings": "Profil — sozlamalar",
+  "logout": "Chiqish",
+  "logoutConfirmTitle": "Akkountdan chiqilsinmi?",
+  "logoutConfirmMessage": "Sessiya yakunlanadi. Davom etish uchun qayta kiring.",
+  "nav": {
+    "info": "Ma’lumot",
+    "settings": "Sozlamalar"
+  },
+  "info": {
+    "sectionTitle": "Asosiy ma’lumotlar",
     "firstName": "Ism",
+    "middleName": "Otasining ismi",
     "lastName": "Familiya",
-    "email": "Email",
-    "avatarUrl": "Avatar URL",
-    "save": "Saqlash",
-    "saved": "Profil yangilandi",
-    "saveFailed": "Profilni saqlab bo‘lmadi"
+    "role": "Rol",
+    "empty": "—",
+    "roleEmpty": "Rol ko‘rsatilmagan"
+  },
+  "settings": {
+    "theme": {
+      "label": "Mavzu",
+      "light": "Yorug‘",
+      "dark": "Qorong‘u",
+      "system": "Tizim",
+      "hint": "Mavzu butun ilovaga darhol qo‘llanadi."
+    },
+    "density": {
+      "label": "Ixchamlik",
+      "comfortable": "Qulay",
+      "compact": "Ixcham",
+      "hint": "Ixchamlik shu brauzerda saqlanadi."
+    },
+    "language": {
+      "label": "Til",
+      "hint": "Interfeys tili darhol qo‘llanadi.",
+      "ru": "Русский",
+      "en": "English",
+      "uz": "Oʻzbekcha"
+    }
   }
 }

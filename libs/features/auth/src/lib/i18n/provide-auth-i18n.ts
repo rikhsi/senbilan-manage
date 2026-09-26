@@ -1,11 +1,4 @@
 import { provideTranslocoScope } from '@jsverse/transloco';
 
-export const provideAuthI18n = () =>
-  provideTranslocoScope({
-    scope: 'auth',
-    loader: {
-      en: () => import('./en.json'),
-      ru: () => import('./ru.json'),
-      uz: () => import('./uz.json'),
-    },
-  });
+/** Registers the `auth` scope; translations load from `assets/i18n/auth.{lang}.json`. */
+export const provideAuthI18n = () => provideTranslocoScope('auth');

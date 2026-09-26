@@ -1,12 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
-import { type Permission, type PermissionKey } from '@senbilan/core/domain';
+import { type PermissionKey } from '@senbilan/core/domain';
 import { AppCheckboxComponent } from '@senbilan/design-system/ui';
+import { type PermissionMatrixGroup } from './permission-matrix.model';
 
-export interface PermissionMatrixGroup {
-  readonly resource: string;
-  readonly label: string;
-  readonly permissions: readonly (Permission & { readonly label: string })[];
-}
+export type { PermissionMatrixGroup } from './permission-matrix.model';
 
 @Component({
   selector: 'entity-permission-matrix',

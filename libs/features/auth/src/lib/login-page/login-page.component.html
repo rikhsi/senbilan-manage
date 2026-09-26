@@ -1,26 +1,67 @@
-<div class="auth-login-page__frame">
-  <app-card class="auth-login-page__card" variant="elevated" padding="lg">
-    <header class="auth-login-page__header">
-      <h1 class="auth-login-page__title">{{ 'auth.title' | transloco }}</h1>
-      <p class="auth-login-page__subtitle">{{ 'auth.subtitle' | transloco }}</p>
-    </header>
+<div class="auth-login">
+  <aside class="auth-login__brand" aria-hidden="true">
+    <div class="auth-login__visual">
+      <auth-orbit-hero />
+    </div>
+  </aside>
 
-    <form class="auth-login-page__form" (submit)="onSubmit($event)" novalidate>
-      <app-form-field [label]="'auth.email' | transloco" [error]="errorFor('email')" required>
-        <input appInput type="email" autocomplete="username" [formField]="loginForm.email" />
-      </app-form-field>
+  <main class="auth-login__main">
+    <div class="auth-login__prefs">
+      <app-locale-toggle />
+      <app-theme-toggle />
+    </div>
 
-      <app-form-field [label]="'auth.password' | transloco" [error]="errorFor('password')" required>
-        <input appInput type="password" autocomplete="current-password" [formField]="loginForm.password" />
-      </app-form-field>
+    <div class="auth-login__panel">
+      <header class="auth-login__header">
+        <h1 class="auth-login__title">{{ 'auth.title' | transloco }}</h1>
+        <p class="auth-login__subtitle">{{ 'auth.subtitle' | transloco }}</p>
+      </header>
 
-      @if (formError(); as message) {
-        <p class="auth-login-page__error" role="alert">{{ message }}</p>
-      }
+      <form class="auth-login__form" (submit)="onSubmit($event)" novalidate>
+        <app-form-field [label]="'auth.email' | transloco" [error]="errorFor('email')" required>
+          <input appInput type="email" autocomplete="username" [formField]="loginForm.email" />
+        </app-form-field>
 
-      <button app-button type="submit" variant="primary" [block]="true" [loading]="submitting()" icon="lock">
-        {{ (submitting() ? 'auth.submitting' : 'auth.submit') | transloco }}
-      </button>
-    </form>
-  </app-card>
+        <app-form-field [label]="'auth.password' | transloco" [error]="errorFor('password')" required>
+          <div class="auth-login__password-control">
+            <input
+              appInput
+              [type]="showPassword() ? 'text' : 'password'"
+              autocomplete="current-password"
+              [formField]="loginForm.password"
+            />
+            <button
+              app-icon-button
+              type="button"
+              class="auth-login__password-toggle"
+              variant="ghost"
+              [icon]="showPassword() ? 'eye-off' : 'eye'"
+              [label]="(showPassword() ? 'auth.hidePassword' : 'auth.showPassword') | transloco"
+              (click)="togglePassword()"
+            >
+              <span class="app-visually-hidden">{{
+                (showPassword() ? 'auth.hidePassword' : 'auth.showPassword') | transloco
+              }}</span>
+            </button>
+          </div>
+        </app-form-field>
+
+        @if (formError(); as message) {
+          <p class="auth-login__error" role="alert">{{ message }}</p>
+        }
+
+        <button
+          app-button
+          type="submit"
+          variant="primary"
+          size="lg"
+          [block]="true"
+          [loading]="submitting()"
+          icon="lock"
+        >
+          {{ (submitting() ? 'auth.submitting' : 'auth.submit') | transloco }}
+        </button>
+      </form>
+    </div>
+  </main>
 </div>

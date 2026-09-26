@@ -25,7 +25,13 @@
       "executor": "nx:noop"
     },
     "typecheck": {
-      "executor": "nx:noop"
-    }
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "commands": ["tsc -b tsconfig.json --noEmit"],
+        "parallel": false
+      }
+    },
+    "lint-styles": {}
   }
 }

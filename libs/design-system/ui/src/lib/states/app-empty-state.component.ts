@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { AppIconComponent, type AppIconName } from '@senbilan/design-system/icons';
+import { AppIconComponent } from '@senbilan/design-system/icons';
+import { type EmptyStateIcon, type EmptyStateSize, type EmptyStateTone } from './empty-state.types';
+
+export type { EmptyStateIcon, EmptyStateSize, EmptyStateTone } from './empty-state.types';
 
 /**
- * Empty / error / info placeholder with one optional action (projected).
+ * Reusable empty / zero-data placeholder with one optional action (projected).
  *
  * ```html
- * <app-empty-state icon="users" [title]="t('users.empty.title')" [description]="t('users.empty.body')">
- *   <button app-button variant="primary" icon="plus">{{ t('users.create') }}</button>
+ * <app-empty-state icon="bell" [title]="t('notifications.empty')" [description]="t('notifications.emptyHint')">
+ *   <button app-button variant="primary">{{ t('common.retry') }}</button>
  * </app-empty-state>
  * ```
  */
@@ -28,9 +31,9 @@ import { AppIconComponent, type AppIconName } from '@senbilan/design-system/icon
   host: { class: 'app-empty-state', '[attr.data-size]': 'size()' },
 })
 export class AppEmptyStateComponent {
-  readonly icon = input<AppIconName>('info');
+  readonly icon = input<EmptyStateIcon>('info');
   readonly title = input.required<string>();
   readonly description = input<string>('');
-  readonly tone = input<'neutral' | 'danger' | 'primary'>('neutral');
-  readonly size = input<'sm' | 'md'>('md');
+  readonly tone = input<EmptyStateTone>('neutral');
+  readonly size = input<EmptyStateSize>('md');
 }

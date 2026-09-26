@@ -1,10 +1,14 @@
 {
   "app": {
-    "name": "Senbilan Manage"
+    "name": "Senbilan Manage",
+    "brand": "SenBilan"
   },
   "nav": {
     "dashboard": "Панель",
     "users": "Пользователи",
+    "couples": "Пары",
+    "content": "Контент",
+    "broadcasts": "Рассылки",
     "roles": "Роли",
     "permissions": "Права",
     "notifications": "Уведомления",
@@ -29,12 +33,16 @@
     "actions": "Действия",
     "loading": "Загрузка…",
     "empty": "Пока ничего нет",
+    "emptyHint": "Когда появятся данные, они отобразятся здесь.",
     "error": "Что-то пошло не так",
     "selectedCount": "Выбрано: {count}",
     "clearSelection": "Снять выделение",
     "yes": "Да",
     "no": "Нет",
     "logout": "Выйти",
+    "logoutConfirmTitle": "Выйти из аккаунта?",
+    "logoutConfirmMessage": "Сессия будет завершена. Чтобы продолжить работу, войдите снова.",
+    "welcome": "Здравствуйте, {name}",
     "profile": "Профиль",
     "settings": "Настройки",
     "theme": "Тема",

@@ -1,0 +1,49 @@
+@use 'ds' as ds;
+
+:host {
+  display: inline-flex;
+}
+
+.app-locale-toggle {
+  @include ds.focus-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--app-radius-md);
+  background: transparent;
+  color: var(--app-color-text-secondary);
+  cursor: pointer;
+  min-width: var(--app-size-control-md);
+  min-height: var(--app-size-control-md);
+  transition:
+    background-color var(--app-duration-fast) var(--app-ease-out),
+    color var(--app-duration-fast) var(--app-ease-out);
+
+  &[data-size='sm'] {
+    min-width: var(--app-size-control-sm);
+    min-height: var(--app-size-control-sm);
+  }
+
+  &[data-size='lg'] {
+    min-width: var(--app-size-control-lg);
+    min-height: var(--app-size-control-lg);
+  }
+
+  &:hover {
+    background: var(--app-color-surface-muted);
+    color: var(--app-color-text-primary);
+  }
+
+  &:focus-visible {
+    @include ds.focus-ring;
+  }
+}
+
+.app-locale-toggle__option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+}

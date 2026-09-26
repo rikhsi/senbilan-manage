@@ -1,8 +1,4 @@
-import {
-  CdkConnectedOverlay,
-  CdkOverlayOrigin,
-  type ConnectedPosition,
-} from '@angular/cdk/overlay';
+import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,27 +15,9 @@ import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AppIconComponent } from '@senbilan/design-system/icons';
 import { APP_CONTROL, type AppControl, nextControlId } from '../form/app-control';
 import { AppFormFieldComponent } from '../form/app-form-field.component';
+import { SELECT_OVERLAY_POSITIONS, type SelectLabels, type SelectOption } from './select.types';
 
-export interface SelectOption<T = string> {
-  readonly value: T;
-  readonly label: string;
-  readonly description?: string;
-  readonly disabled?: boolean;
-}
-
-export interface SelectLabels {
-  readonly placeholder: string;
-  readonly searchPlaceholder: string;
-  readonly noResults: string;
-  readonly clear: string;
-  /** "{{count}} selected" — already interpolated by the caller via a function. */
-  readonly selectedCount: (count: number) => string;
-}
-
-const POSITIONS: ConnectedPosition[] = [
-  { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
-  { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
-];
+export type { SelectLabels, SelectOption } from './select.types';
 
 /**
  * Select / multi-select / autocomplete in one CVA component.
@@ -94,7 +72,7 @@ export class AppSelectComponent<T = string> implements ControlValueAccessor, App
   protected readonly searchField = viewChild<ElementRef<HTMLInputElement>>('searchField');
   protected readonly optionElements = viewChildren<ElementRef<HTMLElement>>('optionEl');
 
-  protected readonly positions = POSITIONS;
+  protected readonly positions = SELECT_OVERLAY_POSITIONS;
 
   protected readonly filtered = computed(() => {
     const q = this.query().trim().toLocaleLowerCase();

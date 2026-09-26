@@ -1,37 +1,25 @@
-import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { UserRepository } from '@senbilan/core/application';
-import { fullName, type User, UserId } from '@senbilan/core/domain';
-import {
-  toUserViewModel,
-  UserAvatarComponent,
-  UserMutations,
-  UserQueries,
-  userStatusTone,
-} from '@senbilan/entities/user';
+import { AdminCatalogRepository, type AdminUserSummary } from '@senbilan/core/application';
 import {
   AppButtonComponent,
   AppCellDirective,
-  AppConfirmDialogService,
   AppDataTableComponent,
-  AppFilterBarComponent,
-  AppModalService,
-  AppRowActionsDirective,
+  AppEmptyStateComponent,
   AppSearchInputComponent,
   AppStatusComponent,
   type ColumnDef,
   type DataTableLabels,
-  type SortState,
+  ToastService,
 } from '@senbilan/design-system/ui';
-import { AuthStore } from '@senbilan/shared/auth';
-import { injectQuery } from '@tanstack/angular-query-experimental';
-import {
-  UserFormDrawerComponent,
-  type UserFormDrawerData,
-  type UserFormDrawerResult,
-} from '../user-form-drawer/user-form-drawer.component';
-import { orderColumns, UsersStore } from '../state/users.store';
 
 @Component({
   selector: 'users-page',
@@ -40,205 +28,127 @@ import { orderColumns, UsersStore } from '../state/users.store';
     TranslocoPipe,
     AppButtonComponent,
     AppDataTableComponent,
-    AppFilterBarComponent,
     AppSearchInputComponent,
     AppStatusComponent,
     AppCellDirective,
-    AppRowActionsDirective,
-    UserAvatarComponent,
+    AppEmptyStateComponent,
   ],
-  providers: [UsersStore],
   templateUrl: './users-page.component.html',
   styleUrl: './users-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersPageComponent {
+  private readonly catalog = inject(AdminCatalogRepository);
   private readonly i18n = inject(TranslocoService);
   private readonly router = inject(Router);
-  private readonly modal = inject(AppModalService);
-  private readonly confirm = inject(AppConfirmDialogService);
-  private readonly userQueries = inject(UserQueries);
-  private readonly userMutations = inject(UserMutations);
-  private readonly usersRepo = inject(UserRepository, { optional: true });
-  private readonly auth = inject(AuthStore);
-  protected readonly store = inject(UsersStore);
+  private readonly toast = inject(ToastService);
 
-  private readonly listQuery = injectQuery(() =>
-    this.userQueries.listOptions(this.store.listRequest()),
-  );
+  protected readonly search = linkedSignal(() => '');
+  protected readonly loading = signal(false);
+  protected readonly error = signal(false);
+  protected readonly rows = signal<readonly AdminUserSummary[]>([]);
 
-  protected readonly rows = computed(() => this.listQuery.data()?.items ?? []);
-  protected readonly loading = computed(() => this.listQuery.isPending());
-  protected readonly error = computed(() =>
-    this.listQuery.isError() ? this.i18n.translate('users.table.errorTitle') : null,
-  );
-  protected readonly activeFilterCount = computed(() => this.store.activeFilterCount());
+  protected readonly columns = computed<readonly ColumnDef<AdminUserSummary>[]>(() => [
+    {
+      key: 'name',
+      header: this.i18n.translate('users.name'),
+      accessor: (row) => row.name || row.email || row.id,
+      cardPriority: 1,
+    },
+    {
+      key: 'email',
+      header: this.i18n.translate('users.email'),
+      accessor: (row) => row.email || '—',
+      cardPriority: 2,
+    },
+    {
+      key: 'phone',
+      header: this.i18n.translate('users.phone'),
+      accessor: (row) => row.phone || '—',
+    },
+    {
+      key: 'status',
+      header: this.i18n.translate('users.status'),
+      accessor: (row) => row.status,
+      cardPriority: 3,
+    },
+    {
+      key: 'role',
+      header: this.i18n.translate('users.role'),
+      accessor: (row) => row.role,
+    },
+    {
+      key: 'plan',
+      header: this.i18n.translate('users.plan'),
+      accessor: (row) => row.plan,
+    },
+  ]);
 
-  protected readonly search = linkedSignal(() => this.store.search());
-  protected readonly selected = linkedSignal(() => this.store.selectedIds());
-  protected readonly sort = linkedSignal(() => this.store.sort());
-  protected readonly hiddenColumns = linkedSignal(() => this.store.columnState().hiddenColumns);
-
-  protected readonly columns = computed<readonly ColumnDef<User>[]>(() => {
-    const defs: readonly ColumnDef<User>[] = [
-      {
-        key: 'name',
-        header: this.i18n.translate('users.name'),
-        accessor: (row) => fullName(row),
-        sortable: true,
-        cardPriority: 1,
-      },
-      {
-        key: 'email',
-        header: this.i18n.translate('users.email'),
-        accessor: (row) => row.email,
-        sortable: true,
-        cardPriority: 2,
-      },
-      {
-        key: 'status',
-        header: this.i18n.translate('users.status'),
-        accessor: (row) => row.status,
-        sortable: true,
-        cardPriority: 3,
-      },
-      {
-        key: 'roles',
-        header: this.i18n.translate('users.roles'),
-        accessor: (row) => row.roleIds.join(','),
-        cardPriority: 4,
-      },
-      {
-        key: 'lastActive',
-        header: this.i18n.translate('users.lastActive'),
-        accessor: (row) => row.lastActiveAt,
-        sortable: true,
-        cardPriority: 5,
-      },
-    ];
-    return orderColumns(defs, this.store.columnState().columnOrder);
+  protected readonly tableLabels = computed<DataTableLabels>(() => {
+    const actions = this.i18n.translate('common.actions');
+    return {
+      selectAll: actions,
+      selectRow: actions,
+      sortBy: actions,
+      actions,
+      expand: actions,
+      collapse: actions,
+      retry: this.i18n.translate('common.retry'),
+      emptyTitle: this.i18n.translate('users.emptyTitle'),
+      emptyDescription: this.i18n.translate('users.emptyHint'),
+      errorTitle: this.i18n.translate('users.errorTitle'),
+      selectedCount: (count) => this.i18n.translate('common.selectedCount', { count }),
+      clearSelection: this.i18n.translate('common.clearSelection'),
+      columns: actions,
+      resizeColumn: actions,
+    };
   });
 
-  protected readonly tableLabels = computed<DataTableLabels>(() => ({
-    selectAll: this.i18n.translate('users.table.selectAll'),
-    selectRow: this.i18n.translate('users.table.selectRow'),
-    sortBy: this.i18n.translate('users.table.sortBy'),
-    actions: this.i18n.translate('users.table.actions'),
-    expand: this.i18n.translate('users.table.expand'),
-    collapse: this.i18n.translate('users.table.collapse'),
-    retry: this.i18n.translate('users.table.retry'),
-    emptyTitle: this.i18n.translate('users.table.emptyTitle'),
-    emptyDescription: this.i18n.translate('users.table.emptyDescription'),
-    errorTitle: this.i18n.translate('users.table.errorTitle'),
-    selectedCount: (count) => String(count),
-    clearSelection: this.i18n.translate('users.table.clearSelection'),
-    columns: this.i18n.translate('users.table.columns'),
-    resizeColumn: this.i18n.translate('users.table.resizeColumn'),
-  }));
+  protected readonly rowId = (row: AdminUserSummary): string => row.id;
 
-  protected readonly viewMode = computed(() => this.store.viewMode());
-  protected readonly statusTone = userStatusTone;
-  protected readonly viewOf = toUserViewModel;
+  constructor() {
+    void this.reload();
+  }
 
-  protected rowId = (row: User): string => row.id;
-
-  protected statusLabel(status: User['status']): string {
-    return this.i18n.translate('users.statuses.' + status);
+  protected statusTone(status: string): 'success' | 'warning' | 'danger' | 'neutral' {
+    if (status.includes('ACTIVE') || status === 'active') {
+      return 'success';
+    }
+    if (status.includes('BLOCKED') || status === 'blocked') {
+      return 'danger';
+    }
+    return 'neutral';
   }
 
   protected onSearch(value: string): void {
-    this.store.setSearch(value);
+    this.search.set(value);
+    void this.reload();
   }
 
-  protected setViewMode(mode: 'table' | 'cards'): void {
-    this.store.setViewMode(mode);
-  }
-
-  protected resetFilters(): void {
-    this.store.resetFilters();
-  }
-
-  protected onSortChange(sort: SortState | null): void {
-    this.store.setSort(sort);
-  }
-
-  protected onSelectedChange(ids: readonly string[]): void {
-    this.store.setSelectedIds(ids);
-  }
-
-  protected onHiddenColumnsChange(hiddenColumns: readonly string[]): void {
-    this.store.setHiddenColumns(hiddenColumns);
-  }
-
-  protected onRowClick(row: User): void {
+  protected onRowClick(row: AdminUserSummary): void {
     void this.router.navigate(['/users', row.id]);
   }
 
-  protected async openCreate(): Promise<void> {
-    await this.openDrawer({ mode: 'create', roles: [] });
-  }
-
-  protected async openEdit(row: User): Promise<void> {
-    await this.openDrawer({ mode: 'edit', user: row, roles: [] });
-  }
-
-  protected async bulkDelete(): Promise<void> {
-    const ids = this.store.selectedIds();
-    if (ids.length === 0 || !this.usersRepo) {
-      return;
-    }
-    const ok = await this.confirm.ask({
-      title: this.i18n.translate('users.bulkDelete'),
-      message: this.i18n.translate('users.confirmDelete'),
-      confirmLabel: this.i18n.translate('users.delete'),
-      cancelLabel: this.i18n.translate('users.cancel'),
-      tone: 'danger',
-    });
-    if (!ok) {
-      return;
-    }
-    const actorId = this.auth.user()?.id ?? UserId('__self__');
-    await this.userMutations.deleteMany.mutateAsync({
-      ids: ids.map(UserId),
-      actorId,
-    });
-    this.store.setSelectedIds([]);
-  }
-
-  private async openDrawer(data: UserFormDrawerData): Promise<void> {
-    const ref = this.modal.openDrawer<
-      UserFormDrawerResult | undefined,
-      UserFormDrawerData,
-      UserFormDrawerComponent
-    >(UserFormDrawerComponent, {
-      data,
-      width: 'md',
-      ariaLabel: this.i18n.translate(data.mode === 'create' ? 'users.create' : 'users.edit'),
-    });
-    const result = await new Promise<UserFormDrawerResult | undefined>((resolve) => {
-      ref.closed.subscribe((value) => resolve(value ?? undefined));
-    });
-    if (!result || !this.usersRepo) {
-      return;
-    }
-    const roleIds = result.roleIds.length > 0 ? result.roleIds : ['placeholder'];
-    if (data.mode === 'create') {
-      await this.userMutations.create.mutateAsync({
-        email: result.email,
-        firstName: result.firstName,
-        lastName: result.lastName,
-        roleIds,
+  protected async reload(): Promise<void> {
+    this.loading.set(true);
+    this.error.set(false);
+    try {
+      const q = this.search().trim();
+      const page = await this.catalog.listUsers({
+        ...(q ? { q } : {}),
+        limit: 50,
       });
-    } else if (data.user) {
-      await this.userMutations.update.mutateAsync({
-        id: data.user.id,
-        data: {
-          email: data.user.email,
-          firstName: result.firstName,
-          lastName: result.lastName,
-          roleIds,
-        },
+      this.rows.set(page.items);
+    } catch {
+      this.rows.set([]);
+      this.error.set(true);
+      this.toast.show({
+        tone: 'danger',
+        title: this.i18n.translate('users.errorTitle'),
+        message: this.i18n.translate('users.errorHint'),
       });
+    } finally {
+      this.loading.set(false);
     }
   }
 }

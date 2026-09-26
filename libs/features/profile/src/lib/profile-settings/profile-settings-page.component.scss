@@ -1,0 +1,41 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.profile-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-5);
+  animation: app-fade-in var(--app-duration-normal) var(--app-ease-out);
+}
+
+.profile-settings__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  padding: var(--app-space-4);
+  border-radius: var(--app-radius-lg);
+  border: 1px solid var(--app-color-border);
+  background: var(--app-color-surface-muted);
+}
+
+.profile-settings__card-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-1);
+}
+
+.profile-settings__heading {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('body-strong');
+}
+
+.profile-settings__hint {
+  margin: 0;
+  color: var(--app-color-text-secondary);
+  @include ds.text('body-sm');
+}
