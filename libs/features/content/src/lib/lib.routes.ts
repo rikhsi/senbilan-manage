@@ -13,6 +13,23 @@ export const FEATURE_CONTENT_ROUTES: Routes = [
           import('./content-page/content-page.component').then((m) => m.ContentPageComponent),
       },
       {
+        path: 'new',
+        title: 'content.createTitle',
+        loadComponent: () =>
+          import('./content-form-page/content-form-page.component').then(
+            (m) => m.ContentFormPageComponent,
+          ),
+      },
+      {
+        // eslint-disable-next-line @senbilan/no-hardcoded-text-ts -- Angular route param segment
+        path: ':id/edit',
+        title: 'content.editTitle',
+        loadComponent: () =>
+          import('./content-form-page/content-form-page.component').then(
+            (m) => m.ContentFormPageComponent,
+          ),
+      },
+      {
         // eslint-disable-next-line @senbilan/no-hardcoded-text-ts -- Angular route param segment
         path: ':id',
         title: 'content.detailTitle',

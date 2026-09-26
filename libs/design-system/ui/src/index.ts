@@ -22,6 +22,8 @@ export { AppTagComponent } from './lib/tag/app-tag.component';
 export { AppStatusComponent } from './lib/status/app-status.component';
 export { AppAvatarComponent } from './lib/avatar/app-avatar.component';
 export { type AvatarRing, type AvatarSize } from './lib/avatar/avatar.types';
+export { AppBrandLockupComponent } from './lib/brand/app-brand-lockup.component';
+export { type BrandLockupSize } from './lib/brand/brand.types';
 export { AppSkeletonComponent } from './lib/skeleton/app-skeleton.component';
 export { type SkeletonShape } from './lib/skeleton/skeleton.types';
 export { AppTabsComponent } from './lib/tabs/app-tabs.component';
@@ -47,6 +49,7 @@ export { AppSwitchComponent } from './lib/form/app-switch.component';
 export { AppRadioGroupComponent } from './lib/form/app-radio-group.component';
 export { type RadioOption } from './lib/form/radio-group.types';
 export { AppSelectComponent } from './lib/select/app-select.component';
+export { AppDrawerSelectComponent } from './lib/select/app-drawer-select.component';
 export { type SelectLabels, type SelectOption } from './lib/select/select.types';
 export { AppSearchInputComponent } from './lib/search/app-search-input.component';
 export { AppFilterBarComponent } from './lib/filter/app-filter-bar.component';
@@ -122,4 +125,15 @@ export {
 // ---- preferences ------------------------------------------------------------
 export { AppThemeToggleComponent } from './lib/theme/app-theme-toggle.component';
 export { APP_THEME_MODE, type AppThemeModeBridge } from './lib/theme/theme-mode.bridge';
+export {
+  THEME_MODE_ICONS,
+  THEME_MODE_OPTIONS,
+  type ThemeModeOption,
+} from './lib/theme/theme-toggle.types';
 export { AppLocaleToggleComponent } from './lib/locale/app-locale-toggle.component';
+export { AppLocaleFlagComponent } from './lib/locale/app-locale-flag.component';
+export {
+  isLocaleFlagId,
+  LOCALE_NATIVE_LABELS,
+  type LocaleFlagId,
+} from './lib/locale/locale-toggle.types';

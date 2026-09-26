@@ -1,6 +1,56 @@
 export const BROADCASTS_COLUMNS_KEY = 'senbilan.broadcasts.columns';
-export const BROADCASTS_COLUMN_KEYS = new Set(['title', 'status', 'createdAt', 'sentAt']);
-export const BROADCASTS_HIDEABLE_COLUMNS = new Set(['status', 'createdAt', 'sentAt']);
+export const BROADCASTS_COLUMN_KEYS = new Set([
+  'title',
+  'status',
+  'createdAt',
+  'sentAt',
+  'id',
+  'textUz',
+  'textRu',
+  'contentId',
+  'url',
+  'sentCount',
+  'mutedCount',
+  'failedCount',
+  'createdBy',
+  'requestedBy',
+  'queuedAt',
+  'startedAt',
+  'updatedAt',
+]);
+export const BROADCASTS_HIDEABLE_COLUMNS = new Set([
+  'status',
+  'createdAt',
+  'sentAt',
+  'id',
+  'textUz',
+  'textRu',
+  'contentId',
+  'url',
+  'sentCount',
+  'mutedCount',
+  'failedCount',
+  'createdBy',
+  'requestedBy',
+  'queuedAt',
+  'startedAt',
+  'updatedAt',
+]);
+export const BROADCASTS_DEFAULT_HIDDEN_COLUMNS = [
+  'id',
+  'textUz',
+  'textRu',
+  'contentId',
+  'url',
+  'sentCount',
+  'mutedCount',
+  'failedCount',
+  'createdBy',
+  'requestedBy',
+  'queuedAt',
+  'startedAt',
+  'updatedAt',
+] as const;
 
 export type CatalogStatusTone = 'success' | 'warning' | 'danger' | 'neutral';
 

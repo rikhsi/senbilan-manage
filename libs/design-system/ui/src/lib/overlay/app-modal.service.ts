@@ -4,6 +4,7 @@ import { type ComponentType } from '@angular/cdk/portal';
 import { inject, Injectable, type TemplateRef } from '@angular/core';
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type DrawerWidth = 'sm' | 'md' | 'lg' | 'full';
 
 export interface ModalOptions<D> {
   readonly data?: D;
@@ -15,7 +16,7 @@ export interface ModalOptions<D> {
 
 export interface DrawerOptions<D> extends Omit<ModalOptions<D>, 'size'> {
   readonly side?: 'right' | 'left';
-  readonly width?: 'sm' | 'md' | 'lg';
+  readonly width?: DrawerWidth;
 }
 
 const MODAL_WIDTHS: Readonly<Record<ModalSize, string>> = {
@@ -26,10 +27,11 @@ const MODAL_WIDTHS: Readonly<Record<ModalSize, string>> = {
   full: 'calc(100vw - 2rem)',
 };
 
-const DRAWER_WIDTHS: Readonly<Record<'sm' | 'md' | 'lg', string>> = {
+const DRAWER_WIDTHS: Readonly<Record<DrawerWidth, string>> = {
   sm: 'min(24rem, 100vw)',
   md: 'min(32rem, 100vw)',
   lg: 'min(44rem, 100vw)',
+  full: '100vw',
 };
 
 type Config<R, D, C> = DialogConfig<D, DialogRef<R, C>>;
@@ -64,13 +66,20 @@ export class AppModalService {
     options: DrawerOptions<D> = {},
   ): DialogRef<R, C> {
     const side = options.side ?? 'right';
+    const width = options.width ?? 'md';
     const position = this.overlay.position().global().top('0');
     const config: Config<R, D, C> = {
       ...this.base<R, D, C>(options),
-      width: DRAWER_WIDTHS[options.width ?? 'md'],
+      width: DRAWER_WIDTHS[width],
+      maxWidth: '100vw',
       height: '100dvh',
       positionStrategy: side === 'right' ? position.right('0') : position.left('0'),
-      panelClass: ['app-overlay-panel', 'app-drawer-panel', `app-drawer-panel--${side}`],
+      panelClass: [
+        'app-overlay-panel',
+        'app-drawer-panel',
+        `app-drawer-panel--${side}`,
+        ...(width === 'full' ? ['app-drawer-panel--full'] : []),
+      ],
       backdropClass: 'app-overlay-backdrop',
     };
     return this.dialog.open<R, D, C>(component, config);

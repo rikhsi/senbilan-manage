@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { AppRadioGroupComponent, type RadioOption } from '@senbilan/design-system/ui';
+import {
+  AppRadioGroupComponent,
+  AppSwitchComponent,
+  isLocaleFlagId,
+  THEME_MODE_OPTIONS,
+  type RadioOption,
+} from '@senbilan/design-system/ui';
 import { APP_CONFIG } from '@senbilan/shared/config';
 import { injectTranslocoReady, type AppLocale } from '@senbilan/shared/i18n';
 import { ShellStore, type ShellDensity } from '@senbilan/shared/shell';
@@ -8,7 +14,7 @@ import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
 
 @Component({
   selector: 'profile-settings-page',
-  imports: [TranslocoPipe, AppRadioGroupComponent],
+  imports: [TranslocoPipe, AppRadioGroupComponent, AppSwitchComponent],
   templateUrl: './profile-settings-page.component.html',
   styleUrl: './profile-settings-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,11 +28,11 @@ export class ProfileSettingsPageComponent {
 
   protected readonly themeOptions = computed<readonly RadioOption<ThemeMode>[]>(() => {
     this.i18nReady();
-    return [
-      { value: 'light', label: this.i18n.translate('profile.settings.theme.light') },
-      { value: 'dark', label: this.i18n.translate('profile.settings.theme.dark') },
-      { value: 'system', label: this.i18n.translate('profile.settings.theme.system') },
-    ];
+    return THEME_MODE_OPTIONS.map((option) => ({
+      value: option.mode,
+      icon: option.icon,
+      label: this.i18n.translate(option.labelKey),
+    }));
   });
 
   protected readonly densityOptions = computed<readonly RadioOption<ShellDensity>[]>(() => {
@@ -43,10 +49,12 @@ export class ProfileSettingsPageComponent {
     return locales.map((locale) => ({
       value: locale,
       label: this.i18n.translate(`profile.settings.language.${locale}`),
+      ...(isLocaleFlagId(locale) ? { flag: locale } : {}),
     }));
   });
 
   protected readonly themeMode = computed(() => this.theme.mode());
+  protected readonly eyeComfort = computed(() => this.theme.eyeComfort());
   protected readonly density = computed(() => this.shell.density());
   protected readonly language = computed(
     () => (this.i18n.getActiveLang() as AppLocale) || this.config?.defaultLocale || 'ru',
@@ -54,6 +62,10 @@ export class ProfileSettingsPageComponent {
 
   protected onThemeChange(value: ThemeMode): void {
     this.theme.setMode(value);
+  }
+
+  protected onEyeComfortChange(value: boolean): void {
+    this.theme.setEyeComfort(value);
   }
 
   protected onDensityChange(value: ShellDensity): void {

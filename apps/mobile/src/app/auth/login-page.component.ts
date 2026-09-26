@@ -5,6 +5,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { IonButton, IonContent, IonIcon, IonSpinner } from '@ionic/angular';
 import {
   AppFormFieldComponent,
+  AppBrandLockupComponent,
   AppInputDirective,
   AppLocaleToggleComponent,
   AppThemeToggleComponent,
@@ -31,6 +32,7 @@ addIcons({ eyeOutline, eyeOffOutline, lockClosedOutline });
     NgxMaskDirective,
     OrbitHeroComponent,
     AppFormFieldComponent,
+    AppBrandLockupComponent,
     AppInputDirective,
     AppLocaleToggleComponent,
     AppThemeToggleComponent,

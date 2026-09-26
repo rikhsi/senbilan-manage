@@ -15,6 +15,10 @@
       "system": "System",
       "hint": "Theme preference is applied immediately."
     },
+    "eyeComfort": {
+      "label": "Eye comfort",
+      "hint": "Warm yellow tint on top of light and dark themes."
+    },
     "language": {
       "label": "Interface language",
       "hint": "Language changes apply immediately.",

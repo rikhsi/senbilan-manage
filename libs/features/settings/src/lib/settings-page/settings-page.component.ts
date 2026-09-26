@@ -6,9 +6,12 @@ import {
   AppFormFieldComponent,
   AppInputDirective,
   AppRadioGroupComponent,
+  AppSwitchComponent,
   type RadioOption,
   AppTabsComponent,
   type TabItem,
+  isLocaleFlagId,
+  THEME_MODE_OPTIONS,
   ToastService,
 } from '@senbilan/design-system/ui';
 import { AuthStore } from '@senbilan/shared/auth';
@@ -28,6 +31,7 @@ import { type AppLocale, type SettingsProfileModel, type SettingsTab } from './s
     AppFormFieldComponent,
     AppInputDirective,
     AppRadioGroupComponent,
+    AppSwitchComponent,
     AppTabsComponent,
   ],
   templateUrl: './settings-page.component.html',
@@ -59,11 +63,11 @@ export class SettingsPageComponent {
 
   protected readonly themeOptions = computed<readonly RadioOption<ThemeMode>[]>(() => {
     this.i18nReady();
-    return [
-      { value: 'light', label: this.i18n.translate('settings.theme.light') },
-      { value: 'dark', label: this.i18n.translate('settings.theme.dark') },
-      { value: 'system', label: this.i18n.translate('settings.theme.system') },
-    ];
+    return THEME_MODE_OPTIONS.map((option) => ({
+      value: option.mode,
+      icon: option.icon,
+      label: this.i18n.translate(option.labelKey),
+    }));
   });
 
   protected readonly densityOptions = computed<readonly RadioOption<ShellDensity>[]>(() => {
@@ -80,10 +84,12 @@ export class SettingsPageComponent {
     return locales.map((locale) => ({
       value: locale,
       label: this.i18n.translate(`settings.language.${locale}`),
+      ...(isLocaleFlagId(locale) ? { flag: locale } : {}),
     }));
   });
 
   protected readonly themeMode = computed(() => this.theme.mode());
+  protected readonly eyeComfort = computed(() => this.theme.eyeComfort());
   protected readonly density = computed(() => this.shell.density());
   protected readonly language = computed(
     () => (this.i18n.getActiveLang() as AppLocale) || this.config?.defaultLocale || 'ru',
@@ -105,6 +111,10 @@ export class SettingsPageComponent {
 
   protected onThemeChange(value: ThemeMode): void {
     this.theme.setMode(value);
+  }
+
+  protected onEyeComfortChange(value: boolean): void {
+    this.theme.setEyeComfort(value);
   }
 
   protected onDensityChange(value: ShellDensity): void {

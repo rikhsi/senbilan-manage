@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, type ControlValueAccessor } from '@angular/forms';
 import { AppIconComponent } from '@senbilan/design-system/icons';
+import { AppLocaleFlagComponent } from '../locale/app-locale-flag.component';
 import { APP_CONTROL, nextControlId, type AppControl } from './app-control';
 import { type RadioOption } from './radio-group.types';
 
@@ -16,11 +17,11 @@ export type { RadioOption } from './radio-group.types';
 
 /**
  * Radio group rendered as a list or as segmented cards (`variant="cards"`) —
- * the latter is used for theme/density pickers in Settings.
+ * the latter is used for theme/density/language pickers in Settings.
  */
 @Component({
   selector: 'app-radio-group',
-  imports: [AppIconComponent],
+  imports: [AppIconComponent, AppLocaleFlagComponent],
   template: `
     <div
       class="app-radio-group__list"
@@ -45,7 +46,9 @@ export type { RadioOption } from './radio-group.types';
             (blur)="onTouched()"
           />
           <span class="app-radio__control" aria-hidden="true"></span>
-          @if (option.icon) {
+          @if (option.flag) {
+            <app-locale-flag class="app-radio__flag" [locale]="option.flag" />
+          } @else if (option.icon) {
             <app-icon class="app-radio__icon" [name]="option.icon" size="md" />
           }
           <span class="app-radio__text">

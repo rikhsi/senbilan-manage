@@ -1,4 +1,4 @@
-<app-list-page [breadcrumbs]="breadcrumbs">
+<app-list-page [breadcrumbs]="breadcrumbs()">
   <app-list-filters
     toolbar
     [open]="filtersOpen()"
@@ -71,33 +71,29 @@
       [loading]="loading()"
       [error]="error() ? ('couples.errorHint' | transloco) : null"
       [rowClickable]="true"
+      [singleSelect]="picking()"
+      [(pickedId)]="pickedId"
       [columnPicker]="false"
       (rowClick)="onRowClick($event)"
       (retry)="reload()"
     >
-      <ng-template appCell="creator" let-row>
-        <span class="couples-page__person">
-          <a class="couples-page__cell-link" [routerLink]="['/couples', row.id]">{{ memberTitle(row.creator) }}</a>
-          @if (telHref(memberPhone(row.creator)); as href) {
-            <a class="couples-page__cell-link" [href]="href">{{ memberPhone(row.creator) }}</a>
+      <ng-template appCell="members" let-row>
+        <div class="couples-page__members">
+          @for (member of membersOf(row); track member.id || $index) {
+            <div class="couples-page__member">
+              <app-avatar [name]="memberAvatarName(member)" size="sm" />
+              <div class="couples-page__person">
+                @if (memberPhone(member); as phone) {
+                  <span class="couples-page__member-phone">{{ phone }}</span>
+                } @else {
+                  —
+                }
+              </div>
+            </div>
+          } @empty {
+            —
           }
-        </span>
-      </ng-template>
-      <ng-template appCell="partner" let-row>
-        @if (row.partner; as partner) {
-          <span class="couples-page__person">
-            @if (partner.id) {
-              <a class="couples-page__cell-link" [routerLink]="['/users', partner.id]">{{ memberTitle(partner) }}</a>
-            } @else {
-              {{ memberTitle(partner) }}
-            }
-            @if (telHref(memberPhone(partner)); as href) {
-              <a class="couples-page__cell-link" [href]="href">{{ memberPhone(partner) }}</a>
-            }
-          </span>
-        } @else {
-          —
-        }
+        </div>
       </ng-template>
       <ng-template appCell="status" let-row>
         <app-status [tone]="statusTone(row.status)">{{ statusLabel(row.status) }}</app-status>

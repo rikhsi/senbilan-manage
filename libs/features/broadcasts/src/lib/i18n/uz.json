@@ -12,5 +12,17 @@
   "statusSent": "Yuborilgan",
   "createdAt": "Yaratilgan",
   "sentAt": "Yuborilgan",
-  "id": "ID"
+  "id": "ID",
+  "textUz": "Matn (uz)",
+  "textRu": "Matn (ru)",
+  "contentId": "Kontent ID",
+  "url": "Havola",
+  "sentCount": "Yetkazilgan",
+  "mutedCount": "Ovozsiz",
+  "failedCount": "Xatolar",
+  "createdBy": "Yaratgan",
+  "requestedBy": "So‘ragan",
+  "queuedAt": "Navbatda",
+  "startedAt": "Boshlangan",
+  "updatedAt": "Yangilangan"
 }

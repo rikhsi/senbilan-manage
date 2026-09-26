@@ -22,6 +22,11 @@
           {
             "glob": "**/*",
             "input": "apps/mobile/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/tinymce",
+            "output": "assets/tinymce"
           }
         ],
         "styles": [
@@ -32,7 +37,8 @@
           "node_modules/@ionic/angular/css/typography.css",
           "node_modules/@ionic/angular/css/display.css",
           "apps/mobile/src/styles.scss"
-        ]
+        ],
+        "scripts": ["node_modules/tinymce/tinymce.min.js"]
       },
       "configurations": {
         "production": {

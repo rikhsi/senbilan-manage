@@ -56,6 +56,8 @@ export interface CellContext<T> {
   readonly row: T;
   readonly value: unknown;
   readonly column: ColumnDef<T>;
+  /** True when this cell is rendered inside a mobile card. */
+  readonly cards?: boolean;
 }
 
 export interface RowContext<T> {

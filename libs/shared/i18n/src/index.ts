@@ -3,4 +3,7 @@ export { provideI18n, type AppLocale, type I18nConfig } from './lib/provide-i18n
 export { PageTitleService } from './lib/page-title.service';
 export { AppTitleStrategy } from './lib/app-title.strategy';
 export { injectTranslocoReady, readLoadedTranslation } from './lib/transloco-ready';
-export { provideInlineTranslocoScope } from './lib/provide-inline-transloco-scope';
+export {
+  provideInlineTranslocoScope,
+  loadInlineTranslocoScope,
+} from './lib/provide-inline-transloco-scope';

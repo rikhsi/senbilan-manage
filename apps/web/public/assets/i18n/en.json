@@ -69,7 +69,8 @@
     "themeDark": "Dark",
     "themeSystem": "System",
     "cycleTheme": "Cycle theme",
-    "breadcrumbs": "Breadcrumbs"
+    "breadcrumbs": "Breadcrumbs",
+    "fieldHelp": "Field help"
   },
   "auth": {
     "login": {

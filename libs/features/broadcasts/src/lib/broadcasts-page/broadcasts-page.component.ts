@@ -36,6 +36,7 @@ import {
 import {
   BROADCASTS_COLUMN_KEYS,
   BROADCASTS_COLUMNS_KEY,
+  BROADCASTS_DEFAULT_HIDDEN_COLUMNS,
   BROADCASTS_HIDEABLE_COLUMNS,
   broadcastStatusLabelKey,
   broadcastStatusTone,
@@ -75,11 +76,12 @@ export class BroadcastsPageComponent {
   private readonly cursors = signal<readonly (string | null)[]>([null]);
   protected readonly pageCount = computed(() => Math.max(1, this.cursors().length));
   private requestId = 0;
-  protected readonly columnsOpen = signal(false);
+  protected readonly filtersOpen = signal(false);
   private readonly columnPrefs = loadColumnPrefs(
     BROADCASTS_COLUMNS_KEY,
     BROADCASTS_COLUMN_KEYS,
     BROADCASTS_HIDEABLE_COLUMNS,
+    BROADCASTS_DEFAULT_HIDDEN_COLUMNS,
   );
   protected readonly hiddenColumns = signal<readonly string[]>(this.columnPrefs.hidden);
   protected readonly columnOrder = signal<readonly string[]>(this.columnPrefs.order);
@@ -116,6 +118,84 @@ export class BroadcastsPageComponent {
         accessor: (row) => this.formatTimestamp(row.sentAt),
         cardPriority: 4,
       },
+      {
+        key: 'id',
+        header: this.i18n.translate('broadcasts.id'),
+        accessor: (row) => this.text(row.id),
+        cardPriority: 5,
+      },
+      {
+        key: 'textUz',
+        header: this.i18n.translate('broadcasts.textUz'),
+        accessor: (row) => this.text(row.textUz),
+        cardPriority: 6,
+      },
+      {
+        key: 'textRu',
+        header: this.i18n.translate('broadcasts.textRu'),
+        accessor: (row) => this.text(row.textRu),
+        cardPriority: 7,
+      },
+      {
+        key: 'contentId',
+        header: this.i18n.translate('broadcasts.contentId'),
+        accessor: (row) => this.text(row.contentId),
+        cardPriority: 8,
+      },
+      {
+        key: 'url',
+        header: this.i18n.translate('broadcasts.url'),
+        accessor: (row) => this.text(row.url),
+        cardPriority: 9,
+      },
+      {
+        key: 'sentCount',
+        header: this.i18n.translate('broadcasts.sentCount'),
+        accessor: (row) => String(row.sentCount),
+        cardPriority: 10,
+      },
+      {
+        key: 'mutedCount',
+        header: this.i18n.translate('broadcasts.mutedCount'),
+        accessor: (row) => String(row.mutedCount),
+        cardPriority: 11,
+      },
+      {
+        key: 'failedCount',
+        header: this.i18n.translate('broadcasts.failedCount'),
+        accessor: (row) => String(row.failedCount),
+        cardPriority: 12,
+      },
+      {
+        key: 'createdBy',
+        header: this.i18n.translate('broadcasts.createdBy'),
+        accessor: (row) => this.text(row.createdBy),
+        cardPriority: 13,
+      },
+      {
+        key: 'requestedBy',
+        header: this.i18n.translate('broadcasts.requestedBy'),
+        accessor: (row) => this.text(row.requestedBy),
+        cardPriority: 14,
+      },
+      {
+        key: 'queuedAt',
+        header: this.i18n.translate('broadcasts.queuedAt'),
+        accessor: (row) => this.formatTimestamp(row.queuedAt),
+        cardPriority: 15,
+      },
+      {
+        key: 'startedAt',
+        header: this.i18n.translate('broadcasts.startedAt'),
+        accessor: (row) => this.formatTimestamp(row.startedAt),
+        cardPriority: 16,
+      },
+      {
+        key: 'updatedAt',
+        header: this.i18n.translate('broadcasts.updatedAt'),
+        accessor: (row) => this.formatTimestamp(row.updatedAt),
+        cardPriority: 17,
+      },
     ];
   });
 
@@ -145,8 +225,8 @@ export class BroadcastsPageComponent {
   protected readonly filterLabels = computed<ListFiltersLabels>(() => {
     this.i18nReady();
     return {
-      filters: this.i18n.translate('common.columns'),
-      title: this.i18n.translate('common.columns'),
+      filters: this.i18n.translate('common.filters'),
+      title: this.i18n.translate('common.filters'),
       apply: this.i18n.translate('common.apply'),
       reset: this.i18n.translate('common.reset'),
       close: this.i18n.translate('common.close'),
@@ -184,7 +264,11 @@ export class BroadcastsPageComponent {
       if (!storage) {
         return;
       }
-      writeColumnPrefs(storage, BROADCASTS_COLUMNS_KEY, { hidden, order });
+      writeColumnPrefs(storage, BROADCASTS_COLUMNS_KEY, {
+        hidden,
+        order,
+        known: [...BROADCASTS_COLUMN_KEYS],
+      });
     });
 
     effect(() => {
@@ -195,9 +279,14 @@ export class BroadcastsPageComponent {
     });
   }
 
-  protected resetColumns(): void {
-    this.hiddenColumns.set([]);
+  protected applyFilters(): void {
+    this.filtersOpen.set(false);
+  }
+
+  protected resetFilters(): void {
+    this.hiddenColumns.set([...BROADCASTS_DEFAULT_HIDDEN_COLUMNS]);
     this.columnOrder.set([]);
+    this.filtersOpen.set(false);
   }
 
   protected previousPage(): void {

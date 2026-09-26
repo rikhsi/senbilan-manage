@@ -1,4 +1,27 @@
 <app-detail-page [breadcrumbs]="breadcrumbs()">
+  <ng-container actions>
+    @if (detail(); as item) {
+      <a app-button variant="secondary" size="md" icon="pencil" [routerLink]="['/content', item.id, 'edit']">
+        {{ 'common.edit' | transloco }}
+      </a>
+      @if (canPublish()) {
+        <button app-button type="button" variant="primary" size="md" [loading]="busy()" (click)="publish()">
+          {{ 'content.publish' | transloco }}
+        </button>
+      }
+      @if (canUnpublish()) {
+        <button app-button type="button" variant="secondary" size="md" [loading]="busy()" (click)="unpublish()">
+          {{ 'content.unpublish' | transloco }}
+        </button>
+      }
+      @if (canDelete()) {
+        <button app-button type="button" variant="danger" size="md" [loading]="busy()" (click)="remove()">
+          {{ 'common.delete' | transloco }}
+        </button>
+      }
+    }
+  </ng-container>
+
   @if (error() && !loading()) {
     <app-empty-state
       icon="alert-triangle"
@@ -6,11 +29,56 @@
       [title]="'content.errorTitle' | transloco"
       [description]="'content.errorHint' | transloco"
     >
-      <button app-button variant="primary" type="button" (click)="reload()">{{ 'common.retry' | transloco }}</button>
+      <button app-button variant="primary" type="button" (click)="reload()">
+        {{ 'common.retry' | transloco }}
+      </button>
     </app-empty-state>
   } @else if (loading()) {
     <app-detail-fields [fields]="[]" [loading]="true" />
-  } @else if (detail()) {
-    <app-detail-fields [fields]="fields()" />
+  } @else if (detail(); as item) {
+    <div class="content-detail">
+      @if (item.coverUrl) {
+        <figure class="content-detail__cover">
+          <img [src]="item.coverUrl" [alt]="item.title" />
+        </figure>
+      }
+      <div class="content-detail__status">
+        <app-status [tone]="statusTone(item.status)">{{ statusLabel(item.status) }}</app-status>
+      </div>
+      <app-detail-fields [fields]="fields()" />
+
+      <section class="content-detail__units" aria-labelledby="content-units-heading">
+        <div class="content-detail__units-head">
+          <h2 class="content-detail__heading" id="content-units-heading">
+            {{ 'content.units' | transloco }}
+          </h2>
+        </div>
+
+        @if (item.units.length === 0) {
+          <p class="content-detail__hint">{{ 'content.unitsEmpty' | transloco }}</p>
+        } @else {
+          <ul class="content-detail__unit-list">
+            @for (unit of item.units; track unit.index) {
+              <li class="content-detail__unit">
+                <div class="content-detail__unit-head">
+                  <span class="content-detail__unit-index">{{ unit.index }}</span>
+                  <strong class="content-detail__unit-title">{{
+                    unit.title || ('content.unitUntitled' | transloco)
+                  }}</strong>
+                </div>
+                @if (unit.body) {
+                  <div class="content-detail__unit-body" [innerHTML]="unit.body"></div>
+                }
+                @if (unit.url) {
+                  <a class="content-detail__unit-link" [href]="unit.url" target="_blank" rel="noopener noreferrer">
+                    {{ unit.url }}
+                  </a>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    </div>
   }
 </app-detail-page>

@@ -23,13 +23,22 @@
 
     <div filters class="media-page__filter-fields">
       <app-form-field [label]="'media.owner' | transloco">
-        <input appInput [ngModel]="draft().ownerId" (ngModelChange)="onDraftOwner($event)" />
+        <app-drawer-select
+          [value]="draft().ownerLabel"
+          [placeholder]="'media.ownerPlaceholder' | transloco"
+          [clearLabel]="'common.reset' | transloco"
+          (open)="pickOwner()"
+          (cleared)="clearOwner()"
+        />
       </app-form-field>
       <app-form-field [label]="'media.couple' | transloco">
-        <input appInput [ngModel]="draft().coupleId" (ngModelChange)="onDraftCouple($event)" />
-      </app-form-field>
-      <app-form-field [label]="'media.purpose' | transloco">
-        <input appInput [ngModel]="draft().purpose" (ngModelChange)="onDraftPurpose($event)" />
+        <app-drawer-select
+          [value]="draft().coupleLabel"
+          [placeholder]="'media.couplePlaceholder' | transloco"
+          [clearLabel]="'common.reset' | transloco"
+          (open)="pickCouple()"
+          (cleared)="clearCouple()"
+        />
       </app-form-field>
       <app-form-field [label]="'media.status' | transloco">
         <app-select

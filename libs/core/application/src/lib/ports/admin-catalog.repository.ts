@@ -56,12 +56,21 @@ export interface AdminCoupleSummary {
   readonly creator: AdminCoupleMember | null;
   /** Second member. Absent until someone joins. */
   readonly partner: AdminCoupleMember | null;
+  readonly startedOn: string | null;
   readonly createdAt: string | null;
 }
 
 export interface AdminCoupleDetailSnapshot {
   readonly couple: AdminCoupleSummary;
   readonly counts: Readonly<Record<string, number>>;
+}
+
+export interface AdminContentUnit {
+  readonly index: number;
+  readonly title: string;
+  readonly body: string;
+  readonly url: string;
+  readonly updatedAt: string | null;
 }
 
 export interface AdminContentSummary {
@@ -72,16 +81,67 @@ export interface AdminContentSummary {
   readonly kind: string;
   readonly status: string;
   readonly language: string;
+  readonly tags: readonly string[];
+  readonly unitCount: number;
+  readonly coverUrl: string | null;
+  readonly coverMediaId: string | null;
   readonly publishedAt: string | null;
   readonly updatedAt: string | null;
+  readonly createdAt: string | null;
+  readonly createdBy: string;
+  readonly updatedBy: string;
+}
+
+/** Full content with ordered units (GetContent). */
+export interface AdminContentDetail extends AdminContentSummary {
+  readonly units: readonly AdminContentUnit[];
+}
+
+export interface AdminContentUnitInput {
+  readonly title: string;
+  readonly body: string;
+  readonly url: string;
+}
+
+export interface AdminCreateContentInput {
+  readonly kind: string;
+  readonly title: string;
+  readonly description: string;
+  readonly language: string;
+  readonly tags: readonly string[];
+  readonly url: string;
+  readonly coverMediaId: string;
+  readonly units: readonly AdminContentUnitInput[];
+}
+
+export interface AdminUpdateContentInput {
+  readonly title?: string;
+  readonly description?: string;
+  readonly language?: string;
+  readonly tags?: readonly string[];
+  readonly updateTags?: boolean;
+  readonly url?: string;
+  readonly coverMediaId?: string;
 }
 
 export interface AdminBroadcastSummary {
   readonly id: string;
   readonly title: string;
+  readonly textUz: string;
+  readonly textRu: string;
   readonly status: string;
-  readonly createdAt: string | null;
+  readonly contentId: string;
+  readonly url: string;
+  readonly sentCount: number;
+  readonly mutedCount: number;
+  readonly failedCount: number;
+  readonly createdBy: string;
+  readonly requestedBy: string;
+  readonly queuedAt: string | null;
+  readonly startedAt: string | null;
   readonly sentAt: string | null;
+  readonly createdAt: string | null;
+  readonly updatedAt: string | null;
 }
 
 export interface AdminMediaSummary {
@@ -175,7 +235,33 @@ export abstract class AdminCatalogRepository {
     signal?: AbortSignal,
   ): Promise<AdminCursorPage<AdminContentSummary>>;
 
-  abstract getContent(contentId: string, signal?: AbortSignal): Promise<AdminContentSummary>;
+  abstract getContent(contentId: string, signal?: AbortSignal): Promise<AdminContentDetail>;
+
+  abstract createContent(input: AdminCreateContentInput): Promise<AdminContentDetail>;
+
+  abstract updateContent(
+    contentId: string,
+    input: AdminUpdateContentInput,
+  ): Promise<AdminContentDetail>;
+
+  abstract deleteContent(contentId: string): Promise<void>;
+
+  abstract publishContent(contentId: string): Promise<AdminContentDetail>;
+
+  abstract unpublishContent(contentId: string): Promise<AdminContentDetail>;
+
+  abstract addContentUnit(
+    contentId: string,
+    input: AdminContentUnitInput,
+  ): Promise<AdminContentDetail>;
+
+  abstract updateContentUnit(
+    contentId: string,
+    index: number,
+    input: AdminContentUnitInput,
+  ): Promise<AdminContentDetail>;
+
+  abstract deleteContentUnit(contentId: string, index: number): Promise<AdminContentDetail>;
 
   abstract listBroadcasts(
     query?: { cursor?: string; limit?: number },

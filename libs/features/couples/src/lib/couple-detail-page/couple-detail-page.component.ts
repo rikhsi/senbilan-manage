@@ -16,13 +16,19 @@ import {
   type DetailField,
 } from '@senbilan/design-system/layout';
 import {
+  AppAvatarComponent,
   AppButtonComponent,
   AppConfirmDialogService,
   AppEmptyStateComponent,
   ToastService,
 } from '@senbilan/design-system/ui';
 import { injectTranslocoReady, readLoadedTranslation } from '@senbilan/shared/i18n';
-import { coupleMemberPhone, coupleMemberTitle } from '../couple-member';
+import {
+  coupleMemberAvatarName,
+  coupleMemberPhone,
+  coupleMembers,
+  coupleMemberTitle,
+} from '../couple-member';
 
 const COUNT_KEYS = [
   'events',
@@ -44,6 +50,7 @@ const COUNT_KEYS = [
     TranslocoPipe,
     AppDetailPageComponent,
     AppDetailFieldsComponent,
+    AppAvatarComponent,
     AppButtonComponent,
     AppEmptyStateComponent,
   ],
@@ -68,15 +75,25 @@ export class CoupleDetailPageComponent {
   protected readonly breadcrumbs = computed<readonly BreadcrumbItem[]>(() => {
     this.i18nReady();
     const couple = this.detail()?.couple;
-    const current = couple
-      ? this.memberTitle(couple.creator)
-      : readLoadedTranslation(this.i18n, 'couples.detailTitle');
+    const members = couple ? coupleMembers(couple) : [];
+    const current =
+      members
+        .map((member) => coupleMemberPhone(member) || this.memberTitle(member))
+        .filter((value) => value.length > 0)
+        .join(', ') || readLoadedTranslation(this.i18n, 'couples.detailTitle');
     return [
       { labelKey: 'nav.dashboard', route: '/dashboard' },
       { labelKey: 'nav.couples', route: '/couples' },
       { label: current },
     ];
   });
+
+  protected readonly members = computed(() => {
+    const couple = this.detail()?.couple;
+    return couple ? coupleMembers(couple) : [];
+  });
+
+  protected readonly canUnpair = computed(() => this.members().length === 2);
 
   protected readonly fields = computed<readonly DetailField[]>(() => {
     this.i18nReady();
@@ -85,17 +102,7 @@ export class CoupleDetailPageComponent {
       return [];
     }
     const couple = data.couple;
-    const creatorPhone = coupleMemberPhone(couple.creator);
-    const partnerPhone = coupleMemberPhone(couple.partner);
     const base: DetailField[] = [
-      { label: this.i18n.translate('couples.creator'), value: this.memberTitle(couple.creator) },
-      ...(creatorPhone
-        ? [{ label: this.i18n.translate('couples.phone'), value: creatorPhone }]
-        : []),
-      { label: this.i18n.translate('couples.partner'), value: this.memberTitle(couple.partner) },
-      ...(partnerPhone
-        ? [{ label: this.i18n.translate('couples.phone'), value: partnerPhone }]
-        : []),
       { label: this.i18n.translate('couples.status'), value: couple.status || '—' },
       {
         label: this.i18n.translate('couples.createdAt'),
@@ -134,6 +141,9 @@ export class CoupleDetailPageComponent {
   }
 
   protected async unpair(): Promise<void> {
+    if (!this.canUnpair()) {
+      return;
+    }
     const ok = await this.confirm.ask({
       title: this.i18n.translate('couples.unpairConfirmTitle'),
       message: this.i18n.translate('couples.unpairConfirmMessage'),
@@ -158,6 +168,16 @@ export class CoupleDetailPageComponent {
     } finally {
       this.busy.set(false);
     }
+  }
+
+  protected memberPhone(member: AdminCoupleDetailSnapshot['couple']['creator']): string {
+    return coupleMemberPhone(member);
+  }
+
+  protected memberAvatarName(
+    member: NonNullable<AdminCoupleDetailSnapshot['couple']['creator']>,
+  ): string {
+    return coupleMemberAvatarName(member, this.i18n.translate('couples.nameMissing'));
   }
 
   private memberTitle(member: AdminCoupleDetailSnapshot['couple']['creator']): string {

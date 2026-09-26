@@ -43,6 +43,7 @@ import {
 import {
   CONTENT_COLUMN_KEYS,
   CONTENT_COLUMNS_KEY,
+  CONTENT_DEFAULT_HIDDEN_COLUMNS,
   CONTENT_HIDEABLE_COLUMNS,
   contentKindLabelKey,
   contentLanguageLabelKey,
@@ -96,6 +97,7 @@ export class ContentPageComponent {
     CONTENT_COLUMNS_KEY,
     CONTENT_COLUMN_KEYS,
     CONTENT_HIDEABLE_COLUMNS,
+    CONTENT_DEFAULT_HIDDEN_COLUMNS,
   );
   protected readonly hiddenColumns = signal<readonly string[]>(this.columnPrefs.hidden);
   protected readonly columnOrder = signal<readonly string[]>(this.columnPrefs.order);
@@ -141,6 +143,72 @@ export class ContentPageComponent {
         accessor: (row) => this.formatTimestamp(row.updatedAt),
         cardPriority: 5,
       },
+      {
+        key: 'id',
+        header: this.i18n.translate('content.id'),
+        accessor: (row) => this.text(row.id),
+        cardPriority: 6,
+      },
+      {
+        key: 'description',
+        header: this.i18n.translate('content.description'),
+        accessor: (row) => this.plain(row.description),
+        cardPriority: 7,
+      },
+      {
+        key: 'tags',
+        header: this.i18n.translate('content.tags'),
+        accessor: (row) => (row.tags.length > 0 ? row.tags.join(', ') : '—'),
+        cardPriority: 8,
+      },
+      {
+        key: 'url',
+        header: this.i18n.translate('content.url'),
+        accessor: (row) => this.text(row.url),
+        cardPriority: 9,
+      },
+      {
+        key: 'unitCount',
+        header: this.i18n.translate('content.unitCount'),
+        accessor: (row) => String(row.unitCount),
+        cardPriority: 10,
+      },
+      {
+        key: 'publishedAt',
+        header: this.i18n.translate('content.publishedAt'),
+        accessor: (row) => this.formatTimestamp(row.publishedAt),
+        cardPriority: 11,
+      },
+      {
+        key: 'createdAt',
+        header: this.i18n.translate('content.createdAt'),
+        accessor: (row) => this.formatTimestamp(row.createdAt),
+        cardPriority: 12,
+      },
+      {
+        key: 'createdBy',
+        header: this.i18n.translate('content.createdBy'),
+        accessor: (row) => this.text(row.createdBy),
+        cardPriority: 13,
+      },
+      {
+        key: 'updatedBy',
+        header: this.i18n.translate('content.updatedBy'),
+        accessor: (row) => this.text(row.updatedBy),
+        cardPriority: 14,
+      },
+      {
+        key: 'coverUrl',
+        header: this.i18n.translate('content.coverUrl'),
+        accessor: (row) => this.text(row.coverUrl ?? ''),
+        cardPriority: 15,
+      },
+      {
+        key: 'coverMediaId',
+        header: this.i18n.translate('content.coverMediaId'),
+        accessor: (row) => this.text(row.coverMediaId ?? ''),
+        cardPriority: 16,
+      },
     ];
   });
 
@@ -163,6 +231,7 @@ export class ContentPageComponent {
       searchPlaceholder: this.i18n.translate('common.search'),
       noResults: this.i18n.translate('common.empty'),
       clear: this.i18n.translate('common.reset'),
+      close: this.i18n.translate('common.close'),
       selectedCount: (count) => this.i18n.translate('common.selectedCount', { count }),
     };
   });
@@ -255,7 +324,11 @@ export class ContentPageComponent {
       if (!storage) {
         return;
       }
-      writeColumnPrefs(storage, CONTENT_COLUMNS_KEY, { hidden, order });
+      writeColumnPrefs(storage, CONTENT_COLUMNS_KEY, {
+        hidden,
+        order,
+        known: [...CONTENT_COLUMN_KEYS],
+      });
     });
 
     effect(() => {
@@ -364,6 +437,15 @@ export class ContentPageComponent {
   protected text(value: string): string {
     const trimmed = value.trim();
     return trimmed.length > 0 ? trimmed : '—';
+  }
+
+  private plain(value: string): string {
+    const stripped = value
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return stripped.length > 0 ? stripped : '—';
   }
 
   protected onRowClick(row: AdminContentSummary): void {

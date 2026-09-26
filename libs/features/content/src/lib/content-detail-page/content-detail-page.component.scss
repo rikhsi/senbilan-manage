@@ -1,5 +1,112 @@
+@use 'ds' as ds;
+
 :host {
   display: block;
   min-width: 0;
-  min-height: 100%;
+}
+
+.content-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-5);
+}
+
+.content-detail__cover {
+  margin: 0;
+  overflow: hidden;
+  background: var(--app-color-surface-muted);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+
+  img {
+    display: block;
+    width: 100%;
+    max-height: 18rem;
+    object-fit: cover;
+  }
+}
+
+.content-detail__status {
+  display: flex;
+}
+
+.content-detail__units {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  padding: var(--app-space-4);
+  background: var(--app-color-surface-muted);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+}
+
+.content-detail__units-head,
+.content-detail__unit-head {
+  display: flex;
+  gap: var(--app-space-3);
+  align-items: center;
+}
+
+.content-detail__heading {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('body-strong');
+}
+
+.content-detail__hint {
+  margin: 0;
+  color: var(--app-color-text-secondary);
+  @include ds.text('body-sm');
+}
+
+.content-detail__unit-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.content-detail__unit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  padding: var(--app-space-3);
+  background: var(--app-color-surface);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+}
+
+.content-detail__unit-index {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  min-width: var(--app-size-control-sm);
+  height: var(--app-size-control-sm);
+  color: var(--app-color-on-primary-container);
+  background: var(--app-color-primary-container);
+  border-radius: var(--app-radius-full);
+  @include ds.text('caption-strong');
+  @include ds.tabular-numbers;
+}
+
+.content-detail__unit-title {
+  flex: 1;
+  min-width: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('body-strong');
+}
+
+.content-detail__unit-body {
+  margin: 0;
+  color: var(--app-color-text-secondary);
+  @include ds.text('body-sm');
+}
+
+.content-detail__unit-link {
+  color: var(--app-color-text-link);
+  text-decoration: underline;
+  @include ds.text('body-sm');
+  @include ds.truncate;
 }

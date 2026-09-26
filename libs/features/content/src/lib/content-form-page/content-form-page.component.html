@@ -1,0 +1,271 @@
+<app-detail-page [breadcrumbs]="breadcrumbs()">
+  <ng-container actions>
+    @if (!loading() && !error()) {
+      @if (!isFirstStep()) {
+        <button app-button type="button" variant="secondary" size="md" (click)="goBack()">
+          {{ 'common.back' | transloco }}
+        </button>
+      }
+      <button
+        app-button
+        type="button"
+        variant="primary"
+        size="md"
+        [icon]="isLastStep() ? 'check' : 'arrow-right'"
+        [loading]="saving()"
+        (click)="goNext()"
+      >
+        {{ (isLastStep() ? (isEdit() ? 'common.save' : 'content.create') : 'common.next') | transloco }}
+      </button>
+    }
+  </ng-container>
+
+  @if (error() && !loading()) {
+    <app-empty-state
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'content.errorTitle' | transloco"
+      [description]="'content.errorHint' | transloco"
+    />
+  } @else if (loading()) {
+    <div class="content-form content-form--loading" aria-busy="true"></div>
+  } @else {
+    <div class="content-form">
+      <nav class="content-form__steps" [attr.aria-label]="'content.stepsNav' | transloco">
+        @for (item of stepItems(); track item.id) {
+          <div
+            class="content-form__step"
+            [class.content-form__step--current]="item.current"
+            [class.content-form__step--done]="item.done"
+            [attr.aria-current]="item.current ? 'step' : null"
+          >
+            <span class="content-form__step-index">{{ item.index + 1 }}</span>
+            <span class="content-form__step-label">
+              {{ item.label }}
+              @if (item.required) {
+                <span class="content-form__step-required" aria-hidden="true">*</span>
+              }
+            </span>
+          </div>
+        }
+      </nav>
+
+      @switch (step()) {
+        @case ('basics') {
+          <section class="content-form__card">
+            <h2 class="content-form__heading">{{ 'content.steps.basics' | transloco }}</h2>
+            <div class="content-form__grid">
+              <app-form-field
+                [label]="'content.name' | transloco"
+                [help]="'content.nameHelp' | transloco"
+                [helpLabel]="'common.fieldHelp' | transloco"
+                [error]="titleError()"
+                required
+              >
+                <input
+                  appInput
+                  type="text"
+                  [ngModel]="draft().title"
+                  (ngModelChange)="onTitleChange($event)"
+                  [attr.placeholder]="'content.name' | transloco"
+                />
+              </app-form-field>
+              @if (!isEdit()) {
+                <app-form-field
+                  [label]="'content.kind' | transloco"
+                  [help]="'content.kindHelp' | transloco"
+                  [helpLabel]="'common.fieldHelp' | transloco"
+                  required
+                >
+                  <app-select
+                    [options]="kindOptions()"
+                    [labels]="selectLabels()"
+                    [ngModel]="draft().kind"
+                    (ngModelChange)="onKind($event)"
+                  />
+                </app-form-field>
+              }
+              <app-form-field
+                [label]="'content.language' | transloco"
+                [help]="'content.languageHelp' | transloco"
+                [helpLabel]="'common.fieldHelp' | transloco"
+                required
+              >
+                <app-select
+                  [options]="languageOptions()"
+                  [labels]="selectLabels()"
+                  [ngModel]="draft().language"
+                  (ngModelChange)="onLanguage($event)"
+                />
+              </app-form-field>
+              <app-form-field
+                class="content-form__full"
+                [label]="'content.description' | transloco"
+                [help]="'content.descriptionHelp' | transloco"
+                [helpLabel]="'common.fieldHelp' | transloco"
+              >
+                <app-html-editor [ngModel]="draft().description" (ngModelChange)="patch('description', $event)" />
+              </app-form-field>
+            </div>
+          </section>
+        }
+        @case ('details') {
+          <section class="content-form__card">
+            <h2 class="content-form__heading">{{ 'content.steps.details' | transloco }}</h2>
+            <div class="content-form__grid">
+              <app-form-field
+                class="content-form__full"
+                [label]="'content.tags' | transloco"
+                [help]="'content.tagsHelp' | transloco"
+                [helpLabel]="'common.fieldHelp' | transloco"
+                [error]="tagError()"
+              >
+                <div class="content-form__tags">
+                  @if (draft().tags.length > 0) {
+                    <div class="content-form__tag-list" role="list">
+                      @for (tag of draft().tags; track tag) {
+                        <app-tag
+                          role="listitem"
+                          tone="primary"
+                          [removable]="true"
+                          [removeLabel]="'content.removeTag' | transloco"
+                          (remove)="removeTag(tag)"
+                        >
+                          {{ tag }}
+                        </app-tag>
+                      }
+                    </div>
+                  }
+                  <div class="content-form__tag-row">
+                    <input
+                      appInput
+                      type="text"
+                      [ngModel]="tagDraft()"
+                      (ngModelChange)="onTagDraftChange($event)"
+                      (keydown)="onTagKeydown($event)"
+                      [attr.placeholder]="'content.tagPlaceholder' | transloco"
+                      [attr.aria-invalid]="tagError() ? 'true' : null"
+                      [disabled]="tagSlotsLeft() === 0"
+                    />
+                    <button
+                      app-button
+                      type="button"
+                      variant="secondary"
+                      size="md"
+                      icon="plus"
+                      [disabled]="tagSlotsLeft() === 0 || !!tagError() || !tagDraft().trim()"
+                      (click)="addTag()"
+                    >
+                      {{ 'content.addTag' | transloco }}
+                    </button>
+                    <span class="content-form__tag-count" aria-live="polite"> {{ tagSlotsLeft() }}/{{ tagMax }} </span>
+                  </div>
+                </div>
+              </app-form-field>
+              <app-form-field
+                [label]="'content.url' | transloco"
+                [help]="'content.urlHelp' | transloco"
+                [helpLabel]="'common.fieldHelp' | transloco"
+                [error]="urlError()"
+                [required]="requiresLinkAndCover()"
+              >
+                <input
+                  appInput
+                  type="url"
+                  inputmode="url"
+                  autocomplete="url"
+                  [ngModel]="draft().url"
+                  (ngModelChange)="onUrlChange($event)"
+                  [attr.placeholder]="'content.urlPlaceholder' | transloco"
+                />
+              </app-form-field>
+              <app-form-field
+                [label]="'content.coverMediaId' | transloco"
+                [help]="'content.coverMediaIdHelp' | transloco"
+                [helpLabel]="'common.fieldHelp' | transloco"
+                [error]="coverError()"
+                [required]="requiresLinkAndCover()"
+              >
+                <input
+                  appInput
+                  type="text"
+                  [ngModel]="draft().coverMediaId"
+                  (ngModelChange)="patch('coverMediaId', $event)"
+                />
+              </app-form-field>
+            </div>
+          </section>
+        }
+        @case ('units') {
+          <section class="content-form__card">
+            <div class="content-form__card-head">
+              <h2 class="content-form__heading">{{ 'content.steps.units' | transloco }}</h2>
+              <button app-button type="button" variant="secondary" size="sm" icon="plus" (click)="addUnit()">
+                {{ 'content.addUnit' | transloco }}
+              </button>
+            </div>
+            @if (draft().units.length === 0) {
+              <p class="content-form__hint">{{ 'content.unitsEmpty' | transloco }}</p>
+            }
+            @for (unit of draft().units; track $index; let index = $index) {
+              <div class="content-form__unit">
+                <div class="content-form__unit-head">
+                  <span class="content-form__unit-index">{{ index + 1 }}</span>
+                  @if (canRemoveUnit(index)) {
+                    <button app-button type="button" variant="ghost" size="sm" icon="trash" (click)="removeUnit(index)">
+                      {{ 'common.delete' | transloco }}
+                    </button>
+                  }
+                </div>
+                <div class="content-form__grid">
+                  <app-form-field
+                    class="content-form__full"
+                    [label]="'content.unitTitle' | transloco"
+                    [help]="'content.unitTitleHelp' | transloco"
+                    [helpLabel]="'common.fieldHelp' | transloco"
+                    [error]="unitErrors()[index]?.title ?? ''"
+                    required
+                  >
+                    <input
+                      appInput
+                      type="text"
+                      [ngModel]="unit.title"
+                      (ngModelChange)="patchUnit(index, 'title', $event)"
+                    />
+                  </app-form-field>
+                  <app-form-field
+                    class="content-form__full"
+                    [label]="'content.unitBody' | transloco"
+                    [help]="'content.unitBodyHelp' | transloco"
+                    [helpLabel]="'common.fieldHelp' | transloco"
+                    [error]="unitErrors()[index]?.body ?? ''"
+                    required
+                  >
+                    <app-html-editor [ngModel]="unit.body" (ngModelChange)="patchUnit(index, 'body', $event)" />
+                  </app-form-field>
+                  <app-form-field
+                    class="content-form__full"
+                    [label]="'content.unitUrl' | transloco"
+                    [help]="'content.unitUrlHelp' | transloco"
+                    [helpLabel]="'common.fieldHelp' | transloco"
+                    [error]="unitErrors()[index]?.url ?? ''"
+                  >
+                    <input
+                      appInput
+                      type="url"
+                      inputmode="url"
+                      autocomplete="url"
+                      [ngModel]="unit.url"
+                      (ngModelChange)="patchUnit(index, 'url', $event)"
+                      [attr.placeholder]="'content.unitUrlPlaceholder' | transloco"
+                    />
+                  </app-form-field>
+                </div>
+              </div>
+            }
+          </section>
+        }
+      }
+    </div>
+  }
+</app-detail-page>

@@ -82,6 +82,8 @@ export class AppDataTableComponent<T> {
   readonly loading = input(false);
   readonly error = input<string | null>(null);
   readonly selectable = input(false);
+  /** One radio per row. Clicking the row selects it, or clears it when it is already selected. */
+  readonly singleSelect = input(false);
   readonly resizable = input(true);
   readonly stickyHeader = input(true);
   readonly columnPicker = input(true);
@@ -90,8 +92,11 @@ export class AppDataTableComponent<T> {
   readonly mode = input<DataTableMode>('auto');
   readonly skeletonRows = input(6);
   readonly rowClickable = input(false);
+  /** Shown on mobile cards when the row opens a record. Empty hides the button. */
+  readonly cardOpenLabel = input('');
 
   readonly selected = model<readonly string[]>([]);
+  readonly pickedId = model<string | null>(null);
   readonly sort = model<SortState | null>(null);
   readonly hiddenColumns = model<readonly string[]>([]);
   readonly expanded = model<readonly string[]>([]);
@@ -164,16 +169,17 @@ export class AppDataTableComponent<T> {
       .sort((a, b) => (a.cardPriority ?? 0) - (b.cardPriority ?? 0)),
   );
 
-  protected readonly showState = computed(
-    () => !this.loading() && (this.error() !== null || this.rows().length === 0),
-  );
+  protected readonly showError = computed(() => !this.loading() && this.error() !== null);
   protected readonly skeletonIndexes = computed(() =>
     Array.from({ length: this.skeletonRows() }, (_, i) => i),
   );
   protected readonly hasFixedWidths = computed(() => Object.keys(this.widths()).length > 0);
 
   protected readonly extraColumnCount = computed(
-    () => (this.selectable() ? 1 : 0) + (this.rowExpansion() ? 1 : 0) + (this.rowActions() ? 1 : 0),
+    () =>
+      (this.selectable() || this.singleSelect() ? 1 : 0) +
+      (this.rowExpansion() ? 1 : 0) +
+      (this.rowActions() ? 1 : 0),
   );
   protected readonly skeletonCells = computed(() =>
     Array.from({ length: this.visibleColumns().length + this.extraColumnCount() }, (_, i) => i),
@@ -225,6 +231,14 @@ export class AppDataTableComponent<T> {
   // ---- selection -------------------------------------------------------------
   protected isSelected(row: T): boolean {
     return this.selectedSet().has(this.rowId()(row));
+  }
+
+  protected isPicked(row: T): boolean {
+    return this.pickedId() === this.rowId()(row);
+  }
+
+  protected rowActive(): boolean {
+    return this.rowClickable() || this.singleSelect();
   }
 
   protected toggleRow(row: T): void {
@@ -340,25 +354,44 @@ export class AppDataTableComponent<T> {
   }
 
   protected onRowClick(row: T, event: Event): void {
-    if (!this.rowClickable()) {
+    if (!this.rowActive()) {
       return;
     }
     const target = event.target as HTMLElement;
     if (target.closest('button, a, input, label, [role="menu"], .app-data-table__interactive')) {
       return;
     }
+    this.togglePicked(row);
+    if (this.rowClickable()) {
+      this.rowClick.emit(row);
+    }
+  }
+
+  protected openRow(row: T, event: Event): void {
+    event.stopPropagation();
     this.rowClick.emit(row);
   }
 
   protected onRowKeydown(row: T, event: KeyboardEvent): void {
     if (
-      this.rowClickable() &&
+      this.rowActive() &&
       (event.key === 'Enter' || event.key === ' ') &&
       event.target === event.currentTarget
     ) {
       event.preventDefault();
-      this.rowClick.emit(row);
+      this.togglePicked(row);
+      if (this.rowClickable()) {
+        this.rowClick.emit(row);
+      }
     }
+  }
+
+  private togglePicked(row: T): void {
+    if (!this.singleSelect()) {
+      return;
+    }
+    const id = this.rowId()(row);
+    this.pickedId.set(this.pickedId() === id ? null : id);
   }
 
   protected trackRow = (_: number, row: T): string => this.rowId()(row);

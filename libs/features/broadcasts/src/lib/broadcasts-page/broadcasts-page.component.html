@@ -1,11 +1,12 @@
 <app-list-page [breadcrumbs]="breadcrumbs">
   <app-list-filters
     toolbar
-    [open]="columnsOpen()"
+    [open]="filtersOpen()"
     [activeCount]="0"
     [labels]="filterLabels()"
-    (openChange)="columnsOpen.set($event)"
-    (reset)="resetColumns()"
+    (openChange)="filtersOpen.set($event)"
+    (apply)="applyFilters()"
+    (reset)="resetFilters()"
   >
     <button
       end
@@ -19,18 +20,20 @@
     >
       {{ 'common.retry' | transloco }}
     </button>
-    <app-column-settings
-      filters
-      [columns]="columnSettings()"
-      [hidden]="hiddenColumns()"
-      [order]="columnOrder()"
-      [divided]="false"
-      [showTitle]="false"
-      [groupLabel]="'common.columns' | transloco"
-      [dragLabel]="'common.moveColumn' | transloco"
-      (hiddenChange)="hiddenColumns.set($event)"
-      (orderChange)="columnOrder.set($event)"
-    />
+
+    <div filters class="broadcasts-page__filter-fields">
+      <app-column-settings
+        [columns]="columnSettings()"
+        [hidden]="hiddenColumns()"
+        [order]="columnOrder()"
+        [divided]="false"
+        [showTitle]="true"
+        [groupLabel]="'common.columns' | transloco"
+        [dragLabel]="'common.moveColumn' | transloco"
+        (hiddenChange)="hiddenColumns.set($event)"
+        (orderChange)="columnOrder.set($event)"
+      />
+    </div>
   </app-list-filters>
 
   @if (error() && !loading()) {

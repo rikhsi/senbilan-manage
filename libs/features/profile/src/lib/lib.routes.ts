@@ -18,6 +18,14 @@ export const FEATURE_PROFILE_ROUTES: Routes = [
             (m) => m.ProfileSettingsPageComponent,
           ),
       },
+      {
+        path: 'tables',
+        title: 'profile.pageTables',
+        loadComponent: () =>
+          import('./profile-tables/profile-tables-page.component').then(
+            (m) => m.ProfileTablesPageComponent,
+          ),
+      },
     ],
   },
 ];

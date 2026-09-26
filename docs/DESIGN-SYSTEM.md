@@ -2,26 +2,28 @@
 
 Packages:
 
-| Package                          | Import             | Role                                            |
-| -------------------------------- | ------------------ | ----------------------------------------------- |
-| `@senbilan/design-system/tokens` | TS + SCSS          | Breakpoints, themes, CSS variables (`--app-*`)  |
-| `@senbilan/design-system/icons`  | `AppIconComponent` | Lucide-based icon registry (vendor-free)        |
-| `@senbilan/design-system/ui`     | Primitives         | Buttons, forms, table, overlays, … (pure / own) |
-| `@senbilan/design-system/layout` | Shell layout       | App chrome / page frames                        |
-| `@senbilan/vendors/ui`           | Vendor wrappers    | Taiga / Ionic customization + theme bridges     |
+| Package                          | Import             | Role                                             |
+| -------------------------------- | ------------------ | ------------------------------------------------ |
+| `@senbilan/design-system/tokens` | TS + SCSS          | Breakpoints, themes, CSS variables (`--app-*`)   |
+| `@senbilan/design-system/icons`  | `AppIconComponent` | Lucide-based icon registry (vendor-free)         |
+| `@senbilan/design-system/ui`     | Primitives         | Buttons, forms, table, overlays, … (pure / own)  |
+| `@senbilan/design-system/layout` | Shell layout       | App chrome / page frames                         |
+| `@senbilan/vendors/ui`           | Vendor wrappers    | Taiga / Ionic / TinyMCE wrappers + theme bridges |
 
 Prefix: **`app`** (selectors like `button[app-button]`, `app-icon`).
 
 ## Pure DS vs vendors
 
-| Kind of UI                     | Where              | Notes                                    |
-| ------------------------------ | ------------------ | ---------------------------------------- |
-| Built from scratch             | `design-system/ui` | No `@taiga-ui/*`, no `@ionic/*`          |
-| Vendor control we customize    | `vendors/ui`       | Stable `App*` API over Taiga/Ionic       |
-| Stock vendor, no customization | `apps/*` only      | Direct `@taiga-ui/*` / `@ionic/*` import |
-| Features / entities            | DS or `vendors/ui` | Never raw vendor kits                    |
+| Kind of UI                     | Where              | Notes                                      |
+| ------------------------------ | ------------------ | ------------------------------------------ |
+| Built from scratch             | `design-system/ui` | No `@taiga-ui/*`, no `@ionic/*`            |
+| Vendor control we customize    | `vendors/ui`       | Stable `App*` API over Taiga/Ionic/TinyMCE |
+| Stock vendor, no customization | `apps/*` only      | Direct `@taiga-ui/*` / `@ionic/*` import   |
+| Features / entities            | DS or `vendors/ui` | Never raw vendor kits                      |
 
 Long-term: shrink `vendors/ui` and drop Taiga. See [ADR 0002](adr/0002-taiga-ui.md), [ADR 0010](adr/0010-vendors-ui.md).
+
+Rich text: `AppHtmlEditorComponent` (`app-html-editor`) wraps TinyMCE. Apps copy `node_modules/tinymce` into the build via `assets` in `apps/web` / `apps/mobile` `project.json` (`/assets/tinymce`). Russian UI pack: `/assets/tinymce-lang/ru.js`. Restart `serve` after changing those asset entries.
 
 ## Tokens & themes
 
@@ -33,7 +35,7 @@ SCSS entry in each app `styles.scss`:
 @use '../../../libs/vendors/ui/src/styles/index.scss' as *; // --tui-* / --ion-* bridges
 ```
 
-Themes: **light** / **dark** (+ high-contrast overlay). Applied via `data-theme`, `data-density`, `data-contrast`, `data-motion` on `<html>` (`THEME_ATTRIBUTES` in tokens).
+Themes: **light** / **dark** (+ high-contrast overlay). Applied via `data-theme`, `data-density`, `data-contrast`, `data-motion` on `<html>` (`THEME_ATTRIBUTES` in tokens). Mode `system` resolves to light or dark from OS preference. **Eye comfort** is a separate toggle (`data-eye-comfort=on`) that adds a warm yellow cast on top of either theme.
 
 Densities: `compact` | `default` | `comfortable`.
 
@@ -80,21 +82,21 @@ Class names: BEM-ish kebab-case (`app-button__label`, `app-button--loading`).
 
 ## Components inventory (`design-system-ui`)
 
-**Primitives:** `AppButtonComponent`, `AppIconButtonComponent`, `AppCardComponent`, `AppPanelComponent`, `AppBadgeComponent`, `AppTagComponent`, `AppStatusComponent`, `AppAvatarComponent`, `AppSkeletonComponent`, `AppTabsComponent`, `AppStatCardComponent`
+**Primitives:** `AppButtonComponent`, `AppIconButtonComponent`, `AppCardComponent`, `AppPanelComponent`, `AppBadgeComponent`, `AppTagComponent`, `AppStatusComponent`, `AppAvatarComponent`, `AppBrandLockupComponent`, `AppSkeletonComponent`, `AppTabsComponent`, `AppStatCardComponent`
 
 **States:** empty / error / loading
 
-**Forms:** `AppFormFieldComponent`, `AppInputDirective`, checkbox, switch, radio group, `AppSelectComponent`, `AppSearchInputComponent`, `AppFilterBarComponent`
+**Forms:** `AppFormFieldComponent`, `AppInputDirective`, checkbox, switch, radio group, `AppSelectComponent` (anchored menu on desktop; bottom sheet on `< md`), `AppDrawerSelectComponent` (select-shaped trigger that asks the caller to open a drawer), `AppSearchInputComponent`, `AppFilterBarComponent`
 
-**Data:** `AppDataTableComponent` (+ cell/row directives), `AppPaginationComponent`, `AppChartComponent`
+**Data:** `AppDataTableComponent` (+ cell/row directives), `AppPaginationComponent`, `AppChartComponent`. Below `md` the table becomes cards. Pass `[cardOpenLabel]` to put an open button on each card; cell templates receive `cards` so the primary column can stay plain text there.
 
 **Overlays:** modal / drawer (`AppModalService`), confirm dialog, toast, menu, sheet / action sheet
 
-**List filters:** `AppListFiltersComponent` — compact search + “Filters” drawer (bottom sheet on mobile), optional chips for applied filters. Project fields with `[filters]`, search with `[search]`, chips with `[chips]`. Keep applied state in route query params at the feature layer. Put column visibility toggles in the drawer (set `[columnPicker]="false"` on the table) so the table toolbar stays empty.
+**List filters:** `AppListFiltersComponent` — compact search + “Filters” drawer (bottom sheet on mobile), optional chips for applied filters. Project fields with `[filters]`, search with `[search]`, chips with `[chips]`. Keep applied state in route query params at the feature layer. Put column visibility toggles in the drawer (set `[columnPicker]="false"` on the table) so the table toolbar stays empty. The same layout (visibility, order, restore defaults) is also edited for every list from the profile tables page.
 
 **List pages:** `AppListPageComponent` — breadcrumbs and actions, then the table. No eyebrow or description.
 
-**Detail pages:** `AppDetailPageComponent` + `AppDetailFieldsComponent` — the same top row (dashboard / list / record), actions on the right, fields in the body. Reuse this for every detail route. Breadcrumbs are only as wide as their labels; the frame is full width.
+**Detail pages:** `AppDetailPageComponent` + `AppDetailFieldsComponent` — the same top row (dashboard / list / record), actions on the right (including on wrap/mobile), fields in the body. Reuse this for every detail route. Breadcrumbs are only as wide as their labels; the frame is full width. On `< md`, the header stacks: icon-only back + parent link / page title on the first row, actions on the second.
 
 **Metric cards:** `AppStatCardComponent` — label, large value, tinted icon chip on the same surface as the dashboard. Lay them out in a wide grid so the label fits. New modules reuse this card.
 

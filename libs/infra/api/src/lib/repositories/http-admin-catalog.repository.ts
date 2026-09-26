@@ -1,10 +1,15 @@
+/* eslint-disable max-lines -- OpenAPI catalog adapter for all admin modules */
 import {
   AdminCatalogRepository,
   type AdminBroadcastSummary,
+  type AdminContentDetail,
   type AdminContentSummary,
+  type AdminContentUnit,
+  type AdminContentUnitInput,
   type AdminCoupleDetailSnapshot,
   type AdminCoupleMember,
   type AdminCoupleSummary,
+  type AdminCreateContentInput,
   type AdminCursorPage,
   type AdminListContentsQuery,
   type AdminListCouplesQuery,
@@ -13,6 +18,7 @@ import {
   type AdminMediaSummary,
   type AdminStatsSnapshot,
   type AdminSystemSnapshot,
+  type AdminUpdateContentInput,
   type AdminUserDetailSnapshot,
   type AdminUserSummary,
 } from '@senbilan/core/application';
@@ -86,6 +92,26 @@ const mapCoupleMember = (user: AdminUser | null | undefined): AdminCoupleMember 
   return { id, name, phone };
 };
 
+const formatCalendarDate = (
+  value: { year?: number; month?: number; day?: number } | null | undefined,
+): string | null => {
+  if (!value) {
+    return null;
+  }
+  const year = value.year ?? 0;
+  const month = value.month ?? 0;
+  const day = value.day ?? 0;
+  if (year === 0 && month === 0 && day === 0) {
+    return null;
+  }
+  const parts = [
+    year > 0 ? String(year) : '',
+    month > 0 ? String(month).padStart(2, '0') : '',
+    day > 0 ? String(day).padStart(2, '0') : '',
+  ].filter((part) => part.length > 0);
+  return parts.length > 0 ? parts.join('-') : null;
+};
+
 const mapCouple = (couple: WireCouple | null | undefined): AdminCoupleSummary => {
   const members = couple?.members ?? [];
   return {
@@ -93,28 +119,70 @@ const mapCouple = (couple: WireCouple | null | undefined): AdminCoupleSummary =>
     status: str(couple?.status),
     creator: mapCoupleMember(members[0]),
     partner: mapCoupleMember(members[1]),
+    startedOn: formatCalendarDate(couple?.started_on),
     createdAt: couple?.created_at ?? null,
   };
 };
 
-const mapContent = (content: Content | null | undefined): AdminContentSummary => ({
-  id: str(content?.id),
-  title: str(content?.title),
-  description: str(content?.description),
-  url: str(content?.url),
-  kind: str(content?.kind),
-  status: str(content?.status),
-  language: str(content?.language),
-  publishedAt: content?.published_at ?? null,
-  updatedAt: content?.updated_at ?? null,
+const mapContentUnit = (unit: {
+  index?: number;
+  title?: string;
+  body?: string;
+  url?: string;
+  updated_at?: string | null;
+}): AdminContentUnit => ({
+  index: unit.index ?? 0,
+  title: str(unit.title),
+  body: str(unit.body),
+  url: str(unit.url),
+  updatedAt: unit.updated_at ?? null,
+});
+
+const mapContent = (content: Content | null | undefined): AdminContentSummary => {
+  const cover = content?.cover ?? null;
+  return {
+    id: str(content?.id),
+    title: str(content?.title),
+    description: str(content?.description),
+    url: str(content?.url),
+    kind: str(content?.kind),
+    status: str(content?.status),
+    language: str(content?.language),
+    tags: content?.tags ?? [],
+    unitCount: num(content?.unit_count),
+    coverUrl: cover?.url ? str(cover.url) : null,
+    coverMediaId: cover?.id ? str(cover.id) : null,
+    publishedAt: content?.published_at ?? null,
+    updatedAt: content?.updated_at ?? null,
+    createdAt: content?.created_at ?? null,
+    createdBy: str(content?.created_by),
+    updatedBy: str(content?.updated_by),
+  };
+};
+
+const mapContentDetail = (content: Content | null | undefined): AdminContentDetail => ({
+  ...mapContent(content),
+  units: (content?.units ?? []).map(mapContentUnit),
 });
 
 const mapBroadcast = (item: Broadcast | null | undefined): AdminBroadcastSummary => ({
   id: str(item?.id),
   title: str(item?.text_ru || item?.text_uz || item?.id),
+  textUz: str(item?.text_uz),
+  textRu: str(item?.text_ru),
   status: str(item?.status),
-  createdAt: item?.created_at ?? null,
+  contentId: str(item?.content_id),
+  url: str(item?.url),
+  sentCount: num(item?.sent_count),
+  mutedCount: num(item?.muted_count),
+  failedCount: num(item?.failed_count),
+  createdBy: str(item?.created_by),
+  requestedBy: str(item?.requested_by),
+  queuedAt: item?.queued_at ?? null,
+  startedAt: item?.started_at ?? null,
   sentAt: item?.sent_at ?? null,
+  createdAt: item?.created_at ?? null,
+  updatedAt: item?.updated_at ?? null,
 });
 
 const mapMedia = (item: AdminMedia | null | undefined): AdminMediaSummary => ({
@@ -271,9 +339,94 @@ export class HttpAdminCatalogRepository extends AdminCatalogRepository {
     };
   }
 
-  override async getContent(contentId: string): Promise<AdminContentSummary> {
+  override async getContent(contentId: string): Promise<AdminContentDetail> {
     const envelope = await firstValueFrom(this.contentApi.getContent(contentId));
-    return mapContent(envelope.data);
+    return mapContentDetail(envelope.data);
+  }
+
+  override async createContent(input: AdminCreateContentInput): Promise<AdminContentDetail> {
+    const envelope = await firstValueFrom(
+      this.contentApi.createContent({
+        kind: input.kind as never,
+        title: input.title,
+        description: input.description,
+        language: input.language as never,
+        tags: [...input.tags],
+        ...(input.url ? { url: input.url } : {}),
+        ...(input.coverMediaId ? { cover_media_id: input.coverMediaId } : {}),
+        units: input.units.map((unit) => ({
+          title: unit.title,
+          ...(unit.body ? { body: unit.body } : {}),
+          ...(unit.url ? { url: unit.url } : {}),
+        })),
+      }),
+    );
+    return mapContentDetail(envelope.data);
+  }
+
+  override async updateContent(
+    contentId: string,
+    input: AdminUpdateContentInput,
+  ): Promise<AdminContentDetail> {
+    const envelope = await firstValueFrom(
+      this.contentApi.updateContent(contentId, {
+        ...(input.title !== undefined ? { title: input.title } : {}),
+        ...(input.description !== undefined ? { description: input.description } : {}),
+        ...(input.language !== undefined ? { language: input.language as never } : {}),
+        ...(input.updateTags ? { update_tags: true, tags: [...(input.tags ?? [])] } : {}),
+        ...(input.url !== undefined ? { url: input.url } : {}),
+        ...(input.coverMediaId !== undefined ? { cover_media_id: input.coverMediaId } : {}),
+      }),
+    );
+    return mapContentDetail(envelope.data);
+  }
+
+  override async deleteContent(contentId: string): Promise<void> {
+    await firstValueFrom(this.contentApi.deleteContent(contentId));
+  }
+
+  override async publishContent(contentId: string): Promise<AdminContentDetail> {
+    const envelope = await firstValueFrom(this.contentApi.publishContent(contentId, {}));
+    return mapContentDetail(envelope.data);
+  }
+
+  override async unpublishContent(contentId: string): Promise<AdminContentDetail> {
+    const envelope = await firstValueFrom(this.contentApi.unpublishContent(contentId, {}));
+    return mapContentDetail(envelope.data);
+  }
+
+  override async addContentUnit(
+    contentId: string,
+    input: AdminContentUnitInput,
+  ): Promise<AdminContentDetail> {
+    const envelope = await firstValueFrom(
+      this.contentApi.addUnit(contentId, {
+        title: input.title,
+        ...(input.body ? { body: input.body } : {}),
+        ...(input.url ? { url: input.url } : {}),
+      }),
+    );
+    return mapContentDetail(envelope.data);
+  }
+
+  override async updateContentUnit(
+    contentId: string,
+    index: number,
+    input: AdminContentUnitInput,
+  ): Promise<AdminContentDetail> {
+    const envelope = await firstValueFrom(
+      this.contentApi.updateUnit(contentId, index, {
+        title: input.title,
+        body: input.body,
+        ...(input.url ? { url: input.url } : { url: '' }),
+      }),
+    );
+    return mapContentDetail(envelope.data);
+  }
+
+  override async deleteContentUnit(contentId: string, index: number): Promise<AdminContentDetail> {
+    const envelope = await firstValueFrom(this.contentApi.deleteUnit(contentId, index));
+    return mapContentDetail(envelope.data);
   }
 
   override async listBroadcasts(

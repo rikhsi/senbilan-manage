@@ -12,6 +12,8 @@ export interface SelectLabels {
   readonly searchPlaceholder: string;
   readonly noResults: string;
   readonly clear: string;
+  /** Sheet close control; falls back to `clear` when omitted. */
+  readonly close?: string;
   /** "{{count}} selected" — already interpolated by the caller via a function. */
   readonly selectedCount: (count: number) => string;
 }

@@ -1,18 +1,26 @@
+/* eslint-disable max-lines -- catalog list wires filters, columns, and cursor pagination */
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
   inject,
+  input,
+  model,
   signal,
   untracked,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { AdminCatalogRepository, type AdminCoupleSummary } from '@senbilan/core/application';
+import {
+  AdminCatalogRepository,
+  type AdminCoupleMember,
+  type AdminCoupleSummary,
+} from '@senbilan/core/application';
 import { AppListPageComponent, type BreadcrumbItem } from '@senbilan/design-system/layout';
 import {
+  AppAvatarComponent,
   AppButtonComponent,
   AppColumnSettingsComponent,
   AppCursorPaginationComponent,
@@ -39,10 +47,16 @@ import {
   rememberNextCursor,
   writeColumnPrefs,
 } from '@senbilan/shared/util';
-import { coupleMemberPhone, coupleMemberTel, coupleMemberTitle } from '../couple-member';
+import {
+  coupleMemberAvatarName,
+  coupleMemberPhone,
+  coupleMembers,
+  coupleMemberTitle,
+} from '../couple-member';
 import {
   COUPLES_COLUMN_KEYS,
   COUPLES_COLUMNS_KEY,
+  COUPLES_DEFAULT_HIDDEN_COLUMNS,
   COUPLES_HIDEABLE_COLUMNS,
   coupleStatusLabelKey,
   coupleStatusTone,
@@ -54,9 +68,9 @@ import {
   selector: 'couples-page',
   imports: [
     FormsModule,
-    RouterLink,
     TranslocoPipe,
     AppListPageComponent,
+    AppAvatarComponent,
     AppButtonComponent,
     AppColumnSettingsComponent,
     AppCursorPaginationComponent,
@@ -77,6 +91,11 @@ export class CouplesPageComponent {
   private readonly catalog = inject(AdminCatalogRepository);
   private readonly i18n = inject(TranslocoService);
   private readonly i18nReady = injectTranslocoReady();
+
+  /** Embedded in a record picker: same list, radio selection, no navigation. */
+  readonly picking = input(false);
+  readonly pickedId = model<string | null>(null);
+  readonly pickedLabel = model('');
   private readonly router = inject(Router);
 
   protected readonly loading = signal(true);
@@ -94,44 +113,57 @@ export class CouplesPageComponent {
     COUPLES_COLUMNS_KEY,
     COUPLES_COLUMN_KEYS,
     COUPLES_HIDEABLE_COLUMNS,
+    COUPLES_DEFAULT_HIDDEN_COLUMNS,
   );
   protected readonly hiddenColumns = signal<readonly string[]>(this.columnPrefs.hidden);
   protected readonly columnOrder = signal<readonly string[]>(this.columnPrefs.order);
   protected readonly applied = signal<CouplesListFilters>({ ...EMPTY_COUPLES_FILTERS });
   protected readonly draft = signal<CouplesListFilters>({ ...EMPTY_COUPLES_FILTERS });
 
-  protected readonly breadcrumbs: readonly BreadcrumbItem[] = [
-    { labelKey: 'nav.dashboard', route: '/dashboard' },
-    { labelKey: 'nav.couples' },
-  ];
+  protected readonly breadcrumbs = computed<readonly BreadcrumbItem[]>(() => {
+    this.i18nReady();
+    if (this.picking()) {
+      return [{ labelKey: 'nav.couples' }];
+    }
+    return [{ labelKey: 'nav.dashboard', route: '/dashboard' }, { labelKey: 'nav.couples' }];
+  });
 
   protected readonly columns = computed<readonly ColumnDef<AdminCoupleSummary>[]>(() => {
     this.i18nReady();
     return [
       {
-        key: 'creator',
-        header: this.i18n.translate('couples.creator'),
-        accessor: (row) => this.memberTitle(row.creator),
+        key: 'members',
+        header: this.i18n.translate('couples.members'),
+        accessor: (row) =>
+          this.membersOf(row)
+            .map((member) => this.memberPhone(member) || this.memberTitle(member))
+            .join(', '),
         cardPriority: 1,
         hideable: false,
-      },
-      {
-        key: 'partner',
-        header: this.i18n.translate('couples.partner'),
-        accessor: (row) => this.memberTitle(row.partner),
-        cardPriority: 2,
       },
       {
         key: 'status',
         header: this.i18n.translate('couples.status'),
         accessor: (row) => this.statusLabel(row.status),
-        cardPriority: 3,
+        cardPriority: 2,
       },
       {
         key: 'createdAt',
         header: this.i18n.translate('couples.createdAt'),
         accessor: (row) => this.formatTimestamp(row.createdAt),
+        cardPriority: 3,
+      },
+      {
+        key: 'id',
+        header: this.i18n.translate('couples.id'),
+        accessor: (row) => this.text(row.id),
         cardPriority: 4,
+      },
+      {
+        key: 'startedOn',
+        header: this.i18n.translate('couples.startedOn'),
+        accessor: (row) => this.formatCalendarDate(row.startedOn),
+        cardPriority: 5,
       },
     ];
   });
@@ -155,6 +187,7 @@ export class CouplesPageComponent {
       searchPlaceholder: this.i18n.translate('common.search'),
       noResults: this.i18n.translate('common.empty'),
       clear: this.i18n.translate('common.reset'),
+      close: this.i18n.translate('common.close'),
       selectedCount: (count) => this.i18n.translate('common.selectedCount', { count }),
     };
   });
@@ -229,7 +262,11 @@ export class CouplesPageComponent {
       if (!storage) {
         return;
       }
-      writeColumnPrefs(storage, COUPLES_COLUMNS_KEY, { hidden, order });
+      writeColumnPrefs(storage, COUPLES_COLUMNS_KEY, {
+        hidden,
+        order,
+        known: [...COUPLES_COLUMN_KEYS],
+      });
     });
 
     effect(() => {
@@ -317,16 +354,20 @@ export class CouplesPageComponent {
     return coupleStatusTone(status);
   }
 
-  protected memberTitle(member: AdminCoupleSummary['creator']): string {
+  protected membersOf(row: AdminCoupleSummary): readonly AdminCoupleMember[] {
+    return coupleMembers(row);
+  }
+
+  protected memberTitle(member: AdminCoupleMember | null): string {
     return coupleMemberTitle(member, this.i18n.translate('couples.nameMissing'));
   }
 
-  protected memberPhone(member: AdminCoupleSummary['creator']): string {
+  protected memberPhone(member: AdminCoupleMember | null): string {
     return coupleMemberPhone(member);
   }
 
-  protected telHref(phone: string): string | null {
-    return coupleMemberTel(phone);
+  protected memberAvatarName(member: AdminCoupleMember): string {
+    return coupleMemberAvatarName(member, this.i18n.translate('couples.nameMissing'));
   }
 
   protected person(name: string): string {
@@ -335,7 +376,19 @@ export class CouplesPageComponent {
   }
 
   protected onRowClick(row: AdminCoupleSummary): void {
+    if (this.picking()) {
+      this.pickedLabel.set(this.pickedId() === row.id ? this.pickerLabel(row) : '');
+      return;
+    }
     void this.router.navigate(['/couples', row.id]);
+  }
+
+  private pickerLabel(row: AdminCoupleSummary): string {
+    const label = this.membersOf(row)
+      .map((member) => this.memberPhone(member) || this.memberTitle(member))
+      .filter((value) => value.trim().length > 0)
+      .join(', ');
+    return label.length > 0 ? label : row.id;
   }
 
   protected reload(): void {
@@ -376,6 +429,26 @@ export class CouplesPageComponent {
         this.loading.set(false);
       }
     }
+  }
+
+  private text(value: string): string {
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : '—';
+  }
+
+  private formatCalendarDate(value: string | null): string {
+    if (!value) {
+      return '—';
+    }
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!match) {
+      return this.text(value);
+    }
+    const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    if (Number.isNaN(date.getTime())) {
+      return this.text(value);
+    }
+    return new Intl.DateTimeFormat(this.i18n.getActiveLang(), { dateStyle: 'medium' }).format(date);
   }
 
   private formatTimestamp(value: string | null): string {

@@ -1,4 +1,9 @@
 import {
+  CdkConnectedOverlay,
+  CdkOverlayOrigin,
+  type ConnectedPosition,
+} from '@angular/cdk/overlay';
+import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -19,34 +24,75 @@ const MESSAGE_TRANSITION_MS = 250;
 
 type FieldMessage = { readonly kind: 'error' | 'hint'; readonly text: string };
 
+const HELP_OVERLAY_POSITIONS: ConnectedPosition[] = [
+  { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 6 },
+  { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 6 },
+  { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -6 },
+];
+
 /**
  * Wraps any control (native input/select/textarea with `appInput`, or a DS control
- * component) and renders label, hint, error and required marker. Links ids for a11y.
+ * component) and renders label, optional help popover, error and required marker.
  *
  * ```html
- * <app-form-field [label]="t('users.form.email')" [error]="errorFor('email')" required>
+ * <app-form-field
+ *   [label]="t('users.form.email')"
+ *   [help]="t('users.form.emailHelp')"
+ *   [helpLabel]="t('common.fieldHelp')"
+ *   [error]="errorFor('email')"
+ *   required
+ * >
  *   <input appInput type="email" [formControl]="form.controls.email" />
  * </app-form-field>
  * ```
- * The caller decides *when* to show `error` (touched/dirty/submitted) — the field
- * just renders whatever it is given. This keeps validation timing in one place (forms layer).
  *
- * Error/hint height animates open/close so sibling fields do not jump.
+ * Explanatory copy goes in `[help]` (click `?`). `[hint]` stays for short under-field
+ * notes when needed. The caller decides *when* to show `error`.
  */
 @Component({
   selector: 'app-form-field',
-  imports: [AppIconComponent],
+  imports: [AppIconComponent, CdkOverlayOrigin, CdkConnectedOverlay],
   template: `
     @if (label()) {
-      <label class="app-form-field__label" [attr.for]="controlId()">
-        {{ label() }}
-        @if (required()) {
-          <span class="app-form-field__required" aria-hidden="true">*</span>
+      <div class="app-form-field__label-row">
+        <label class="app-form-field__label" [attr.for]="controlId()">
+          {{ label() }}
+          @if (required()) {
+            <span class="app-form-field__required" aria-hidden="true">*</span>
+          }
+          @if (optionalLabel() && !required()) {
+            <span class="app-form-field__optional">{{ optionalLabel() }}</span>
+          }
+        </label>
+        @if (help()) {
+          <button
+            type="button"
+            class="app-form-field__help"
+            cdkOverlayOrigin
+            #helpOrigin="cdkOverlayOrigin"
+            [attr.aria-label]="helpLabel() || help()"
+            [attr.aria-expanded]="helpOpen()"
+            [attr.aria-controls]="helpPanelId"
+            (click)="toggleHelp($event)"
+          >
+            <app-icon name="circle-help" size="xs" />
+          </button>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="helpOrigin"
+            [cdkConnectedOverlayOpen]="helpOpen()"
+            [cdkConnectedOverlayPositions]="helpPositions"
+            [cdkConnectedOverlayPush]="true"
+            [cdkConnectedOverlayViewportMargin]="8"
+            (overlayOutsideClick)="closeHelp()"
+            (detach)="closeHelp()"
+          >
+            <div class="app-form-field__help-panel" role="tooltip" [id]="helpPanelId" tabindex="-1">
+              {{ help() }}
+            </div>
+          </ng-template>
         }
-        @if (optionalLabel() && !required()) {
-          <span class="app-form-field__optional">{{ optionalLabel() }}</span>
-        }
-      </label>
+      </div>
     }
     <div class="app-form-field__body">
       <div class="app-form-field__control">
@@ -87,7 +133,12 @@ export class AppFormFieldComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly label = input<string>('');
+  /** Short under-field note (prefer `[help]` for longer explanations). */
   readonly hint = input<string>('');
+  /** Popover copy shown after clicking the `?` control next to the label. */
+  readonly help = input<string>('');
+  /** Accessible name for the help button (localised by the caller). */
+  readonly helpLabel = input<string>('');
   readonly error = input<string>('');
   /**
    * Marks the control invalid (red border / aria-invalid) without showing a message.
@@ -103,10 +154,13 @@ export class AppFormFieldComponent {
 
   readonly id = `app-field-${nextId++}`;
   readonly messageId = `${this.id}-message`;
+  readonly helpPanelId = `${this.id}-help`;
 
   private readonly control = contentChild(APP_CONTROL);
   private readonly fallbackId = signal(this.id + '-control');
   protected readonly shownMessage = signal<FieldMessage | null>(null);
+  protected readonly helpOpen = signal(false);
+  protected readonly helpPositions = HELP_OVERLAY_POSITIONS;
   private clearMessageTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Id of the projected control (from AppControl) or a generated fallback. */
@@ -144,6 +198,16 @@ export class AppFormFieldComponent {
         }, MESSAGE_TRANSITION_MS);
       }
     });
+  }
+
+  protected toggleHelp(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.helpOpen.update((open) => !open);
+  }
+
+  protected closeHelp(): void {
+    this.helpOpen.set(false);
   }
 
   private clearPendingTimer(): void {

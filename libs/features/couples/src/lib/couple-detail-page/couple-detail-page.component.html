@@ -1,6 +1,6 @@
 <app-detail-page [breadcrumbs]="breadcrumbs()">
   <ng-container actions>
-    @if (detail()) {
+    @if (canUnpair()) {
       <button app-button type="button" variant="danger" size="md" [loading]="busy()" (click)="unpair()">
         {{ 'couples.unpair' | transloco }}
       </button>
@@ -21,6 +21,19 @@
   } @else if (loading()) {
     <app-detail-fields [fields]="[]" [loading]="true" />
   } @else if (detail()) {
+    <section class="couple-detail__members" [attr.aria-label]="'couples.members' | transloco">
+      <h2 class="couple-detail__members-title">{{ 'couples.members' | transloco }}</h2>
+      <ul class="couple-detail__member-list">
+        @for (member of members(); track member.id || $index) {
+          <li class="couple-detail__member">
+            <app-avatar [name]="memberAvatarName(member)" size="sm" />
+            <span class="couple-detail__member-phone">{{ memberPhone(member) || '—' }}</span>
+          </li>
+        } @empty {
+          <li class="couple-detail__member-phone">—</li>
+        }
+      </ul>
+    </section>
     <app-detail-fields [fields]="fields()" />
   }
 </app-detail-page>

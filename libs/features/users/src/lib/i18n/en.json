@@ -5,6 +5,7 @@
   "detailTitle": "User",
   "search": "Phone, email or name",
   "name": "Name",
+  "open": "Open",
   "nameMissing": "This user has not set a name yet",
   "email": "Email",
   "phone": "Phone",

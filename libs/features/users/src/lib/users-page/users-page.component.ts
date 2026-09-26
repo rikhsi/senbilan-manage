@@ -5,6 +5,8 @@ import {
   computed,
   effect,
   inject,
+  input,
+  model,
   signal,
   untracked,
 } from '@angular/core';
@@ -47,6 +49,7 @@ import {
   parseUsersListQuery,
   readUsersListSession,
   removeUsersFilterChip,
+  sanitizeUsersListQuery,
   userLanguageLabelKey,
   userPlanLabelKey,
   userRoleLabelKey,
@@ -110,9 +113,18 @@ export class UsersPageComponent {
   private readonly toast = inject(ToastService);
   private readonly i18nReady = injectTranslocoReady();
 
-  protected readonly query = toSignal(
+  /** Embedded in a record picker: same list, no route changes, radio selection. */
+  readonly picking = input(false);
+  readonly pickedId = model<string | null>(null);
+  readonly pickedLabel = model('');
+
+  private readonly routeQuery = toSignal(
     this.route.queryParamMap.pipe(map((params) => parseUsersListQuery(params))),
     { initialValue: parseUsersListQuery(this.route.snapshot.queryParamMap) },
+  );
+  private readonly localQuery = signal<UsersListQueryState>({ ...EMPTY_USERS_QUERY });
+  protected readonly query = computed(() =>
+    this.picking() ? this.localQuery() : this.routeQuery(),
   );
 
   private readonly urlQ = signal(this.query().q);
@@ -136,9 +148,13 @@ export class UsersPageComponent {
   protected readonly pageCount = computed(() => Math.max(1, this.cursors().length));
   private queryKey = '';
   private requestId = 0;
+  private restoreChecked = false;
 
   protected readonly breadcrumbs = computed<readonly BreadcrumbItem[]>(() => {
     this.i18nReady();
+    if (this.picking()) {
+      return [{ labelKey: 'users.title' }];
+    }
     return [{ labelKey: 'nav.dashboard', route: '/dashboard' }, { labelKey: 'users.title' }];
   });
 
@@ -292,6 +308,7 @@ export class UsersPageComponent {
       searchPlaceholder: this.i18n.translate('common.search'),
       noResults: this.i18n.translate('common.empty'),
       clear: this.i18n.translate('common.reset'),
+      close: this.i18n.translate('common.close'),
       selectedCount: (count) => this.i18n.translate('common.selectedCount', { count }),
     };
   });
@@ -326,16 +343,22 @@ export class UsersPageComponent {
   protected readonly rowId = (row: AdminUserSummary): string => row.id;
 
   constructor() {
-    const saved = usersListBrowserSession();
-    const stored = saved ? readUsersListSession(saved) : null;
-    if (
-      stored &&
-      !usersListUrlHasQuery(this.route.snapshot.queryParamMap) &&
-      !isUsersListQueryEmpty(stored.query)
-    ) {
-      this.restorePending = true;
-      void this.patchQuery(stored.query);
-    }
+    effect(() => {
+      if (this.picking() || this.restoreChecked) {
+        return;
+      }
+      this.restoreChecked = true;
+      const saved = usersListBrowserSession();
+      const stored = saved ? readUsersListSession(saved) : null;
+      if (
+        stored &&
+        !usersListUrlHasQuery(this.route.snapshot.queryParamMap) &&
+        !isUsersListQueryEmpty(stored.query)
+      ) {
+        this.restorePending = true;
+        void this.patchQuery(stored.query);
+      }
+    });
 
     effect(() => {
       const q = this.query().q;
@@ -484,7 +507,20 @@ export class UsersPageComponent {
   }
 
   protected onRowClick(row: AdminUserSummary): void {
+    if (this.picking()) {
+      this.pickedLabel.set(this.pickedId() === row.id ? this.pickerLabel(row) : '');
+      return;
+    }
     void this.router.navigate(['/users', row.id]);
+  }
+
+  private pickerLabel(row: AdminUserSummary): string {
+    const name = row.name.trim();
+    const phone = row.phone.trim();
+    if (name.length > 0 && phone.length > 0) {
+      return `${name} · ${phone}`;
+    }
+    return name || phone || row.id;
   }
 
   protected refresh(): void {
@@ -527,6 +563,9 @@ export class UsersPageComponent {
     hiddenColumns: readonly string[],
     columnOrder: readonly string[],
   ): void {
+    if (this.picking()) {
+      return;
+    }
     const storage = usersListBrowserSession();
     if (!storage) {
       return;
@@ -535,6 +574,10 @@ export class UsersPageComponent {
   }
 
   private async patchQuery(state: UsersListQueryState): Promise<void> {
+    if (this.picking()) {
+      this.localQuery.set(sanitizeUsersListQuery(state));
+      return;
+    }
     await this.router.navigate([], {
       relativeTo: this.route,
       queryParams: usersListQueryToParams(state),

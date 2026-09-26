@@ -5,6 +5,7 @@
   "detailTitle": "Пользователь",
   "search": "Телефон, email или имя",
   "name": "Имя",
+  "open": "Открыть",
   "nameMissing": "Пользователь ещё не указал имя",
   "email": "Email",
   "phone": "Телефон",

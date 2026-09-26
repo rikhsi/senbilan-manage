@@ -1,0 +1,63 @@
+<section class="profile-tables" [attr.aria-busy]="!ready()">
+  <div class="profile-tables__list-panel">
+    <header class="profile-tables__head">
+      <h2 class="profile-tables__title">{{ 'profile.tables.title' | transloco }}</h2>
+      <p class="profile-tables__hint">{{ 'profile.tables.hint' | transloco }}</p>
+    </header>
+    <div class="profile-tables__list" role="listbox" [attr.aria-label]="'profile.tables.title' | transloco">
+      @for (table of tables(); track table.id) {
+        <button
+          type="button"
+          class="profile-tables__table"
+          role="option"
+          [class.profile-tables__table--active]="table.id === selectedId()"
+          [attr.aria-selected]="table.id === selectedId()"
+          (click)="select(table.id)"
+        >
+          {{ table.labelKey | transloco }}
+        </button>
+      }
+    </div>
+    <button
+      app-button
+      type="button"
+      variant="ghost"
+      size="sm"
+      icon="refresh"
+      [disabled]="!ready()"
+      (click)="resetAll()"
+    >
+      {{ 'profile.tables.resetAll' | transloco }}
+    </button>
+  </div>
+
+  <section class="profile-tables__panel" [attr.aria-labelledby]="'profile-tables-columns'">
+    @if (selected(); as table) {
+      <header class="profile-tables__head">
+        <h2 class="profile-tables__title" id="profile-tables-columns">
+          {{ table.labelKey | transloco }}
+        </h2>
+        <p class="profile-tables__hint">{{ 'profile.tables.columnsHint' | transloco }}</p>
+      </header>
+      <div class="profile-tables__actions">
+        <button app-button type="button" variant="secondary" size="sm" (click)="showAll()">
+          {{ 'profile.tables.showAll' | transloco }}
+        </button>
+        <button app-button type="button" variant="ghost" size="sm" icon="refresh" (click)="resetSelected()">
+          {{ 'profile.tables.reset' | transloco }}
+        </button>
+      </div>
+      <app-column-settings
+        [columns]="columnSettings()"
+        [hidden]="hidden()"
+        [order]="order()"
+        [divided]="false"
+        [showTitle]="false"
+        [groupLabel]="'common.columns' | transloco"
+        [dragLabel]="'common.moveColumn' | transloco"
+        (hiddenChange)="onHiddenChange($event)"
+        (orderChange)="onOrderChange($event)"
+      />
+    }
+  </section>
+</section>

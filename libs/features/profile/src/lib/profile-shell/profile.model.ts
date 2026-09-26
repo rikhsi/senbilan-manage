@@ -1,7 +1,7 @@
 import { type AppIconName } from '@senbilan/design-system/icons';
 
 /** Horizontal profile sections — add new entries here as the feature grows. */
-export type ProfileSectionId = 'info' | 'settings';
+export type ProfileSectionId = 'info' | 'settings' | 'tables';
 
 export interface ProfileNavItem {
   readonly id: ProfileSectionId;
@@ -16,6 +16,12 @@ export const PROFILE_NAV_ITEMS: readonly ProfileNavItem[] = [
     labelKey: 'profile.nav.settings',
     route: 'settings',
     icon: 'settings',
+  },
+  {
+    id: 'tables',
+    labelKey: 'profile.nav.tables',
+    route: 'tables',
+    icon: 'columns',
   },
 ];
 

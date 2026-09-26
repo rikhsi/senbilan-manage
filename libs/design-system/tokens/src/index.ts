@@ -36,6 +36,7 @@ export const THEME_ATTRIBUTES = {
   density: 'data-density',
   contrast: 'data-contrast',
   motion: 'data-motion',
+  eyeComfort: 'data-eye-comfort',
 } as const;
 
 /** Ordered chart palette (CSS variable names) for chart adapters. */

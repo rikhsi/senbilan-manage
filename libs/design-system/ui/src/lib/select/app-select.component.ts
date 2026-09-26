@@ -1,4 +1,5 @@
 import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,8 +14,10 @@ import {
 } from '@angular/core';
 import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AppIconComponent } from '@senbilan/design-system/icons';
+import { AppIconButtonComponent } from '../button/app-icon-button.component';
 import { APP_CONTROL, type AppControl, nextControlId } from '../form/app-control';
 import { AppFormFieldComponent } from '../form/app-form-field.component';
+import { ViewportService } from '../viewport/viewport.service';
 import { SELECT_OVERLAY_POSITIONS, type SelectLabels, type SelectOption } from './select.types';
 
 export type { SelectLabels, SelectOption } from './select.types';
@@ -23,12 +26,19 @@ export type { SelectLabels, SelectOption } from './select.types';
  * Select / multi-select / autocomplete in one CVA component.
  * - `multiple` → value is `T[]`, otherwise `T | null`
  * - `searchable` → filter input inside the panel (autocomplete)
+ * - On mobile (`< md`) the options open in a bottom sheet; desktop keeps the anchored menu.
  * Keyboard: ArrowUp/Down, Home/End, Enter/Space, Escape, type-ahead via search.
  * Implements a listbox pattern; works with Reactive Forms and Signal Forms.
  */
 @Component({
   selector: 'app-select',
-  imports: [CdkOverlayOrigin, CdkConnectedOverlay, AppIconComponent],
+  imports: [
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    NgTemplateOutlet,
+    AppIconComponent,
+    AppIconButtonComponent,
+  ],
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => AppSelectComponent), multi: true },
     { provide: APP_CONTROL, useExisting: forwardRef(() => AppSelectComponent) },
@@ -45,6 +55,7 @@ export type { SelectLabels, SelectOption } from './select.types';
 })
 export class AppSelectComponent<T = string> implements ControlValueAccessor, AppControl {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly viewport = inject(ViewportService);
 
   readonly options = input.required<readonly SelectOption<T>[]>();
   readonly labels = input.required<SelectLabels>();
@@ -73,6 +84,9 @@ export class AppSelectComponent<T = string> implements ControlValueAccessor, App
   protected readonly optionElements = viewChildren<ElementRef<HTMLElement>>('optionEl');
 
   protected readonly positions = SELECT_OVERLAY_POSITIONS;
+  /** Phone widths use a bottom sheet instead of the anchored dropdown. */
+  protected readonly useSheet = computed(() => this.viewport.isMobile());
+  protected readonly sheetCloseLabel = computed(() => this.labels().close ?? this.labels().clear);
 
   protected readonly filtered = computed(() => {
     const q = this.query().trim().toLocaleLowerCase();

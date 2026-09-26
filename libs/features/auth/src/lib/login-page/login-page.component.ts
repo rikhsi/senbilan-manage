@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
   AppButtonComponent,
+  AppBrandLockupComponent,
   AppFormFieldComponent,
   AppIconButtonComponent,
   AppInputDirective,
@@ -28,6 +29,7 @@ import {
     FormField,
     TranslocoPipe,
     AppButtonComponent,
+    AppBrandLockupComponent,
     AppFormFieldComponent,
     AppIconButtonComponent,
     AppInputDirective,

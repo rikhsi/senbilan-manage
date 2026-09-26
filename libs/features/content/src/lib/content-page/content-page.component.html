@@ -1,4 +1,7 @@
 <app-list-page [breadcrumbs]="breadcrumbs">
+  <a actions app-button variant="primary" size="md" icon="plus" routerLink="/content/new">
+    {{ 'content.create' | transloco }}
+  </a>
   <app-list-filters
     toolbar
     [open]="filtersOpen()"

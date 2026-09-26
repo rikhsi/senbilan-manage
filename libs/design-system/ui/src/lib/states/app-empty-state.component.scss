@@ -20,17 +20,23 @@
   width: 3.5rem;
   height: 3.5rem;
   margin-bottom: var(--app-space-4);
-  color: var(--app-color-text-tertiary);
-  background: var(--app-color-surface-muted);
+  color: var(--app-color-text-secondary);
+  background: var(--app-color-surface-elevated);
+  border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-xl);
+  box-shadow: var(--app-shadow-sm);
 
   &[data-tone='danger'] {
     color: var(--app-color-on-danger-container);
     background: var(--app-color-danger-container);
+    border-color: transparent;
+    box-shadow: none;
   }
   &[data-tone='primary'] {
     color: var(--app-color-on-primary-container);
     background: var(--app-color-primary-container);
+    border-color: transparent;
+    box-shadow: none;
   }
 }
 

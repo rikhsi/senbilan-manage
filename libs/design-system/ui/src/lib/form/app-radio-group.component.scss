@@ -29,6 +29,7 @@
   }
 
   :host[data-variant='cards'] & {
+    align-items: center;
     padding: var(--app-space-3);
     background: var(--app-color-surface);
     border: 1px solid var(--app-color-border);
@@ -103,6 +104,19 @@
   color: var(--app-color-icon);
   .app-radio--checked & {
     color: var(--app-color-primary);
+  }
+}
+
+.app-radio__flag {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.15rem;
+  margin-top: 1px;
+
+  :host[data-variant='cards'] & {
+    width: 2rem;
+    height: 1.35rem;
+    margin-top: 0;
   }
 }
 

@@ -41,17 +41,16 @@
   }
 </div>
 
-@if (showState()) {
+@if (showError()) {
   <div class="app-data-table__state">
-    @if (error(); as message) {
-      <app-error-state [title]="l.errorTitle" [description]="message" [retryLabel]="l.retry" (retry)="retry.emit()" />
-    } @else {
-      <app-empty-state icon="search" [title]="l.emptyTitle" [description]="l.emptyDescription">
-        <ng-content select="[emptyActions]" />
-      </app-empty-state>
-    }
+    <app-error-state
+      [title]="l.errorTitle"
+      [description]="error() ?? ''"
+      [retryLabel]="l.retry"
+      (retry)="retry.emit()"
+    />
   </div>
-} @else if (effectiveMode() === 'cards') {
+} @else if (effectiveMode() === 'cards' && (loading() || rows().length > 0)) {
   <!-- ============================ CARD MODE (mobile) ============================ -->
   <ul class="app-data-table__cards" [attr.aria-busy]="loading() || null">
     @if (loading()) {
@@ -66,9 +65,9 @@
       @for (row of sortedRows(); track rowId()(row)) {
         <li
           class="app-data-table__card"
-          [class.app-data-table__card--selected]="isSelected(row)"
-          [class.app-data-table__card--clickable]="rowClickable()"
-          [attr.tabindex]="rowClickable() ? 0 : null"
+          [class.app-data-table__card--selected]="isSelected(row) || isPicked(row)"
+          [class.app-data-table__card--clickable]="rowActive()"
+          [attr.tabindex]="rowActive() ? 0 : null"
           (click)="onRowClick(row, $event)"
           (keydown)="onRowKeydown(row, $event)"
         >
@@ -77,16 +76,22 @@
               <app-checkbox [noLabel]="true" [checked]="isSelected(row)" (checkedChange)="toggleRow(row)">{{
                 l.selectRow
               }}</app-checkbox>
+            } @else if (singleSelect()) {
+              <span
+                class="app-data-table__radio"
+                [class.app-data-table__radio--checked]="isPicked(row)"
+                aria-hidden="true"
+              ></span>
             }
             <div class="app-data-table__card-heading">
               @if (cardTitleColumn(); as titleCol) {
                 <div class="app-data-table__card-title">
-                  <ng-container *ngTemplateOutlet="cell; context: { row, column: titleCol }" />
+                  <ng-container *ngTemplateOutlet="cell; context: { row, column: titleCol, cards: true }" />
                 </div>
               }
               @if (cardSubtitleColumn(); as subCol) {
                 <div class="app-data-table__card-subtitle">
-                  <ng-container *ngTemplateOutlet="cell; context: { row, column: subCol }" />
+                  <ng-container *ngTemplateOutlet="cell; context: { row, column: subCol, cards: true }" />
                 </div>
               }
             </div>
@@ -102,10 +107,25 @@
               @for (column of cardDetailColumns(); track column.key) {
                 <div class="app-data-table__card-detail">
                   <dt>{{ column.header }}</dt>
-                  <dd><ng-container *ngTemplateOutlet="cell; context: { row, column }" /></dd>
+                  <dd><ng-container *ngTemplateOutlet="cell; context: { row, column, cards: true }" /></dd>
                 </div>
               }
             </dl>
+          }
+
+          @if (rowClickable() && cardOpenLabel()) {
+            <button
+              app-button
+              type="button"
+              class="app-data-table__card-open"
+              variant="secondary"
+              size="sm"
+              [block]="true"
+              iconEnd="chevron-right"
+              (click)="openRow(row, $event)"
+            >
+              {{ cardOpenLabel() }}
+            </button>
           }
 
           @if (rowExpansion(); as expansion) {
@@ -137,7 +157,7 @@
       [attr.aria-busy]="loading() || null"
     >
       <colgroup>
-        @if (selectable()) {
+        @if (selectable() || singleSelect()) {
           <col class="app-data-table__col--select" />
         }
         @if (rowExpansion()) {
@@ -164,6 +184,10 @@
               >
                 {{ l.selectAll }}
               </app-checkbox>
+            </th>
+          } @else if (singleSelect()) {
+            <th scope="col" class="app-data-table__th app-data-table__th--select">
+              <span class="app-visually-hidden">{{ l.selectRow }}</span>
             </th>
           }
           @if (rowExpansion()) {
@@ -234,15 +258,23 @@
               }
             </tr>
           }
+        } @else if (sortedRows().length === 0) {
+          <tr class="app-data-table__row">
+            <td class="app-data-table__empty" [attr.colspan]="cols.length + extraColumnCount()">
+              <app-empty-state icon="search" [title]="l.emptyTitle" [description]="l.emptyDescription">
+                <ng-content select="[emptyActions]" />
+              </app-empty-state>
+            </td>
+          </tr>
         } @else {
           @for (row of sortedRows(); track rowId()(row)) {
             <tr
               class="app-data-table__row"
-              [class.app-data-table__row--selected]="isSelected(row)"
-              [class.app-data-table__row--clickable]="rowClickable()"
+              [class.app-data-table__row--selected]="isSelected(row) || isPicked(row)"
+              [class.app-data-table__row--clickable]="rowActive()"
               [class.app-data-table__row--expanded]="isExpanded(row)"
-              [attr.tabindex]="rowClickable() ? 0 : null"
-              [attr.aria-selected]="selectable() ? isSelected(row) : null"
+              [attr.tabindex]="rowActive() ? 0 : null"
+              [attr.aria-selected]="selectable() || singleSelect() ? isSelected(row) || isPicked(row) : null"
               (click)="onRowClick(row, $event)"
               (keydown)="onRowKeydown(row, $event)"
             >
@@ -251,6 +283,14 @@
                   <app-checkbox [noLabel]="true" [checked]="isSelected(row)" (checkedChange)="toggleRow(row)">{{
                     l.selectRow
                   }}</app-checkbox>
+                </td>
+              } @else if (singleSelect()) {
+                <td class="app-data-table__td app-data-table__td--select">
+                  <span
+                    class="app-data-table__radio"
+                    [class.app-data-table__radio--checked]="isPicked(row)"
+                    aria-hidden="true"
+                  ></span>
                 </td>
               }
               @if (rowExpansion()) {
@@ -299,9 +339,11 @@
 <div class="app-data-table__footer"><ng-content select="[footer]" /></div>
 
 <!-- Cell renderer shared by table and card modes -->
-<ng-template #cell let-row="row" let-column="column">
+<ng-template #cell let-row="row" let-column="column" let-cards="cards">
   @if (templateFor(column); as template) {
-    <ng-container *ngTemplateOutlet="template; context: { $implicit: row, row, value: valueOf(row, column), column }" />
+    <ng-container
+      *ngTemplateOutlet="template; context: { $implicit: row, row, value: valueOf(row, column), column, cards }"
+    />
   } @else {
     <span class="app-data-table__text">{{ textOf(row, column) }}</span>
   }

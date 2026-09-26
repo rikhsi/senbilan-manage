@@ -4,12 +4,14 @@
   "subtitle": "Personal details, appearance, and language",
   "pageInfo": "Profile — information",
   "pageSettings": "Profile — settings",
+  "pageTables": "Profile — tables",
   "logout": "Log out",
   "logoutConfirmTitle": "Log out?",
   "logoutConfirmMessage": "Your session will end. Sign in again to continue.",
   "nav": {
     "info": "Information",
-    "settings": "Settings"
+    "settings": "Settings",
+    "tables": "Tables"
   },
   "info": {
     "sectionTitle": "Basic details",
@@ -21,12 +23,20 @@
     "roleEmpty": "No role assigned"
   },
   "settings": {
+    "appearance": "Appearance",
+    "appearanceHint": "Theme, eye comfort filter, and interface density.",
+    "locale": "Language",
+    "localeHint": "Interface language applies immediately.",
     "theme": {
       "label": "Theme",
       "light": "Light",
       "dark": "Dark",
       "system": "System",
       "hint": "Theme applies immediately across the app."
+    },
+    "eyeComfort": {
+      "label": "Eye comfort",
+      "hint": "Warm yellow tint on top of light and dark themes."
     },
     "density": {
       "label": "Density",
@@ -35,11 +45,21 @@
       "hint": "Density is saved in this browser."
     },
     "language": {
-      "label": "Language",
+      "label": "Interface language",
       "hint": "Interface language applies immediately.",
       "ru": "Русский",
       "en": "English",
       "uz": "Oʻzbekcha"
     }
+  },
+  "tables": {
+    "title": "Tables",
+    "hint": "Choose a table and configure its columns. The same settings as in the list filters.",
+    "columnsHint": "Show or hide columns, and drag them to change the order.",
+    "showAll": "Show all",
+    "reset": "Restore default",
+    "resetAll": "Reset all",
+    "resetAllTitle": "Reset columns for every table?",
+    "resetAllMessage": "Column visibility and order return to their defaults."
   }
 }

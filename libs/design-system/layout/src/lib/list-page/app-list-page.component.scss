@@ -63,9 +63,15 @@
   flex-wrap: wrap;
   gap: var(--app-space-2);
   align-items: center;
+  justify-content: flex-end;
+  margin-inline-start: auto;
 
   &:not(:has(*)) {
     display: none;
+  }
+
+  @include ds.down('md') {
+    flex: 0 0 auto;
   }
 }
 

@@ -104,24 +104,35 @@
       [loading]="loading()"
       [error]="error() ? ('users.errorHint' | transloco) : null"
       [rowClickable]="true"
+      [cardOpenLabel]="picking() ? '' : ('users.open' | transloco)"
+      [singleSelect]="picking()"
+      [(pickedId)]="pickedId"
       [columnPicker]="false"
       [hiddenColumns]="hiddenColumns()"
       (hiddenColumnsChange)="hiddenColumns.set($event)"
       (rowClick)="onRowClick($event)"
       (retry)="refresh()"
     >
-      <ng-template appCell="name" let-row>
-        <a class="users-page__cell-link" [routerLink]="['/users', row.id]">{{ displayName(row) }}</a>
+      <ng-template appCell="name" let-row let-cards="cards">
+        @if (picking() || cards) {
+          <span>{{ displayName(row) }}</span>
+        } @else {
+          <a class="users-page__cell-link" [routerLink]="['/users', row.id]">{{ displayName(row) }}</a>
+        }
       </ng-template>
       <ng-template appCell="email" let-row>
-        @if (mailHref(row.email); as href) {
+        @if (picking()) {
+          {{ row.email || '—' }}
+        } @else if (mailHref(row.email); as href) {
           <a class="users-page__cell-link" [href]="href">{{ row.email }}</a>
         } @else {
           —
         }
       </ng-template>
       <ng-template appCell="phone" let-row>
-        @if (telHref(row.phone); as href) {
+        @if (picking()) {
+          {{ row.phone || '—' }}
+        } @else if (telHref(row.phone); as href) {
           <a class="users-page__cell-link" [href]="href">{{ row.phone }}</a>
         } @else {
           —

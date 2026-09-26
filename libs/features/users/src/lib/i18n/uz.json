@@ -5,6 +5,7 @@
   "detailTitle": "Foydalanuvchi",
   "search": "Telefon, email yoki ism",
   "name": "Ism",
+  "open": "Ochish",
   "nameMissing": "Foydalanuvchi hali ism ko‘rsatmagan",
   "email": "Email",
   "phone": "Telefon",

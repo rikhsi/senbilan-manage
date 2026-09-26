@@ -15,6 +15,10 @@
       "system": "Tizim",
       "hint": "Mavzu darhol qo‘llanadi."
     },
+    "eyeComfort": {
+      "label": "Ko‘z uchun",
+      "hint": "Yorug‘ va qorong‘u mavzu ustiga issiq sariq filtr."
+    },
     "language": {
       "label": "Interfeys tili",
       "hint": "Til darhol qo‘llanadi.",

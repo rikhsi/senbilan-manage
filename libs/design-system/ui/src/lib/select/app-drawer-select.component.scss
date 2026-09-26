@@ -1,0 +1,56 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.app-drawer-select__trigger {
+  display: flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  width: 100%;
+  height: var(--app-size-control-md);
+  padding: 0 var(--app-space-2) 0 var(--app-space-3);
+  color: var(--app-color-text-primary);
+  text-align: start;
+  cursor: pointer;
+  background: var(--app-color-surface);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+  @include ds.text('body');
+  @include ds.focus-reset;
+
+  &:hover {
+    border-color: var(--app-color-border-strong);
+  }
+
+  &:focus-visible {
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-color-primary) 20%, transparent);
+    outline: none;
+  }
+}
+
+.app-drawer-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &--placeholder {
+    color: var(--app-color-text-tertiary);
+  }
+}
+
+.app-drawer-select__clear {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--app-color-icon);
+}
+
+.app-drawer-select__chevron {
+  flex-shrink: 0;
+  color: var(--app-color-icon);
+}

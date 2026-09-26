@@ -6,6 +6,7 @@
   min-width: 0;
   max-width: 100%;
   background: var(--app-color-surface-elevated);
+  border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   box-shadow: var(--app-shadow-sm);
 
@@ -72,7 +73,14 @@
 
 // ---- states -----------------------------------------------------------------
 .app-data-table__state {
-  padding: var(--app-space-8) var(--app-space-4);
+  padding: var(--app-space-4);
+  background: var(--app-color-surface-sunken);
+}
+
+.app-data-table__empty {
+  padding: var(--app-space-4);
+  background: var(--app-color-surface-elevated);
+  border-bottom: 0;
 }
 
 // ---- table ------------------------------------------------------------------
@@ -103,6 +111,29 @@
 .app-data-table__col--select,
 .app-data-table__col--expand {
   width: 3rem;
+}
+
+.app-data-table__radio {
+  position: relative;
+  display: inline-block;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1.5px solid var(--app-color-border-strong);
+  border-radius: var(--app-radius-full);
+  background: var(--app-color-surface);
+  pointer-events: none;
+
+  &--checked {
+    border-color: var(--app-color-primary);
+
+    &::after {
+      position: absolute;
+      inset: 0.2rem;
+      content: '';
+      background: var(--app-color-primary);
+      border-radius: inherit;
+    }
+  }
 }
 .app-data-table__col--actions {
   width: 4rem;
@@ -374,6 +405,10 @@
 
 .app-data-table__card-detail {
   display: contents;
+}
+
+.app-data-table__card-open {
+  align-self: stretch;
 }
 
 .app-data-table__card-expand {

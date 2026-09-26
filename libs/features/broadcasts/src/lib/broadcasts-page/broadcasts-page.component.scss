@@ -10,3 +10,9 @@
   text-decoration-color: var(--app-color-primary);
   text-underline-offset: 0.15em;
 }
+
+.broadcasts-page__filter-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}

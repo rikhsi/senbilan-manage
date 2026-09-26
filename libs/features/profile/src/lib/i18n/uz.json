@@ -4,12 +4,14 @@
   "subtitle": "Shaxsiy ma’lumotlar, ko‘rinish va til",
   "pageInfo": "Profil — ma’lumot",
   "pageSettings": "Profil — sozlamalar",
+  "pageTables": "Profil — jadvallar",
   "logout": "Chiqish",
   "logoutConfirmTitle": "Akkountdan chiqilsinmi?",
   "logoutConfirmMessage": "Sessiya yakunlanadi. Davom etish uchun qayta kiring.",
   "nav": {
     "info": "Ma’lumot",
-    "settings": "Sozlamalar"
+    "settings": "Sozlamalar",
+    "tables": "Jadvallar"
   },
   "info": {
     "sectionTitle": "Asosiy ma’lumotlar",
@@ -21,12 +23,20 @@
     "roleEmpty": "Rol ko‘rsatilmagan"
   },
   "settings": {
+    "appearance": "Ko‘rinish",
+    "appearanceHint": "Mavzu, ko‘z filtri va interfeys ixchamligi.",
+    "locale": "Til",
+    "localeHint": "Interfeys tili darhol qo‘llanadi.",
     "theme": {
       "label": "Mavzu",
       "light": "Yorug‘",
       "dark": "Qorong‘u",
       "system": "Tizim",
       "hint": "Mavzu butun ilovaga darhol qo‘llanadi."
+    },
+    "eyeComfort": {
+      "label": "Ko‘z uchun",
+      "hint": "Yorug‘ va qorong‘u mavzu ustiga issiq sariq filtr."
     },
     "density": {
       "label": "Ixchamlik",
@@ -35,11 +45,21 @@
       "hint": "Ixchamlik shu brauzerda saqlanadi."
     },
     "language": {
-      "label": "Til",
+      "label": "Interfeys tili",
       "hint": "Interfeys tili darhol qo‘llanadi.",
       "ru": "Русский",
       "en": "English",
       "uz": "Oʻzbekcha"
     }
+  },
+  "tables": {
+    "title": "Jadvallar",
+    "hint": "Jadvalni tanlang va ustunlarini sozlang. Ro‘yxat filtrlaridagi sozlamalar bilan bir xil.",
+    "columnsHint": "Ko‘rinadigan ustunlarni belgilang va tartibini o‘zgartirish uchun sudrang.",
+    "showAll": "Hammasini ko‘rsatish",
+    "reset": "Standart",
+    "resetAll": "Hammasini tiklash",
+    "resetAllTitle": "Barcha jadvallar ustunlari tiklansinmi?",
+    "resetAllMessage": "Ustunlarning ko‘rinishi va tartibi standart holatga qaytadi."
   }
 }

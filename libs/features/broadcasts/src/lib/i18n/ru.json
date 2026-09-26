@@ -12,5 +12,17 @@
   "statusSent": "Отправлена",
   "createdAt": "Создана",
   "sentAt": "Отправлена",
-  "id": "ID"
+  "id": "ID",
+  "textUz": "Текст (uz)",
+  "textRu": "Текст (ru)",
+  "contentId": "ID контента",
+  "url": "Ссылка",
+  "sentCount": "Доставлено",
+  "mutedCount": "Без звука",
+  "failedCount": "Ошибки",
+  "createdBy": "Создал",
+  "requestedBy": "Запросил",
+  "queuedAt": "В очереди",
+  "startedAt": "Начата",
+  "updatedAt": "Обновлена"
 }

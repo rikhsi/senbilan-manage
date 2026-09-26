@@ -42,6 +42,8 @@ export const moveColumn = (
 export interface ColumnPrefs {
   readonly hidden: readonly string[];
   readonly order: readonly string[];
+  /** Column keys this layout has already seen. New default-hidden keys stay hidden until then. */
+  readonly known?: readonly string[];
 }
 
 export interface ColumnPrefsStorage {
@@ -72,10 +74,12 @@ export const readColumnPrefs = (
     if (!parsed || typeof parsed !== 'object') {
       return empty;
     }
-    const record = parsed as { hidden?: unknown; order?: unknown };
+    const record = parsed as { hidden?: unknown; order?: unknown; known?: unknown };
+    const known = allowedKeys(record.known, keys);
     return {
       hidden: allowedKeys(record.hidden, hideable) ?? [],
       order: allowedKeys(record.order, keys) ?? [],
+      ...(known ? { known } : {}),
     };
   } catch {
     return empty;
@@ -88,7 +92,14 @@ export const writeColumnPrefs = (
   prefs: ColumnPrefs,
 ): void => {
   try {
-    storage.setItem(key, JSON.stringify({ hidden: [...prefs.hidden], order: [...prefs.order] }));
+    storage.setItem(
+      key,
+      JSON.stringify({
+        hidden: [...prefs.hidden],
+        order: [...prefs.order],
+        ...(prefs.known ? { known: [...prefs.known] } : {}),
+      }),
+    );
   } catch {
     // Quota or private mode — the in-memory layout still applies for this visit.
   }
@@ -106,10 +117,22 @@ export const loadColumnPrefs = (
   key: string,
   keys: ReadonlySet<string>,
   hideable: ReadonlySet<string>,
+  defaults: readonly string[] = [],
 ): ColumnPrefs => {
+  const fallbackHidden = defaults.filter((item) => hideable.has(item));
+  const known = [...keys];
   const storage = columnPrefsStorage();
-  if (!storage) {
-    return { hidden: [], order: [] };
+  if (!storage?.getItem(key)) {
+    return { hidden: fallbackHidden, order: [], known };
   }
-  return readColumnPrefs(storage, key, keys, hideable);
+  const stored = readColumnPrefs(storage, key, keys, hideable);
+  const hidden = new Set(stored.hidden);
+  const seen = stored.known ? new Set(stored.known) : null;
+  for (const item of fallbackHidden) {
+    const introduced = seen ? !seen.has(item) : !stored.order.includes(item);
+    if (introduced) {
+      hidden.add(item);
+    }
+  }
+  return { hidden: [...hidden], order: stored.order, known };
 };

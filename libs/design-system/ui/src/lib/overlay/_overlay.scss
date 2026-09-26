@@ -48,6 +48,10 @@
   height: 100dvh;
   border-radius: 0;
 
+  &--full {
+    border: 0;
+  }
+
   &--right {
     border-left: 1px solid var(--app-color-border);
     animation: app-slide-in-right var(--app-duration-slow) var(--app-ease-out);

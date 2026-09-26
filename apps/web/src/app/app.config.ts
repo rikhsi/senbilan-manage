@@ -23,6 +23,8 @@ import { provideVendors } from '@senbilan/vendors/ui';
 import { appRoutes } from './app.routes';
 import { environment } from '../environments/environment';
 import { provideLayoutShell } from './provide-layout-shell';
+import { provideCatalogPicker } from './provide-catalog-picker';
+import { provideTableLayouts } from './provide-table-layouts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -49,6 +51,8 @@ export const appConfig: ApplicationConfig = {
     provideMockApi(),
     provideAuth(),
     provideLayoutShell(),
+    provideCatalogPicker(),
+    provideTableLayouts(),
     provideQueryClient(),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode() && environment.features.pwa,

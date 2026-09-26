@@ -8,7 +8,7 @@
   [id]="id()"
   [attr.aria-expanded]="open()"
   [attr.aria-controls]="listboxId"
-  [attr.aria-haspopup]="'listbox'"
+  [attr.aria-haspopup]="useSheet() ? 'dialog' : 'listbox'"
   [attr.aria-invalid]="invalid() || null"
   [attr.aria-describedby]="describedBy()"
   [disabled]="disabled()"
@@ -36,10 +36,35 @@
   <app-icon class="app-select__chevron" name="chevron-down" size="sm" />
 </button>
 
+@if (open() && useSheet()) {
+  <div class="app-select__sheet-layer" role="presentation">
+    <button
+      type="button"
+      class="app-select__sheet-backdrop"
+      [attr.aria-label]="sheetCloseLabel()"
+      (click)="close(false)"
+    ></button>
+    <div
+      class="app-select__sheet"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="labels().placeholder"
+      (keydown)="onPanelKeydown($event)"
+    >
+      <div class="app-select__sheet-handle" aria-hidden="true"></div>
+      <header class="app-select__sheet-header">
+        <p class="app-select__sheet-title">{{ labels().placeholder }}</p>
+        <button app-icon-button type="button" icon="x" size="sm" [label]="sheetCloseLabel()" (click)="close()"></button>
+      </header>
+      <ng-container *ngTemplateOutlet="panelTpl" />
+    </div>
+  </div>
+}
+
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="origin"
-  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayOpen]="open() && !useSheet()"
   [cdkConnectedOverlayPositions]="positions"
   [cdkConnectedOverlayMinWidth]="panelWidth()"
   [cdkConnectedOverlayHasBackdrop]="true"
@@ -49,7 +74,11 @@
   (backdropClick)="close(false)"
   (detach)="close(false)"
 >
-  <div class="app-select__panel" (keydown)="onPanelKeydown($event)">
+  <ng-container *ngTemplateOutlet="panelTpl" />
+</ng-template>
+
+<ng-template #panelTpl>
+  <div class="app-select__panel" [class.app-select__panel--sheet]="useSheet()">
     @if (searchable()) {
       <div class="app-select__search">
         <app-icon name="search" size="sm" />

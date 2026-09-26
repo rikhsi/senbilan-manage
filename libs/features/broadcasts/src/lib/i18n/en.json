@@ -12,5 +12,17 @@
   "statusSent": "Sent",
   "createdAt": "Created",
   "sentAt": "Sent",
-  "id": "ID"
+  "id": "ID",
+  "textUz": "Text (uz)",
+  "textRu": "Text (ru)",
+  "contentId": "Content ID",
+  "url": "URL",
+  "sentCount": "Delivered",
+  "mutedCount": "Muted",
+  "failedCount": "Failed",
+  "createdBy": "Created by",
+  "requestedBy": "Requested by",
+  "queuedAt": "Queued",
+  "startedAt": "Started",
+  "updatedAt": "Updated"
 }

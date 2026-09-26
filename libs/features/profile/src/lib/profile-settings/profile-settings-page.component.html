@@ -1,45 +1,86 @@
 <div class="profile-settings">
-  <section class="profile-settings__card" aria-labelledby="profile-theme-label">
-    <div class="profile-settings__card-head">
-      <h2 class="profile-settings__heading" id="profile-theme-label">
-        {{ 'profile.settings.theme.label' | transloco }}
+  <section class="profile-settings__panel" aria-labelledby="profile-appearance-title">
+    <header class="profile-settings__panel-head">
+      <h2 class="profile-settings__panel-title" id="profile-appearance-title">
+        {{ 'profile.settings.appearance' | transloco }}
       </h2>
+      <p class="profile-settings__panel-desc">{{ 'profile.settings.appearanceHint' | transloco }}</p>
+    </header>
+
+    <div class="profile-settings__list">
+      <div class="profile-settings__item" aria-labelledby="profile-theme-label">
+        <div class="profile-settings__meta">
+          <h3 class="profile-settings__label" id="profile-theme-label">
+            {{ 'profile.settings.theme.label' | transloco }}
+          </h3>
+        </div>
+        <div class="profile-settings__control">
+          <app-radio-group
+            variant="cards"
+            [options]="themeOptions()"
+            [value]="themeMode()"
+            [labelledBy]="'profile-theme-label'"
+            (valueChange)="onThemeChange($event ?? 'system')"
+          />
+        </div>
+      </div>
+
+      <div class="profile-settings__item profile-settings__item--inline" aria-labelledby="profile-eye-comfort-label">
+        <div class="profile-settings__meta">
+          <h3 class="profile-settings__label" id="profile-eye-comfort-label">
+            {{ 'profile.settings.eyeComfort.label' | transloco }}
+          </h3>
+          <p class="profile-settings__hint">{{ 'profile.settings.eyeComfort.hint' | transloco }}</p>
+        </div>
+        <div class="profile-settings__control profile-settings__control--end">
+          <app-switch [checked]="eyeComfort()" (checkedChange)="onEyeComfortChange($event)" />
+        </div>
+      </div>
+
+      <div class="profile-settings__item" aria-labelledby="profile-density-label">
+        <div class="profile-settings__meta">
+          <h3 class="profile-settings__label" id="profile-density-label">
+            {{ 'profile.settings.density.label' | transloco }}
+          </h3>
+        </div>
+        <div class="profile-settings__control">
+          <app-radio-group
+            variant="cards"
+            [options]="densityOptions()"
+            [value]="density()"
+            [labelledBy]="'profile-density-label'"
+            (valueChange)="onDensityChange($event ?? 'comfortable')"
+          />
+        </div>
+      </div>
     </div>
-    <app-radio-group
-      variant="cards"
-      [options]="themeOptions()"
-      [value]="themeMode()"
-      [labelledBy]="'profile-theme-label'"
-      (valueChange)="onThemeChange($event ?? 'system')"
-    />
   </section>
 
-  <section class="profile-settings__card" aria-labelledby="profile-density-label">
-    <div class="profile-settings__card-head">
-      <h2 class="profile-settings__heading" id="profile-density-label">
-        {{ 'profile.settings.density.label' | transloco }}
+  <section class="profile-settings__panel" aria-labelledby="profile-locale-title">
+    <header class="profile-settings__panel-head">
+      <h2 class="profile-settings__panel-title" id="profile-locale-title">
+        {{ 'profile.settings.locale' | transloco }}
       </h2>
-    </div>
-    <app-radio-group
-      variant="cards"
-      [options]="densityOptions()"
-      [value]="density()"
-      [labelledBy]="'profile-density-label'"
-      (valueChange)="onDensityChange($event ?? 'comfortable')"
-    />
-  </section>
+      <p class="profile-settings__panel-desc">{{ 'profile.settings.localeHint' | transloco }}</p>
+    </header>
 
-  <section class="profile-settings__card" aria-labelledby="profile-language-label">
-    <div class="profile-settings__card-head">
-      <h2 class="profile-settings__heading" id="profile-language-label">
-        {{ 'profile.settings.language.label' | transloco }}
-      </h2>
+    <div class="profile-settings__list">
+      <div class="profile-settings__item" aria-labelledby="profile-language-label">
+        <div class="profile-settings__meta">
+          <h3 class="profile-settings__label" id="profile-language-label">
+            {{ 'profile.settings.language.label' | transloco }}
+          </h3>
+        </div>
+        <div class="profile-settings__control">
+          <app-radio-group
+            variant="cards"
+            [options]="languageOptions()"
+            [value]="language()"
+            [labelledBy]="'profile-language-label'"
+            (valueChange)="onLanguageChange($event ?? language())"
+          />
+        </div>
+      </div>
     </div>
-    <app-radio-group
-      [options]="languageOptions()"
-      [value]="language()"
-      [labelledBy]="'profile-language-label'"
-      (valueChange)="onLanguageChange($event ?? language())"
-    />
   </section>
 </div>

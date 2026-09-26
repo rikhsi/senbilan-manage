@@ -39,6 +39,7 @@ import {
  *       if (prefs.density) root.setAttribute('data-density', prefs.density);
  *       if (prefs.contrast) root.setAttribute('data-contrast', prefs.contrast);
  *       if (prefs.motion) root.setAttribute('data-motion', prefs.motion);
+ *       root.setAttribute('data-eye-comfort', prefs.eyeComfort ? 'on' : 'off');
  *     }
  *   } catch (_) {}
  * })();
@@ -63,6 +64,7 @@ export class ThemeService {
   readonly density = computed(() => this.preferences().density);
   readonly contrast = computed(() => this.preferences().contrast);
   readonly motion = computed(() => this.preferences().motion);
+  readonly eyeComfort = computed(() => this.preferences().eyeComfort);
 
   /** Resolved light|dark after applying `system`. */
   readonly resolvedTheme = computed<ThemeName>(() => {
@@ -97,6 +99,14 @@ export class ThemeService {
 
   setMotion(motion: Motion): void {
     this.patch({ motion });
+  }
+
+  setEyeComfort(eyeComfort: boolean): void {
+    this.patch({ eyeComfort });
+  }
+
+  toggleEyeComfort(): void {
+    this.setEyeComfort(!this.eyeComfort());
   }
 
   cycleMode(): void {
@@ -164,7 +174,8 @@ export class ThemeService {
     root.setAttribute(THEME_ATTRIBUTES.density, prefs.density);
     root.setAttribute(THEME_ATTRIBUTES.contrast, prefs.contrast);
     root.setAttribute(THEME_ATTRIBUTES.motion, prefs.motion);
-    root.style.colorScheme = theme;
+    root.setAttribute(THEME_ATTRIBUTES.eyeComfort, prefs.eyeComfort ? 'on' : 'off');
+    root.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
   }
 
   private bindSystemPreference(): void {

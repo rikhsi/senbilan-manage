@@ -2,6 +2,7 @@ export { FEATURE_PROFILE_ROUTES } from './lib/lib.routes';
 export { ProfileShellComponent } from './lib/profile-shell/profile-shell.component';
 export { ProfileInfoPageComponent } from './lib/profile-info/profile-info-page.component';
 export { ProfileSettingsPageComponent } from './lib/profile-settings/profile-settings-page.component';
+export { ProfileTablesPageComponent } from './lib/profile-tables/profile-tables-page.component';
 export {
   PROFILE_NAV_ITEMS,
   type ProfileInfoView,

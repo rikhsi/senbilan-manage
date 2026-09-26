@@ -3,27 +3,24 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { AppIconComponent } from '@senbilan/design-system/icons';
+import { AppBrandLockupComponent } from '@senbilan/design-system/ui';
 import { LAYOUT_CAN_ACCESS } from '../layout-bridges';
 import { type NavigationItem } from '../navigation.types';
-import { SIDEBAR_BRAND_LOGO_SRC } from './sidebar.brand';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, AppIconComponent, TranslocoDirective, NgTemplateOutlet],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    AppIconComponent,
+    AppBrandLockupComponent,
+    TranslocoDirective,
+    NgTemplateOutlet,
+  ],
   template: `
     <ng-container *transloco="let t">
       <aside class="app-sidebar" [class.app-sidebar--collapsed]="collapsed()">
-        <div class="app-sidebar__brand" [attr.aria-label]="t('app.brand')">
-          <img
-            class="app-sidebar__brand-logo"
-            [src]="logoSrc"
-            alt=""
-            width="32"
-            height="32"
-            decoding="async"
-          />
-          <span class="app-sidebar__brand-name" aria-hidden="true">{{ t('app.brand') }}</span>
-        </div>
+        <app-brand-lockup [label]="t('app.brand')" [compact]="collapsed()" />
 
         <nav class="app-sidebar__nav" [attr.aria-label]="t('nav.menu')">
           <ng-container
@@ -79,8 +76,6 @@ import { SIDEBAR_BRAND_LOGO_SRC } from './sidebar.brand';
 })
 export class AppSidebarComponent {
   private readonly canAccessFn = inject(LAYOUT_CAN_ACCESS, { optional: true });
-
-  protected readonly logoSrc = SIDEBAR_BRAND_LOGO_SRC;
 
   readonly items = input.required<readonly NavigationItem[]>();
   readonly collapsed = input(false);

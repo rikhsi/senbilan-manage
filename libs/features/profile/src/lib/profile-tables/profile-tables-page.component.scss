@@ -1,0 +1,86 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.profile-tables {
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  gap: var(--app-space-5);
+  align-items: start;
+  animation: app-fade-in var(--app-duration-normal) var(--app-ease-out);
+
+  @include ds.down('md') {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-tables__list-panel,
+.profile-tables__panel {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--app-space-4);
+  min-width: 0;
+  padding: var(--app-space-5);
+  background: var(--app-color-surface);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+}
+
+.profile-tables__head {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--app-space-1);
+  padding-bottom: var(--app-space-1);
+  border-bottom: 1px solid var(--app-color-border);
+}
+
+.profile-tables__title {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('h3');
+}
+
+.profile-tables__hint {
+  margin: 0;
+  color: var(--app-color-text-secondary);
+  @include ds.text('body-sm');
+}
+
+.profile-tables__list {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--app-space-1);
+}
+
+.profile-tables__table {
+  padding: var(--app-space-2) var(--app-space-3);
+  color: var(--app-color-text-primary);
+  text-align: start;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--app-radius-md);
+  @include ds.text('body');
+  @include ds.focus-reset;
+
+  @include ds.can-hover {
+    &:hover {
+      background: var(--app-color-surface-muted);
+    }
+  }
+
+  &--active {
+    color: var(--app-color-primary);
+    background: var(--app-color-primary-muted);
+  }
+}
+
+.profile-tables__actions {
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--app-space-2);
+  justify-content: flex-end;
+}

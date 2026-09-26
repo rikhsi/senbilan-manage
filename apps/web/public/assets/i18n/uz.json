@@ -69,7 +69,8 @@
     "themeDark": "Qorong‘u",
     "themeSystem": "Tizim",
     "cycleTheme": "Mavzuni almashtirish",
-    "breadcrumbs": "Navigatsiya zanjiri"
+    "breadcrumbs": "Navigatsiya zanjiri",
+    "fieldHelp": "Maydon bo‘yicha yordam"
   },
   "auth": {
     "login": {

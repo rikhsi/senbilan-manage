@@ -39,5 +39,6 @@
   "themeDark": "Тёмная",
   "themeSystem": "Системная",
   "cycleTheme": "Переключить тему",
-  "breadcrumbs": "Навигационная цепочка"
+  "breadcrumbs": "Навигационная цепочка",
+  "fieldHelp": "Подсказка по полю"
 }

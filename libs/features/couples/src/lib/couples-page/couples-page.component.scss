@@ -1,3 +1,5 @@
+@use 'ds' as ds;
+
 :host {
   display: block;
   min-width: 0;
@@ -14,6 +16,20 @@
   display: contents;
 }
 
+.couples-page__members {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  min-width: 0;
+}
+
+.couples-page__member {
+  display: flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  min-width: 0;
+}
+
 .couples-page__person {
   display: flex;
   flex-direction: column;
@@ -21,9 +37,8 @@
   min-width: 0;
 }
 
-.couples-page__cell-link {
-  color: var(--app-color-primary);
-  text-decoration: underline;
-  text-decoration-color: var(--app-color-primary);
-  text-underline-offset: 0.15em;
+.couples-page__member-phone {
+  color: var(--app-color-text-primary);
+  @include ds.text('body-sm');
+  @include ds.truncate;
 }

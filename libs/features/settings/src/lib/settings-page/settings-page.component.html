@@ -23,6 +23,16 @@
             (valueChange)="onThemeChange($event ?? 'system')"
           />
           <p class="settings-page__subtitle">{{ 'settings.theme.hint' | transloco }}</p>
+
+          <div class="settings-page__row" aria-labelledby="settings-eye-comfort-label">
+            <div>
+              <p class="settings-page__subtitle" id="settings-eye-comfort-label">
+                {{ 'settings.eyeComfort.label' | transloco }}
+              </p>
+              <p class="settings-page__subtitle">{{ 'settings.eyeComfort.hint' | transloco }}</p>
+            </div>
+            <app-switch [checked]="eyeComfort()" (checkedChange)="onEyeComfortChange($event)" />
+          </div>
         </section>
       }
       @case ('language') {
@@ -31,6 +41,7 @@
             {{ 'settings.language.label' | transloco }}
           </p>
           <app-radio-group
+            variant="cards"
             [options]="languageOptions()"
             [value]="language()"
             [labelledBy]="'settings-language-label'"

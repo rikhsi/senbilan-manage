@@ -19,5 +19,10 @@
   @include hc.high-contrast-overrides;
 }
 
+// Eye comfort is not a theme — a warm yellow cast on top of light or dark.
+:root[data-eye-comfort='on'] {
+  filter: sepia(0.28) saturate(0.92) brightness(1.02);
+}
+
 // Brand / client themes plug in here as extra files redefining slots:
 // :root[data-theme='brand-acme'] { @include acme.theme; }

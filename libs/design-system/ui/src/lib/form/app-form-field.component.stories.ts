@@ -7,6 +7,8 @@ import { AppInputDirective } from './app-input.directive';
 type FormFieldStoryArgs = {
   label: string;
   hint: string;
+  help: string;
+  helpLabel: string;
   error: string;
   required: boolean;
   placeholder: string;
@@ -26,6 +28,8 @@ const meta: Meta<FormFieldStoryArgs> = {
         style="width:20rem"
         [label]="label"
         [hint]="hint"
+        [help]="help"
+        [helpLabel]="helpLabel"
         [error]="error"
         [required]="required"
       >
@@ -35,7 +39,9 @@ const meta: Meta<FormFieldStoryArgs> = {
   }),
   args: {
     label: 'Email',
-    hint: 'We never share your email.',
+    hint: '',
+    help: 'We never share your email.',
+    helpLabel: 'Field help',
     error: '',
     required: true,
     placeholder: 'name@example.com',
@@ -50,7 +56,7 @@ export const Default: Story = {};
 
 export const WithError: Story = {
   args: {
-    hint: '',
+    help: '',
     error: 'Enter a valid email address.',
   },
 };
@@ -59,7 +65,7 @@ export const Optional: Story = {
   args: {
     required: false,
     label: 'Nickname',
-    hint: 'Shown on your profile.',
+    help: 'Shown on your profile.',
     placeholder: 'Optional',
   },
 };

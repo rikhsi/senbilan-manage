@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- catalog list wires filters, columns, and cursor pagination */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,9 +19,9 @@ import {
   AppCursorPaginationComponent,
   AppCellDirective,
   AppDataTableComponent,
+  AppDrawerSelectComponent,
   AppEmptyStateComponent,
   AppFormFieldComponent,
-  AppInputDirective,
   AppListFiltersComponent,
   AppSelectComponent,
   AppStatusComponent,
@@ -33,6 +34,7 @@ import {
   type SelectOption,
 } from '@senbilan/design-system/ui';
 import { injectTranslocoReady } from '@senbilan/shared/i18n';
+import { CatalogPicker } from '@senbilan/shared/ng';
 import {
   columnPrefsStorage,
   loadColumnPrefs,
@@ -44,9 +46,11 @@ import {
   EMPTY_MEDIA_FILTERS,
   MEDIA_COLUMN_KEYS,
   MEDIA_COLUMNS_KEY,
+  MEDIA_DEFAULT_HIDDEN_COLUMNS,
   MEDIA_HIDEABLE_COLUMNS,
   mediaStatusLabelKey,
   mediaStatusTone,
+  type MediaFilterChipId,
   type MediaListFilters,
 } from './media-page.model';
 
@@ -62,9 +66,9 @@ import {
     AppCursorPaginationComponent,
     AppCellDirective,
     AppDataTableComponent,
+    AppDrawerSelectComponent,
     AppEmptyStateComponent,
     AppFormFieldComponent,
-    AppInputDirective,
     AppListFiltersComponent,
     AppSelectComponent,
     AppStatusComponent,
@@ -79,6 +83,7 @@ export class MediaPageComponent {
   private readonly i18n = inject(TranslocoService);
   private readonly i18nReady = injectTranslocoReady();
   private readonly router = inject(Router);
+  private readonly catalogPicker = inject(CatalogPicker);
 
   protected readonly loading = signal(true);
   protected readonly error = signal(false);
@@ -95,6 +100,7 @@ export class MediaPageComponent {
     MEDIA_COLUMNS_KEY,
     MEDIA_COLUMN_KEYS,
     MEDIA_HIDEABLE_COLUMNS,
+    MEDIA_DEFAULT_HIDDEN_COLUMNS,
   );
   protected readonly hiddenColumns = signal<readonly string[]>(this.columnPrefs.hidden);
   protected readonly columnOrder = signal<readonly string[]>(this.columnPrefs.order);
@@ -139,6 +145,36 @@ export class MediaPageComponent {
         accessor: (row) => this.formatTimestamp(row.createdAt),
         cardPriority: 5,
       },
+      {
+        key: 'id',
+        header: this.i18n.translate('media.id'),
+        accessor: (row) => this.text(row.id),
+        cardPriority: 6,
+      },
+      {
+        key: 'owner',
+        header: this.i18n.translate('media.owner'),
+        accessor: (row) => this.text(row.ownerId),
+        cardPriority: 7,
+      },
+      {
+        key: 'couple',
+        header: this.i18n.translate('media.couple'),
+        accessor: (row) => this.text(row.coupleId),
+        cardPriority: 8,
+      },
+      {
+        key: 'width',
+        header: this.i18n.translate('media.width'),
+        accessor: (row) => (row.width > 0 ? String(row.width) : '—'),
+        cardPriority: 9,
+      },
+      {
+        key: 'height',
+        header: this.i18n.translate('media.height'),
+        accessor: (row) => (row.height > 0 ? String(row.height) : '—'),
+        cardPriority: 10,
+      },
     ];
   });
 
@@ -161,6 +197,7 @@ export class MediaPageComponent {
       searchPlaceholder: this.i18n.translate('common.search'),
       noResults: this.i18n.translate('common.empty'),
       clear: this.i18n.translate('common.reset'),
+      close: this.i18n.translate('common.close'),
       selectedCount: (count) => this.i18n.translate('common.selectedCount', { count }),
     };
   });
@@ -176,23 +213,19 @@ export class MediaPageComponent {
 
   protected readonly filterCount = computed(() => {
     const filters = this.applied();
-    return [filters.ownerId, filters.coupleId, filters.purpose, filters.status].filter(
-      (value) => value.length > 0,
-    ).length;
+    return [filters.ownerId, filters.coupleId, filters.status].filter((value) => value.length > 0)
+      .length;
   });
 
   protected readonly chips = computed(() => {
     this.i18nReady();
     const filters = this.applied();
-    const chips: { id: keyof MediaListFilters; label: string }[] = [];
+    const chips: { id: MediaFilterChipId; label: string }[] = [];
     if (filters.ownerId) {
-      chips.push({ id: 'ownerId', label: filters.ownerId });
+      chips.push({ id: 'ownerId', label: filters.ownerLabel || filters.ownerId });
     }
     if (filters.coupleId) {
-      chips.push({ id: 'coupleId', label: filters.coupleId });
-    }
-    if (filters.purpose) {
-      chips.push({ id: 'purpose', label: filters.purpose });
+      chips.push({ id: 'coupleId', label: filters.coupleLabel || filters.coupleId });
     }
     if (filters.status) {
       chips.push({ id: 'status', label: this.statusLabel(filters.status) });
@@ -253,7 +286,11 @@ export class MediaPageComponent {
       if (!storage) {
         return;
       }
-      writeColumnPrefs(storage, MEDIA_COLUMNS_KEY, { hidden, order });
+      writeColumnPrefs(storage, MEDIA_COLUMNS_KEY, {
+        hidden,
+        order,
+        known: [...MEDIA_COLUMN_KEYS],
+      });
     });
 
     effect(() => {
@@ -314,16 +351,44 @@ export class MediaPageComponent {
     this.filtersOpen.set(open);
   }
 
-  protected onDraftOwner(value: string): void {
-    this.draft.update((current) => ({ ...current, ownerId: value }));
+  protected async pickOwner(): Promise<void> {
+    const draft = this.draft();
+    const outcome = await this.catalogPicker.pick(
+      'user',
+      draft.ownerId ? { id: draft.ownerId, label: draft.ownerLabel } : null,
+    );
+    if (!outcome.applied) {
+      return;
+    }
+    this.draft.update((current) => ({
+      ...current,
+      ownerId: outcome.pick?.id ?? '',
+      ownerLabel: outcome.pick?.label ?? '',
+    }));
   }
 
-  protected onDraftCouple(value: string): void {
-    this.draft.update((current) => ({ ...current, coupleId: value }));
+  protected clearOwner(): void {
+    this.draft.update((current) => ({ ...current, ownerId: '', ownerLabel: '' }));
   }
 
-  protected onDraftPurpose(value: string): void {
-    this.draft.update((current) => ({ ...current, purpose: value }));
+  protected async pickCouple(): Promise<void> {
+    const draft = this.draft();
+    const outcome = await this.catalogPicker.pick(
+      'couple',
+      draft.coupleId ? { id: draft.coupleId, label: draft.coupleLabel } : null,
+    );
+    if (!outcome.applied) {
+      return;
+    }
+    this.draft.update((current) => ({
+      ...current,
+      coupleId: outcome.pick?.id ?? '',
+      coupleLabel: outcome.pick?.label ?? '',
+    }));
+  }
+
+  protected clearCouple(): void {
+    this.draft.update((current) => ({ ...current, coupleId: '', coupleLabel: '' }));
   }
 
   protected onDraftStatus(value: string | null): void {
@@ -334,8 +399,9 @@ export class MediaPageComponent {
     const draft = this.draft();
     this.applied.set({
       ownerId: draft.ownerId.trim(),
+      ownerLabel: draft.ownerLabel.trim(),
       coupleId: draft.coupleId.trim(),
-      purpose: draft.purpose.trim(),
+      coupleLabel: draft.coupleLabel.trim(),
       status: draft.status,
     });
   }
@@ -346,8 +412,19 @@ export class MediaPageComponent {
     this.filtersOpen.set(false);
   }
 
-  protected removeChip(id: keyof MediaListFilters): void {
+  protected removeChip(id: MediaFilterChipId): void {
+    if (id === 'ownerId') {
+      this.applied.update((current) => ({ ...current, ownerId: '', ownerLabel: '' }));
+      this.draft.update((current) => ({ ...current, ownerId: '', ownerLabel: '' }));
+      return;
+    }
+    if (id === 'coupleId') {
+      this.applied.update((current) => ({ ...current, coupleId: '', coupleLabel: '' }));
+      this.draft.update((current) => ({ ...current, coupleId: '', coupleLabel: '' }));
+      return;
+    }
     this.applied.update((current) => ({ ...current, [id]: '' }));
+    this.draft.update((current) => ({ ...current, [id]: '' }));
   }
 
   protected statusLabel(status: string): string {
@@ -388,7 +465,6 @@ export class MediaPageComponent {
         ...(cursor ? { cursor } : {}),
         ...(filters.ownerId ? { ownerId: filters.ownerId } : {}),
         ...(filters.coupleId ? { coupleId: filters.coupleId } : {}),
-        ...(filters.purpose ? { purpose: filters.purpose } : {}),
         ...(filters.status ? { status: filters.status } : {}),
       });
       if (requestId !== this.requestId) {

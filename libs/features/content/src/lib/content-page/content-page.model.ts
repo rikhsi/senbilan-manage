@@ -7,8 +7,54 @@ export interface ContentListFilters {
 export const EMPTY_CONTENT_FILTERS: ContentListFilters = { status: '', kind: '', language: '' };
 
 export const CONTENT_COLUMNS_KEY = 'senbilan.content.columns';
-export const CONTENT_COLUMN_KEYS = new Set(['title', 'kind', 'status', 'language', 'updatedAt']);
-export const CONTENT_HIDEABLE_COLUMNS = new Set(['kind', 'status', 'language', 'updatedAt']);
+export const CONTENT_COLUMN_KEYS = new Set([
+  'title',
+  'kind',
+  'status',
+  'language',
+  'updatedAt',
+  'id',
+  'description',
+  'tags',
+  'url',
+  'unitCount',
+  'publishedAt',
+  'createdAt',
+  'createdBy',
+  'updatedBy',
+  'coverUrl',
+  'coverMediaId',
+]);
+export const CONTENT_HIDEABLE_COLUMNS = new Set([
+  'kind',
+  'status',
+  'language',
+  'updatedAt',
+  'id',
+  'description',
+  'tags',
+  'url',
+  'unitCount',
+  'publishedAt',
+  'createdAt',
+  'createdBy',
+  'updatedBy',
+  'coverUrl',
+  'coverMediaId',
+]);
+export const CONTENT_DEFAULT_HIDDEN_COLUMNS = [
+  'id',
+  'description',
+  'tags',
+  'url',
+  'unitCount',
+  'publishedAt',
+  'createdAt',
+  'createdBy',
+  'updatedBy',
+  'coverUrl',
+  'coverMediaId',
+] as const;
 
 export const contentKindLabelKey = (kind: string): string | null => {
   const normalized = kind.trim().toUpperCase();

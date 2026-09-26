@@ -66,7 +66,12 @@
 .mobile-login__header {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--app-space-1);
+
+  app-brand-lockup {
+    margin-block-end: var(--app-space-3);
+  }
 }
 
 .mobile-login__title {
