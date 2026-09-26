@@ -1,7 +1,8 @@
 import { type Session } from '@senbilan/core/domain';
 
 export interface Credentials {
-  readonly email: string;
+  /** E.164 phone, e.g. `+998901234567` (admin OpenAPI login). */
+  readonly phone: string;
   readonly password: string;
 }
 

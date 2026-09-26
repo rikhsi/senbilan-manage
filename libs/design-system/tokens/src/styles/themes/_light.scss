@@ -47,7 +47,7 @@
   --app-color-on-info-container: #{p.shade(p.$sky, 800)};
 
   // surfaces
-  --app-color-background: #{p.shade(p.$neutral, 50)};
+  --app-color-background: #{p.shade(p.$neutral, 0)};
   --app-color-surface: #{p.shade(p.$neutral, 0)};
   --app-color-surface-elevated: #{p.shade(p.$neutral, 0)};
   --app-color-surface-muted: #{p.shade(p.$neutral, 100)};

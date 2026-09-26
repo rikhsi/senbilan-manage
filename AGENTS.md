@@ -1,4 +1,4 @@
-﻿# AGENTS.md — strict coding rules for Senbilan Manage
+# AGENTS.md — strict coding rules for Senbilan Manage
 
 Any human or AI assistant editing this repository **must** follow these rules. Prefer matching existing patterns in neighboring files over inventing new ones. If a rule conflicts with a short-term shortcut, **keep the rule**.
 

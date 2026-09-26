@@ -15,6 +15,7 @@ import {
 } from '@senbilan/core/domain';
 
 export const DEMO_ADMIN_EMAIL = 'admin@senbilan.dev';
+export const DEMO_ADMIN_PHONE = '+998901234567';
 export const DEMO_ADMIN_PASSWORD = 'password123';
 
 const NOW = IsoDateTime('2026-03-20T10:00:00.000Z');

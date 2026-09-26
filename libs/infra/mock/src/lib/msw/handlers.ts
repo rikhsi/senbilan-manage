@@ -1,7 +1,12 @@
 import { http, HttpResponse, type RequestHandler } from 'msw';
 import { notificationToWire, roleToWire, sessionToWire, userToWire } from './wire-mappers';
 import { getMockDb } from '../mock-data.store';
-import { DEMO_ADMIN_PASSWORD, permissionDescriptors } from '../fixtures/mock-db';
+import {
+  DEMO_ADMIN_EMAIL,
+  DEMO_ADMIN_PASSWORD,
+  DEMO_ADMIN_PHONE,
+  permissionDescriptors,
+} from '../fixtures/mock-db';
 import {
   createEmail,
   createSession,
@@ -81,42 +86,63 @@ export const createMockHandlers = (apiBaseUrl: string): readonly RequestHandler[
   const base = apiBaseUrl.replace(/\/$/, '');
 
   return [
-    http.post(`${base}/auth/login`, async ({ request }) => {
-      const body = (await request.json()) as { email?: string; password?: string };
-      const email = body.email?.trim().toLowerCase() ?? '';
+    http.post(`${base}/admin/v1/auth/login`, async ({ request }) => {
+      const body = (await request.json()) as {
+        phone?: string;
+        password?: string;
+        device_id?: string;
+      };
+      const phone = body.phone?.trim() ?? '';
       const db = getMockDb();
-      const user = db.users.find((u) => u.email === email);
+      const user =
+        db.users.find((u) => u.email === phone.toLowerCase()) ??
+        (phone === DEMO_ADMIN_PHONE || phone === DEMO_ADMIN_EMAIL
+          ? db.users.find((u) => u.email === DEMO_ADMIN_EMAIL)
+          : undefined);
       if (!user || body.password !== DEMO_ADMIN_PASSWORD || user.status === 'blocked') {
         return error(401, 'unauthorized', 'Authentication required');
       }
       const tokens = issueTokens(user.id);
-      // Production-like: refresh also as httpOnly cookie (refreshViaCookie clients).
-      // Body still includes refreshToken for mock-only / non-cookie stacks.
-      return HttpResponse.json(
-        {
-          data: {
-            session: sessionToWire(buildSession(user)),
-            tokens,
-          },
+      return HttpResponse.json({
+        success: true,
+        data: {
+          access_token: tokens.accessToken,
+          refresh_token: tokens.refreshToken,
+          access_expires_at: new Date(Date.now() + tokens.expiresInSeconds * 1000).toISOString(),
         },
-        {
-          headers: {
-            'Set-Cookie': refreshCookieHeader(tokens.refreshToken),
-          },
-        },
-      );
+        request_id: 'mock',
+      });
     }),
 
-    http.post(`${base}/auth/logout`, () =>
-      HttpResponse.json(
-        { data: null },
-        {
-          headers: {
-            'Set-Cookie': `${REFRESH_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`,
-          },
-        },
-      ),
+    http.post(`${base}/v1/auth/logout`, () =>
+      HttpResponse.json({ success: true, data: null, request_id: 'mock' }),
     ),
+
+    http.post(`${base}/v1/auth/refresh`, async ({ request }) => {
+      const body = (await request.json()) as { refresh_token?: string };
+      const cookieHeader = request.headers.get('Cookie');
+      const fromCookie = parseCookie(cookieHeader, REFRESH_COOKIE);
+      const refresh = body.refresh_token ?? fromCookie;
+      if (!refresh) {
+        return error(401, 'unauthorized', 'Authentication required');
+      }
+      const db = getMockDb();
+      const userId = db.refreshTokens.get(refresh);
+      if (!userId) {
+        return error(401, 'unauthorized', 'Authentication required');
+      }
+      db.refreshTokens.delete(refresh);
+      const tokens = issueTokens(userId);
+      return HttpResponse.json({
+        success: true,
+        data: {
+          access_token: tokens.accessToken,
+          refresh_token: tokens.refreshToken,
+          access_expires_at: new Date(Date.now() + tokens.expiresInSeconds * 1000).toISOString(),
+        },
+        request_id: 'mock',
+      });
+    }),
 
     http.post(`${base}/auth/refresh`, async ({ request }) => {
       const body = (await request.json().catch(() => ({}))) as { refreshToken?: string };

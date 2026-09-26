@@ -1,4 +1,4 @@
-﻿# Desktop platform (Electron)
+# Desktop platform (Electron)
 
 Electron hosts `apps/web` without duplicating business logic.
 
@@ -26,10 +26,10 @@ Electron hosts `apps/web` without duplicating business logic.
 
 ## Dev / prod load
 
-| Mode              | How                                                                                                 |
-| ----------------- | --------------------------------------------------------------------------------------------------- |
-| Dev               | `npm start` then `npm run desktop` → loads `SENBILAN_DESKTOP_URL` (default `http://127.0.0.1:4200`) |
-| Prod (unpackaged) | `nx build web` then Electron `loadFile(dist/apps/web/browser/index.html)` when `app.isPackaged`     |
+| Mode              | How                                                                                                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dev               | `npm start` (web on **4200**) then `npm run desktop` → loads `SENBILAN_DESKTOP_URL` (default `http://127.0.0.1:4200`). Mobile uses **4300** so it can run in parallel. |
+| Prod (unpackaged) | `nx build web` then Electron `loadFile(dist/apps/web/browser/index.html)` when `app.isPackaged`                                                                        |
 
 ## Phased rollout
 

@@ -3,17 +3,17 @@
 
 .app-toasts {
   position: fixed;
-  inset: auto 0 0 0;
+  inset: 0 0 auto 0;
   z-index: var(--app-z-toast);
   display: flex;
   flex-direction: column;
   gap: var(--app-space-2);
   padding: var(--app-space-3);
   pointer-events: none;
-  @include ds.safe-area-bottom(calc(var(--app-layout-bottom-nav-height) + var(--app-space-3)));
+  @include ds.safe-area-top(var(--app-space-3));
 
   @include ds.up('md') {
-    inset: auto var(--app-space-5) var(--app-space-5) auto;
+    inset: var(--app-space-5) var(--app-space-5) auto auto;
     width: 24rem;
     padding: 0;
   }
@@ -31,7 +31,7 @@
   border-left: 3px solid var(--_tone-solid);
   border-radius: var(--app-radius-lg);
   box-shadow: var(--app-shadow-lg);
-  animation: app-slide-up var(--app-duration-normal) var(--app-ease-out);
+  animation: app-slide-down var(--app-duration-normal) var(--app-ease-out);
   @include tones.solid-tones;
   @include ds.reduced-motion {
     animation: none;

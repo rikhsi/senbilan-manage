@@ -1,17 +1,24 @@
 import { FakeAuthRepository, FakeClock, InMemorySessionStorage } from '../../../testing/fakes';
 import { ValidationError } from '../../errors/app-error';
-import { LoginUseCase, LogoutUseCase, RefreshSessionUseCase, RestoreSessionUseCase } from './auth.use-cases';
+import {
+  LoginUseCase,
+  LogoutUseCase,
+  RefreshSessionUseCase,
+  RestoreSessionUseCase,
+} from './auth.use-cases';
 
 describe('LoginUseCase', () => {
   it('rejects empty credentials with field errors', async () => {
     const useCase = new LoginUseCase(new FakeAuthRepository(), new InMemorySessionStorage());
-    await expect(useCase.execute({ email: ' ', password: '' })).rejects.toBeInstanceOf(ValidationError);
+    await expect(useCase.execute({ phone: ' ', password: '' })).rejects.toBeInstanceOf(
+      ValidationError,
+    );
   });
 
   it('stores the access token and returns the session', async () => {
     const storage = new InMemorySessionStorage();
     const useCase = new LoginUseCase(new FakeAuthRepository(), storage);
-    const session = await useCase.execute({ email: 'A@B.co', password: 'secret' });
+    const session = await useCase.execute({ phone: '+998901234567', password: 'secret' });
     expect(session.user.id).toBe('u1');
     expect(storage.getAccessToken()).toBe('access-1');
   });
@@ -59,14 +66,24 @@ describe('RestoreSessionUseCase', () => {
     const auth = new FakeAuthRepository();
     auth.failRefresh = true;
     const storage = new InMemorySessionStorage();
-    const useCase = new RestoreSessionUseCase(auth, new RefreshSessionUseCase(auth, storage), storage, new FakeClock());
+    const useCase = new RestoreSessionUseCase(
+      auth,
+      new RefreshSessionUseCase(auth, storage),
+      storage,
+      new FakeClock(),
+    );
     await expect(useCase.execute()).resolves.toBeNull();
   });
 
   it('restores the session via refresh cookie when no access token is present', async () => {
     const auth = new FakeAuthRepository();
     const storage = new InMemorySessionStorage();
-    const useCase = new RestoreSessionUseCase(auth, new RefreshSessionUseCase(auth, storage), storage, new FakeClock());
+    const useCase = new RestoreSessionUseCase(
+      auth,
+      new RefreshSessionUseCase(auth, storage),
+      storage,
+      new FakeClock(),
+    );
     const session = await useCase.execute();
     expect(session?.user.id).toBe('u1');
     expect(auth.refreshCalls).toBe(1);

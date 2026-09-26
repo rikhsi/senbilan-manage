@@ -1,9 +1,10 @@
 import { type AppConfig } from '@senbilan/shared/config';
 
+/** Production / Capacitor — call the API host directly. */
 export const environment: AppConfig = {
   production: true,
   appName: 'Senbilan Manage',
-  apiBaseUrl: '/api',
+  apiBaseUrl: 'https://api.senbilan.uz',
   defaultLocale: 'ru',
   availableLocales: ['ru', 'en', 'uz'],
   sentry: {
@@ -20,7 +21,7 @@ export const environment: AppConfig = {
   auth: {
     accessTokenStorageKey: 'senbilan.accessToken',
     refreshTokenStorageKey: 'senbilan.refreshToken',
-    refreshViaCookie: true,
+    refreshViaCookie: false,
     sessionIdleMs: 30 * 60 * 1000,
   },
 };

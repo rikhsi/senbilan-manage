@@ -4,7 +4,7 @@
     "brand": "SenBilan"
   },
   "nav": {
-    "dashboard": "Панель",
+    "dashboard": "Главная",
     "users": "Пользователи",
     "couples": "Пары",
     "content": "Контент",
@@ -27,6 +27,11 @@
     "edit": "Изменить",
     "create": "Создать",
     "search": "Поиск",
+    "all": "Все",
+    "filters": "Фильтры",
+    "filtersTitle": "Фильтры",
+    "apply": "Применить",
+    "columns": "Колонки",
     "reset": "Сбросить",
     "retry": "Повторить",
     "close": "Закрыть",

@@ -10,6 +10,7 @@ import {
 } from '@senbilan/core/application';
 import {
   HttpAdminCatalogRepository,
+  HttpAuthRepository,
   HttpDashboardRepository,
   HttpNotificationRepository,
   HttpPermissionRepository,
@@ -41,8 +42,7 @@ const pick =
 /**
  * Registers mock repository implementations and binds application ports.
  *
- * - **Auth** always uses `MockAuthRepository` until an auth OpenAPI surface exists.
- * - Other classic ports: mock when `APP_CONFIG.features.mockApi`, otherwise HTTP.
+ * - Classic ports: mock when `APP_CONFIG.features.mockApi`, otherwise HTTP.
  * - **AdminCatalogRepository** always uses the OpenAPI HTTP adapter.
  */
 export const provideMockApi = (_options: ProvideMockApiOptions = {}): EnvironmentProviders =>
@@ -56,7 +56,8 @@ export const provideMockApi = (_options: ProvideMockApiOptions = {}): Environmen
     MockDashboardRepository,
     {
       provide: AuthRepository,
-      useExisting: MockAuthRepository,
+      useFactory: pick((c, mock, http) => (c.features.mockApi ? mock : http)),
+      deps: [APP_CONFIG, MockAuthRepository, HttpAuthRepository],
     },
     {
       provide: UserRepository,

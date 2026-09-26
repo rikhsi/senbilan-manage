@@ -1,6 +1,6 @@
 {
   "eyebrow": "Overview",
-  "title": "Dashboard",
+  "title": "Home",
   "subtitle": "Live product metrics from the admin API",
   "errorTitle": "Could not load stats",
   "errorHint": "Check API access and try again.",

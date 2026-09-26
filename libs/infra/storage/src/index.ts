@@ -1,3 +1,4 @@
+export { BrowserSessionStorage } from './lib/browser-session-storage';
 export { InMemorySessionStorage } from './lib/in-memory-session-storage';
 export {
   LocalStorageKeyValueStorage,

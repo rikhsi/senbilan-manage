@@ -12,11 +12,17 @@ normalized to short names:
 
 | Upstream tag            | Client folder |
 | ----------------------- | ------------- |
+| `AdminAuthService`      | `auth`        |
 | `AdminBroadcastService` | `broadcast`   |
 | `AdminContentService`   | `content`     |
 | `AdminCoupleService`    | `couple`      |
+| `AdminMediaService`     | `media`       |
 | `AdminStatsService`     | `stats`       |
 | `AdminUserService`      | `user`        |
+
+Admin login: `POST /admin/v1/auth/login` (phone + password + `device_id`).
+Token refresh/logout use the app API: `POST /v1/auth/refresh` and
+`POST /v1/auth/logout` (refresh token in body).
 
 Shared DTOs: `src/lib/generated/models`. Spec snapshot:
 `openapi/admin.swagger.json`.

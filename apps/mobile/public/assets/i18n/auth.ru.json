@@ -3,14 +3,13 @@
   "tagline": "Управление событиями, командой и доступом в одном месте",
   "title": "Вход",
   "subtitle": "Войдите, чтобы продолжить работу в Senbilan Manage",
-  "email": "Электронная почта",
+  "phone": "Телефон",
   "password": "Пароль",
   "submit": "Войти",
   "submitting": "Вход…",
   "error": "Не удалось войти. Проверьте данные и попробуйте снова.",
-  "emailRequired": "Укажите электронную почту",
+  "phoneRequired": "Укажите телефон",
   "passwordRequired": "Укажите пароль",
   "showPassword": "Показать пароль",
-  "hidePassword": "Скрыть пароль",
-  "demoHint": "Демо: admin@senbilan.dev / password123"
+  "hidePassword": "Скрыть пароль"
 }

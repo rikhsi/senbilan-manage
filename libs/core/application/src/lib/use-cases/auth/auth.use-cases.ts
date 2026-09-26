@@ -1,6 +1,10 @@
 import { isSessionExpired, type Session } from '@senbilan/core/domain';
 import { UnauthorizedError, ValidationError } from '../../errors/app-error';
-import { type AuthRepository, type AuthTokens, type Credentials } from '../../ports/auth.repository';
+import {
+  type AuthRepository,
+  type AuthTokens,
+  type Credentials,
+} from '../../ports/auth.repository';
 import { type Clock } from '../../ports/clock.port';
 import { type SessionStorage } from '../../ports/session-storage.port';
 
@@ -18,10 +22,10 @@ export class LoginUseCase {
   ) {}
 
   async execute(credentials: Credentials): Promise<Session> {
-    const email = credentials.email.trim().toLowerCase();
+    const phone = credentials.phone.trim();
     const errors: Record<string, string[]> = {};
-    if (!email) {
-      errors['email'] = ['email.required'];
+    if (!phone) {
+      errors['phone'] = ['phone.required'];
     }
     if (!credentials.password) {
       errors['password'] = ['password.required'];
@@ -29,7 +33,7 @@ export class LoginUseCase {
     if (Object.keys(errors).length > 0) {
       throw new ValidationError(errors);
     }
-    const result = await this.auth.login({ email, password: credentials.password });
+    const result = await this.auth.login({ phone, password: credentials.password });
     persistTokens(this.storage, result.tokens);
     return result.session;
   }

@@ -272,13 +272,24 @@ export class AppDataTableComponent<T> {
     return this.hiddenColumns().includes(column.key);
   }
 
+  /** At least one column must stay visible. */
+  protected canHide(column: ColumnDef<T>): boolean {
+    if (this.isHidden(column)) {
+      return true;
+    }
+    return this.visibleColumns().length > 1;
+  }
+
   protected toggleColumn(column: ColumnDef<T>): void {
     const hidden = this.hiddenColumns();
-    this.hiddenColumns.set(
-      hidden.includes(column.key)
-        ? hidden.filter((key) => key !== column.key)
-        : [...hidden, column.key],
-    );
+    if (hidden.includes(column.key)) {
+      this.hiddenColumns.set(hidden.filter((key) => key !== column.key));
+      return;
+    }
+    if (!this.canHide(column)) {
+      return;
+    }
+    this.hiddenColumns.set([...hidden, column.key]);
   }
 
   // ---- resizing --------------------------------------------------------------

@@ -67,7 +67,7 @@ describe('MockAuthRepository refreshViaCookie', () => {
     const store = TestBed.inject(MockDataStore);
 
     const result = await auth.login({
-      email: 'admin@senbilan.dev',
+      phone: '+998901234567',
       password: 'password123',
     });
 

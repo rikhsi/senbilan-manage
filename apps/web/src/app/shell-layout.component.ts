@@ -10,11 +10,7 @@ import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { type PermissionKey } from '@senbilan/core/domain';
 import { AppShellComponent, type NavigationItem } from '@senbilan/design-system/layout';
-import {
-  AppConfirmDialogService,
-  AppModalService,
-  AppToastContainerComponent,
-} from '@senbilan/design-system/ui';
+import { AppConfirmDialogService, AppModalService } from '@senbilan/design-system/ui';
 import { openNotificationsInbox } from '@senbilan/features/notifications';
 import { AuthStore } from '@senbilan/shared/auth';
 import { CommandPaletteService, type Command } from '@senbilan/shared/command';
@@ -26,7 +22,7 @@ import { WEB_SHELL_NAV } from './shell-nav';
 /** Authenticated application chrome. Nav is permission-filtered via AuthStore. */
 @Component({
   selector: 'web-shell-layout',
-  imports: [AppShellComponent, AppToastContainerComponent],
+  imports: [AppShellComponent],
   template: `
     <app-shell
       [navItems]="navItems()"
@@ -35,7 +31,6 @@ import { WEB_SHELL_NAV } from './shell-nav';
       (notifications)="openNotifications()"
       (profile)="go('/profile')"
     />
-    <app-toast-container />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

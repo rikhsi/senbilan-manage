@@ -1,31 +1,91 @@
-<div class="users-page">
-  <header class="users-page__header">
-    <div>
-      <p class="users-page__eyebrow">{{ 'users.eyebrow' | transloco }}</p>
-      <h1 class="users-page__title">{{ 'users.title' | transloco }}</h1>
-      <p class="users-page__subtitle">{{ 'users.subtitle' | transloco }}</p>
-    </div>
+<app-list-page [breadcrumbs]="breadcrumbs()">
+  <app-list-filters
+    toolbar
+    [open]="filtersOpen()"
+    [activeCount]="drawerFilterCount()"
+    [labels]="filterLabels()"
+    (openChange)="onFiltersOpenChange($event)"
+    (apply)="applyFilters()"
+    (reset)="resetFilters()"
+  >
+    <app-search-input
+      search
+      mode="submit"
+      [placeholder]="'users.search' | transloco"
+      [clearLabel]="'common.reset' | transloco"
+      [submitLabel]="'common.search' | transloco"
+      [value]="searchDraft()"
+      (valueChange)="searchDraft.set($event)"
+      (search)="onSearchSubmit($event)"
+    />
+
     <button
+      end
       app-button
       type="button"
       variant="secondary"
-      size="sm"
+      size="md"
       icon="refresh"
       [loading]="loading()"
-      (click)="reload()"
+      (click)="refresh()"
     >
       {{ 'common.retry' | transloco }}
     </button>
-  </header>
 
-  <div class="users-page__toolbar">
-    <app-search-input
-      search
-      [placeholder]="'users.search' | transloco"
-      [value]="search()"
-      (search)="onSearch($event)"
-    />
-  </div>
+    <div filters class="users-page__filter-fields">
+      <app-form-field [label]="'users.status' | transloco">
+        <app-select
+          [options]="statusOptions()"
+          [labels]="selectLabels()"
+          [ngModel]="draft().status"
+          (ngModelChange)="onDraftStatus($event)"
+        />
+      </app-form-field>
+
+      <app-form-field [label]="'users.role' | transloco">
+        <app-select
+          [options]="roleOptions()"
+          [labels]="selectLabels()"
+          [ngModel]="draft().role"
+          (ngModelChange)="onDraftRole($event)"
+        />
+      </app-form-field>
+
+      <app-form-field [label]="'users.plan' | transloco">
+        <app-select
+          [options]="planOptions()"
+          [labels]="selectLabels()"
+          [ngModel]="draft().plan"
+          (ngModelChange)="onDraftPlan($event)"
+        />
+      </app-form-field>
+
+      <app-checkbox [checked]="draft().includeDeleted" (checkedChange)="onDraftIncludeDeleted($event)">
+        {{ 'users.includeDeleted' | transloco }}
+      </app-checkbox>
+
+      <div class="users-page__columns" role="group" [attr.aria-label]="'common.columns' | transloco">
+        <p class="users-page__columns-title">{{ 'common.columns' | transloco }}</p>
+        @for (column of hideableColumns(); track column.key) {
+          <app-checkbox
+            [checked]="!isColumnHidden(column.key)"
+            [disabled]="!canHideColumn(column.key)"
+            (checkedChange)="onColumnVisibilityChange(column.key, $event)"
+          >
+            {{ column.header }}
+          </app-checkbox>
+        }
+      </div>
+    </div>
+
+    <div chips class="users-page__chips">
+      @for (chip of chips(); track chip.id) {
+        <app-tag [removable]="true" [removeLabel]="'common.reset' | transloco" (remove)="removeChip(chip.id)">
+          {{ chip.labelKey | transloco }}
+        </app-tag>
+      }
+    </div>
+  </app-list-filters>
 
   @if (error() && !loading() && rows().length === 0) {
     <app-empty-state
@@ -34,7 +94,7 @@
       [title]="'users.errorTitle' | transloco"
       [description]="'users.errorHint' | transloco"
     >
-      <button app-button variant="primary" type="button" (click)="reload()">
+      <button app-button variant="primary" type="button" (click)="refresh()">
         {{ 'common.retry' | transloco }}
       </button>
     </app-empty-state>
@@ -45,17 +105,20 @@
       [rowId]="rowId"
       [labels]="tableLabels()"
       [loading]="loading()"
-      [error]="error() ? ('users.errorTitle' | transloco) : null"
+      [error]="error() ? ('users.errorHint' | transloco) : null"
       [rowClickable]="true"
+      [columnPicker]="false"
+      [hiddenColumns]="hiddenColumns()"
+      (hiddenColumnsChange)="hiddenColumns.set($event)"
       (rowClick)="onRowClick($event)"
-      (retry)="reload()"
+      (retry)="refresh()"
     >
       <ng-template appCell="name" let-row>
         <a [routerLink]="['/users', row.id]">{{ row.name || row.email || row.id }}</a>
       </ng-template>
       <ng-template appCell="status" let-row>
-        <app-status [tone]="statusTone(row.status)">{{ row.status || '—' }}</app-status>
+        <app-status [tone]="statusTone(row.status)">{{ statusLabel(row.status) }}</app-status>
       </ng-template>
     </app-data-table>
   }
-</div>
+</app-list-page>

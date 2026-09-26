@@ -1,4 +1,4 @@
-﻿# Architecture
+# Architecture
 
 Senbilan Manage combines **Clean Architecture** (core) with **Feature-Sliced Design** (presentation) inside an Nx monorepo.
 
@@ -102,9 +102,10 @@ Desktop shell: `apps/desktop` (Electron main/preload) — see [platform/desktop.
 
 Default: `APP_CONFIG.auth.refreshViaCookie: true` ([ADR 0005](adr/0005-refresh-token-httponly.md)).
 
-- Access token → `SessionStorage` (in-memory)
+- Access token → `SessionStorage` (in-memory / browser persist)
 - Refresh token → httpOnly cookie (HTTP) or mock cookie jar (`MockDataStore`) — **never** mirrored into JS storage when cookie mode is on
 - Interceptor / `HttpAuthRepository.refresh()` send empty body + `withCredentials`
+- On **401**: single-flight refresh; if refresh fails → `SessionStorage.clear()` + `AuthSessionPort.invalidateLocalSession()` (clear `AuthStore`, navigate to `/auth/login`). Remote logout is **not** called.
 
 ## Documentation duty (humans & AI)
 

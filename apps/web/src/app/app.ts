@@ -1,10 +1,14 @@
 import { afterNextRender, ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AppToastContainerComponent } from '@senbilan/design-system/ui';
 
 @Component({
   selector: 'web-root',
-  imports: [RouterOutlet],
-  template: `<router-outlet />`,
+  imports: [RouterOutlet, AppToastContainerComponent],
+  template: `
+    <router-outlet />
+    <app-toast-container />
+  `,
   styles: `
     :host {
       display: block;

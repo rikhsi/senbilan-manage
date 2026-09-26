@@ -28,9 +28,12 @@
       <app-menu [ariaLabel]="l.columns">
         @for (column of hideableColumns(); track column.key) {
           <label class="app-data-table__column-option">
-            <app-checkbox [checked]="!isHidden(column)" (checkedChange)="toggleColumn(column)">{{
-              column.header
-            }}</app-checkbox>
+            <app-checkbox
+              [checked]="!isHidden(column)"
+              [disabled]="!canHide(column)"
+              (checkedChange)="toggleColumn(column)"
+              >{{ column.header }}</app-checkbox
+            >
           </label>
         }
       </app-menu>

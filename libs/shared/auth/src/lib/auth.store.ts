@@ -74,6 +74,11 @@ export const AuthStore = signalStore(
         }
       },
 
+      /** Drop client session without calling remote logout (used after global 401). */
+      clearLocalSession(): void {
+        patchState(store, { session: null, status: 'anonymous', error: null });
+      },
+
       async restore(signal?: AbortSignal): Promise<Session | null> {
         patchState(store, { status: 'loading', error: null });
         try {

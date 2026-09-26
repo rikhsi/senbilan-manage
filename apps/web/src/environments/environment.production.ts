@@ -1,8 +1,8 @@
 import { type AppConfig } from '@senbilan/shared/config';
 
 /**
- * Production defaults. Secrets (Sentry DSN, real API URL) are injected at deploy
- * time via CI replace / Azure App Settings / etc. — keep placeholders empty here.
+ * Production defaults. Secrets (Sentry DSN) are injected at deploy time.
+ * Browser talks to the API host directly (no Vite proxy in static builds).
  */
 export const environment: AppConfig = {
   production: true,
@@ -24,7 +24,7 @@ export const environment: AppConfig = {
   auth: {
     accessTokenStorageKey: 'senbilan.accessToken',
     refreshTokenStorageKey: 'senbilan.refreshToken',
-    refreshViaCookie: true,
+    refreshViaCookie: false,
     sessionIdleMs: 30 * 60 * 1000,
   },
 };

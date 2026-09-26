@@ -1,9 +1,14 @@
 import { type AppConfig } from '@senbilan/shared/config';
 
+/**
+ * Development defaults — used by `nx serve` / `build:development`.
+ * Empty `apiBaseUrl` + `proxy.conf.json` avoids CORS in the browser preview.
+ * Native Capacitor builds should use production env (absolute API URL).
+ */
 export const environment: AppConfig = {
   production: false,
   appName: 'Senbilan Manage',
-  apiBaseUrl: 'http://localhost:3000/api',
+  apiBaseUrl: '',
   defaultLocale: 'ru',
   availableLocales: ['ru', 'en', 'uz'],
   sentry: {
@@ -20,7 +25,7 @@ export const environment: AppConfig = {
   auth: {
     accessTokenStorageKey: 'senbilan.accessToken',
     refreshTokenStorageKey: 'senbilan.refreshToken',
-    refreshViaCookie: true,
+    refreshViaCookie: false,
     sessionIdleMs: 30 * 60 * 1000,
   },
 };

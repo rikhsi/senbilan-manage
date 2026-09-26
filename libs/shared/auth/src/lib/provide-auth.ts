@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import {
   AuthRepository,
+  AuthSessionPort,
   Clock,
   LoginUseCase,
   LogoutUseCase,
@@ -15,6 +16,7 @@ import {
   SessionStorage,
 } from '@senbilan/core/application';
 import { provideUseCase } from '@senbilan/shared/ng';
+import { AngularAuthSessionPort } from './angular-auth-session.port';
 import { AuthStore } from './auth.store';
 
 const authUseCaseProviders: Provider[] = [
@@ -46,10 +48,15 @@ const authUseCaseProviders: Provider[] = [
  * Registers auth use cases and restores the session during app bootstrap.
  * `AuthRepository`, `SessionStorage`, and `Clock` must already be provided
  * (infra adapters).
+ *
+ * Also wires `AuthSessionPort` so a failed 401 refresh clears `AuthStore`
+ * and navigates to login (tokens are already cleared by the interceptor).
  */
 export const provideAuth = (): EnvironmentProviders =>
   makeEnvironmentProviders([
     ...authUseCaseProviders,
+    AngularAuthSessionPort,
+    { provide: AuthSessionPort, useExisting: AngularAuthSessionPort },
     {
       provide: APP_INITIALIZER,
       multi: true,

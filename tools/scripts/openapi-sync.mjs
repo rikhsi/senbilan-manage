@@ -25,9 +25,11 @@ const DEFAULT_URL = 'https://api.senbilan.uz/docs/admin/openapi.json';
 
 /** gRPC-gateway service tags → short folder / client names */
 const TAG_ALIASES = {
+  AdminAuthService: 'auth',
   AdminBroadcastService: 'broadcast',
   AdminContentService: 'content',
   AdminCoupleService: 'couple',
+  AdminMediaService: 'media',
   AdminStatsService: 'stats',
   AdminUserService: 'user',
 };

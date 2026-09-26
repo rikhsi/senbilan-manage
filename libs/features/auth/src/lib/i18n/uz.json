@@ -3,14 +3,13 @@
   "tagline": "Tadbirlar, jamoa va kirish huquqlari — bitta joyda",
   "title": "Kirish",
   "subtitle": "Senbilan Manage’da davom etish uchun tizimga kiring",
-  "email": "Elektron pochta",
+  "phone": "Telefon",
   "password": "Parol",
   "submit": "Kirish",
   "submitting": "Kirilmoqda…",
   "error": "Kirib bo‘lmadi. Ma’lumotlarni tekshirib, qayta urinib ko‘ring.",
-  "emailRequired": "Elektron pochta majburiy",
+  "phoneRequired": "Telefon majburiy",
   "passwordRequired": "Parol majburiy",
   "showPassword": "Parolni ko‘rsatish",
-  "hidePassword": "Parolni yashirish",
-  "demoHint": "Demo: admin@senbilan.dev / password123"
+  "hidePassword": "Parolni yashirish"
 }

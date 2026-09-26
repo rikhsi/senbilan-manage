@@ -1,4 +1,9 @@
 <div class="auth-login">
+  <div class="auth-login__prefs">
+    <app-locale-toggle />
+    <app-theme-toggle />
+  </div>
+
   <aside class="auth-login__brand" aria-hidden="true">
     <div class="auth-login__visual">
       <auth-orbit-hero />
@@ -6,26 +11,34 @@
   </aside>
 
   <main class="auth-login__main">
-    <div class="auth-login__prefs">
-      <app-locale-toggle />
-      <app-theme-toggle />
-    </div>
-
     <div class="auth-login__panel">
       <header class="auth-login__header">
         <h1 class="auth-login__title">{{ 'auth.title' | transloco }}</h1>
         <p class="auth-login__subtitle">{{ 'auth.subtitle' | transloco }}</p>
       </header>
 
-      <form class="auth-login__form" (submit)="onSubmit($event)" novalidate>
-        <app-form-field [label]="'auth.email' | transloco" [error]="errorFor('email')" required>
-          <input appInput type="email" autocomplete="username" [formField]="loginForm.email" />
+      <form class="auth-login__form" (submit)="onSubmit($event)" novalidate autocomplete="on">
+        <app-form-field [label]="'auth.phone' | transloco" [error]="errorFor('phone')" required>
+          <input
+            appInput
+            id="login-phone"
+            type="tel"
+            autocomplete="tel-national"
+            inputmode="numeric"
+            maxlength="20"
+            [mask]="phoneMask"
+            [prefix]="phonePrefix"
+            [dropSpecialCharacters]="false"
+            [showMaskTyped]="false"
+            [formField]="loginForm.phone"
+          />
         </app-form-field>
 
         <app-form-field [label]="'auth.password' | transloco" [error]="errorFor('password')" required>
           <div class="auth-login__password-control">
             <input
               appInput
+              id="login-password"
               [type]="showPassword() ? 'text' : 'password'"
               autocomplete="current-password"
               [formField]="loginForm.password"
@@ -45,10 +58,6 @@
             </button>
           </div>
         </app-form-field>
-
-        @if (formError(); as message) {
-          <p class="auth-login__error" role="alert">{{ message }}</p>
-        }
 
         <button
           app-button

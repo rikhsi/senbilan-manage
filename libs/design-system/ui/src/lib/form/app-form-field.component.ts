@@ -3,6 +3,9 @@ import {
   Component,
   computed,
   contentChild,
+  DestroyRef,
+  effect,
+  inject,
   input,
   signal,
 } from '@angular/core';
@@ -10,6 +13,11 @@ import { AppIconComponent } from '@senbilan/design-system/icons';
 import { APP_CONTROL, type AppControl } from './app-control';
 
 let nextId = 0;
+
+/** Keep last message in DOM until the expand/collapse transition finishes. */
+const MESSAGE_TRANSITION_MS = 250;
+
+type FieldMessage = { readonly kind: 'error' | 'hint'; readonly text: string };
 
 /**
  * Wraps any control (native input/select/textarea with `appInput`, or a DS control
@@ -22,6 +30,8 @@ let nextId = 0;
  * ```
  * The caller decides *when* to show `error` (touched/dirty/submitted) — the field
  * just renders whatever it is given. This keeps validation timing in one place (forms layer).
+ *
+ * Error/hint height animates open/close so sibling fields do not jump.
  */
 @Component({
   selector: 'app-form-field',
@@ -38,35 +48,52 @@ let nextId = 0;
         }
       </label>
     }
-    <div class="app-form-field__control">
-      <ng-content />
-    </div>
-    @if (error()) {
-      <p
-        class="app-form-field__message app-form-field__message--error"
-        [id]="messageId"
-        role="alert"
+    <div class="app-form-field__body">
+      <div class="app-form-field__control">
+        <ng-content />
+      </div>
+      <div
+        class="app-form-field__message-slot"
+        [class.app-form-field__message-slot--open]="messageOpen()"
       >
-        <app-icon name="circle-alert" size="xs" />
-        <span>{{ error() }}</span>
-      </p>
-    } @else if (hint()) {
-      <p class="app-form-field__message" [id]="messageId">{{ hint() }}</p>
-    }
+        <div class="app-form-field__message-slot-inner">
+          @if (shownMessage(); as msg) {
+            <p
+              class="app-form-field__message"
+              [class.app-form-field__message--error]="msg.kind === 'error'"
+              [id]="messageId"
+              [attr.role]="msg.kind === 'error' ? 'alert' : null"
+            >
+              @if (msg.kind === 'error') {
+                <app-icon name="circle-alert" size="xs" />
+              }
+              <span>{{ msg.text }}</span>
+            </p>
+          }
+        </div>
+      </div>
+    </div>
   `,
   styleUrl: './app-form-field.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'app-form-field',
-    '[class.app-form-field--invalid]': '!!error()',
+    '[class.app-form-field--invalid]': 'invalid()',
     '[class.app-form-field--disabled]': 'disabled()',
     '[attr.data-size]': 'size()',
   },
 })
 export class AppFormFieldComponent {
+  private readonly destroyRef = inject(DestroyRef);
+
   readonly label = input<string>('');
   readonly hint = input<string>('');
   readonly error = input<string>('');
+  /**
+   * Marks the control invalid (red border / aria-invalid) without showing a message.
+   * Use when the error is announced elsewhere (e.g. toast).
+   */
+  readonly invalidOnly = input(false, { alias: 'invalid' });
   readonly required = input(false, {
     transform: (v: unknown) => v !== false && v !== null && v !== undefined,
   });
@@ -79,13 +106,52 @@ export class AppFormFieldComponent {
 
   private readonly control = contentChild(APP_CONTROL);
   private readonly fallbackId = signal(this.id + '-control');
+  protected readonly shownMessage = signal<FieldMessage | null>(null);
+  private clearMessageTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Id of the projected control (from AppControl) or a generated fallback. */
   readonly controlId = computed<string>(() => this.control()?.id() ?? this.fallbackId());
 
+  /** Drives height animation; false starts collapse while text may still be painted. */
+  readonly messageOpen = computed(() => !!this.error().trim() || !!this.hint().trim());
+
   /** Consumed by controls to wire aria-describedby / aria-invalid. */
-  readonly describedBy = computed(() => (this.error() || this.hint() ? this.messageId : null));
-  readonly invalid = computed(() => !!this.error());
+  readonly describedBy = computed(() => (this.messageOpen() ? this.messageId : null));
+  readonly invalid = computed(() => !!this.error().trim() || this.invalidOnly());
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.clearPendingTimer());
+
+    effect(() => {
+      const error = this.error().trim();
+      const hint = this.hint().trim();
+
+      this.clearPendingTimer();
+
+      if (error) {
+        this.shownMessage.set({ kind: 'error', text: error });
+        return;
+      }
+      if (hint) {
+        this.shownMessage.set({ kind: 'hint', text: hint });
+        return;
+      }
+
+      if (this.shownMessage() !== null) {
+        this.clearMessageTimer = setTimeout(() => {
+          this.shownMessage.set(null);
+          this.clearMessageTimer = null;
+        }, MESSAGE_TRANSITION_MS);
+      }
+    });
+  }
+
+  private clearPendingTimer(): void {
+    if (this.clearMessageTimer !== null) {
+      clearTimeout(this.clearMessageTimer);
+      this.clearMessageTimer = null;
+    }
+  }
 }
 
 export type { AppControl };

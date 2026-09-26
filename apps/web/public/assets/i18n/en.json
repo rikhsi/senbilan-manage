@@ -4,7 +4,7 @@
     "brand": "SenBilan"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Home",
     "users": "Users",
     "couples": "Couples",
     "content": "Content",
@@ -27,6 +27,11 @@
     "edit": "Edit",
     "create": "Create",
     "search": "Search",
+    "all": "All",
+    "filters": "Filters",
+    "filtersTitle": "Filters",
+    "apply": "Apply",
+    "columns": "Columns",
     "reset": "Reset",
     "retry": "Retry",
     "close": "Close",

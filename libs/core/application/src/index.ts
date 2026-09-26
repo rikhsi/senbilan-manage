@@ -4,6 +4,7 @@ export * from './lib/contracts/pagination';
 
 // ports
 export * from './lib/ports/auth.repository';
+export * from './lib/ports/auth-session.port';
 export * from './lib/ports/clock.port';
 export * from './lib/ports/dashboard.repository';
 export * from './lib/ports/key-value-storage.port';

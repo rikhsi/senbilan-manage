@@ -1,9 +1,10 @@
 import { type Routes } from '@angular/router';
-import { authGuard, permissionGuard } from '@senbilan/shared/auth';
+import { authGuard, guestGuard, permissionGuard } from '@senbilan/shared/auth';
 
 export const appRoutes: Routes = [
   {
     path: 'auth',
+    canMatch: [guestGuard(['dashboard'])],
     children: [
       {
         path: 'login',

@@ -1,0 +1,63 @@
+<div class="app-list-filters__toolbar">
+  <div class="app-list-filters__search">
+    <ng-content select="[search]" />
+  </div>
+  <button
+    app-button
+    type="button"
+    variant="secondary"
+    size="md"
+    icon="filter"
+    class="app-list-filters__trigger"
+    (click)="openPanel()"
+  >
+    {{ labels().filters }}
+    @if (activeCount() > 0) {
+      <app-badge tone="primary" size="sm" [pill]="true">{{ activeCount() }}</app-badge>
+    }
+  </button>
+  <div class="app-list-filters__end">
+    <ng-content select="[end]" />
+  </div>
+</div>
+
+@if (activeCount() > 0) {
+  <div class="app-list-filters__chips" role="list">
+    <ng-content select="[chips]" />
+  </div>
+}
+
+@if (open()) {
+  <div class="app-list-filters__layer" role="presentation">
+    <button
+      type="button"
+      class="app-list-filters__backdrop"
+      [attr.aria-label]="labels().close"
+      (click)="closePanel()"
+    ></button>
+    <aside class="app-list-filters__panel" role="dialog" aria-modal="true" [attr.aria-label]="labels().title">
+      <header class="app-list-filters__header">
+        <h2 class="app-list-filters__title">{{ labels().title }}</h2>
+        <button
+          app-icon-button
+          type="button"
+          icon="x"
+          size="sm"
+          [label]="labels().close"
+          (click)="closePanel()"
+        ></button>
+      </header>
+      <div class="app-list-filters__body">
+        <ng-content select="[filters]" />
+      </div>
+      <footer class="app-list-filters__footer">
+        <button app-button type="button" variant="ghost" size="sm" (click)="onReset()">
+          {{ labels().reset }}
+        </button>
+        <button app-button type="button" variant="primary" size="sm" (click)="onApply()">
+          {{ labels().apply }}
+        </button>
+      </footer>
+    </aside>
+  </div>
+}

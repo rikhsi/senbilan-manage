@@ -75,3 +75,30 @@
   @include ds.text('caption');
   font-family: var(--app-font-family-sans);
 }
+
+.app-search-input__submit {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin-inline-end: calc(-1 * var(--app-space-0-5));
+  color: var(--app-color-on-primary);
+  background: var(--app-color-primary);
+  border: 0;
+  border-radius: var(--app-radius-sm);
+  @include ds.focus-reset;
+
+  &:hover:not(:disabled) {
+    background: var(--app-color-primary-hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+:host.app-search-input--submit {
+  padding-inline-end: var(--app-space-1);
+}

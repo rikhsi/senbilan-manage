@@ -1,10 +1,14 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "admin/v1/broadcast.proto",
+    "title": "admin/v1/auth.proto",
     "version": "version not set"
   },
   "tags": [
+    {
+      "name": "auth",
+      "description": "AdminAuthService signs admins in. Login is public; the token pair it returns is refreshed and\nrevoked through the app's /v1/auth/refresh and /v1/auth/logout."
+    },
     {
       "name": "broadcast",
       "description": "AdminBroadcastService manages pushes the team sends to every user. Every RPC requires the\nadmin role; other callers get FORBIDDEN before the request is validated."
@@ -22,6 +26,10 @@
       "description": "AdminCoupleService lists couples and forces an unpair. Every RPC requires the admin role;\nother callers get FORBIDDEN before the request is validated. Couple content is never\nreturned, only counts."
     },
     {
+      "name": "media",
+      "description": "AdminMediaService lists uploaded media and takes them down. Every RPC requires the admin role;\nother callers get FORBIDDEN before the request is validated. Only metadata is returned: never\nthe object key or a URL."
+    },
+    {
       "name": "stats",
       "description": "AdminStatsService returns the dashboard summary. Requires the admin role; other callers get\nFORBIDDEN."
     }
@@ -29,6 +37,37 @@
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "paths": {
+    "/admin/v1/auth/login": {
+      "post": {
+        "summary": "Login exchanges phone + password for a token pair. Only an account with the admin role and a\npassword set can sign in; any other failure is INVALID_CREDENTIALS, a blocked account ACCOUNT_BLOCKED.",
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/TokenPairEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "tags": ["auth"]
+      }
+    },
     "/admin/v1/broadcasts": {
       "get": {
         "summary": "ListBroadcasts returns broadcasts newest created first.",
@@ -720,6 +759,109 @@
         "tags": ["couple"]
       }
     },
+    "/admin/v1/media": {
+      "get": {
+        "summary": "ListMedia returns media newest created first.",
+        "operationId": "ListMedia",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListMediaResponseEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "owner_id",
+            "description": "Empty matches any owner.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "couple_id",
+            "description": "Empty matches any couple.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "purpose",
+            "description": "Empty matches any purpose.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "description": "\"pending\" or \"ready\"; empty matches any status.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "cursor",
+            "description": "next_cursor of the previous page; empty for the first page.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "Page size; 0 means 30.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["media"]
+      }
+    },
+    "/admin/v1/media/{media_id}/delete": {
+      "post": {
+        "summary": "DeleteMedia deletes a media row and its stored object. Features that pointed at it lose the\nphoto; an album photo or a document built on it is deleted with it. NOT_FOUND when absent.",
+        "operationId": "DeleteMedia",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/EmptyEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "media_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteMediaBody"
+            }
+          }
+        ],
+        "tags": ["media"]
+      }
+    },
     "/admin/v1/stats": {
       "get": {
         "summary": "GetStats returns counters computed on request.",
@@ -729,6 +871,27 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/StatsEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "tags": ["stats"]
+      }
+    },
+    "/admin/v1/system": {
+      "get": {
+        "summary": "GetSystemInfo returns what is deployed: the build, its environment and the database schema.",
+        "operationId": "GetSystemInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/SystemInfoEnvelope"
             }
           },
           "default": {
@@ -997,6 +1160,115 @@
         "tags": ["user"]
       }
     },
+    "/admin/v1/users/{user_id}/sessions": {
+      "get": {
+        "summary": "ListUserSessions returns the account's device sessions newest first. Push tokens and refresh\ntoken hashes are never returned.",
+        "operationId": "ListUserSessions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListUserSessionsResponseEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}/sessions/revoke": {
+      "post": {
+        "summary": "RevokeUserSessions revokes every session of the account. Idempotent. CONFLICT on a deleted\naccount.",
+        "operationId": "RevokeUserSessions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/EmptyEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RevokeUserSessionsBody"
+            }
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
+    "/admin/v1/users/{user_id}/sessions/{session_id}/revoke": {
+      "post": {
+        "summary": "RevokeUserSession revokes one session; its refresh token stops working. Idempotent.\nNOT_FOUND when the session is not the account's, CONFLICT on a deleted account.",
+        "operationId": "RevokeUserSession",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AdminSessionEnvelope"
+            }
+          },
+          "default": {
+            "description": "Error envelope: success is false and error.code is the app error code.",
+            "schema": {
+              "$ref": "#/definitions/ErrorEnvelope"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RevokeUserSessionBody"
+            }
+          }
+        ],
+        "tags": ["user"]
+      }
+    },
     "/admin/v1/users/{user_id}/unblock": {
       "post": {
         "summary": "UnblockUser lets a blocked account sign in again. Idempotent. CONFLICT on a deleted account.",
@@ -1247,6 +1519,99 @@
       },
       "description": "AdminCoupleSummary is a couple and its members, without any of its content. It lives here,\nnot in couples.proto, because it embeds AdminUser and proto imports cannot be circular."
     },
+    "AdminMedia": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "owner_id": {
+          "type": "string"
+        },
+        "couple_id": {
+          "type": "string",
+          "description": "Empty when the media has no couple."
+        },
+        "purpose": {
+          "type": "string",
+          "description": "The stored purpose, e.g. \"profile_photo\" or \"album_photo\"."
+        },
+        "content_type": {
+          "type": "string"
+        },
+        "size_bytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32",
+          "description": "0 until the upload is confirmed."
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32",
+          "description": "0 until the upload is confirmed."
+        },
+        "status": {
+          "type": "string",
+          "description": "\"pending\" or \"ready\"."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        }
+      },
+      "description": "AdminMedia is an uploaded file's metadata."
+    },
+    "DeleteMediaBody": {
+      "type": "object"
+    },
+    "AdminSession": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "device_id": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string",
+          "description": "\"ios\", \"android\", \"telegram\" or \"web\"."
+        },
+        "app_version": {
+          "type": "string"
+        },
+        "has_push_token": {
+          "type": "boolean",
+          "description": "Whether the device registered for push; the token itself is never returned."
+        },
+        "last_seen_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "revoked_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Absent unless the session is revoked.",
+          "x-nullable": true
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        }
+      },
+      "description": "AdminSession is a device session as the admin panel sees it."
+    },
     "AdminUser": {
       "type": "object",
       "properties": {
@@ -1356,6 +1721,12 @@
       "type": "object"
     },
     "DeleteUserBody": {
+      "type": "object"
+    },
+    "RevokeUserSessionBody": {
+      "type": "object"
+    },
+    "RevokeUserSessionsBody": {
       "type": "object"
     },
     "SetUserPlanBody": {
@@ -1533,6 +1904,9 @@
     "DeleteContentResponse": {
       "type": "object"
     },
+    "DeleteMediaResponse": {
+      "type": "object"
+    },
     "DeleteUserResponse": {
       "type": "object"
     },
@@ -1584,6 +1958,35 @@
         }
       }
     },
+    "ListMediaResponse": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/AdminMedia"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Empty when there are no more media."
+        }
+      }
+    },
+    "ListUserSessionsResponse": {
+      "type": "object",
+      "properties": {
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/AdminSession"
+          },
+          "description": "Every session of the account, one per device, newest first."
+        }
+      }
+    },
     "ListUsersResponse": {
       "type": "object",
       "properties": {
@@ -1599,6 +2002,25 @@
           "description": "Empty when there are no more accounts."
         }
       }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "phone": {
+          "type": "string",
+          "description": "E.164, e.g. \"+998901234567\"."
+        },
+        "password": {
+          "type": "string"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "Stable per-browser identifier chosen by the admin panel; one session per (user, device_id)."
+        }
+      }
+    },
+    "RevokeUserSessionsResponse": {
+      "type": "object"
     },
     "Stats": {
       "type": "object",
@@ -1649,6 +2071,31 @@
         }
       },
       "description": "Stats is the dashboard summary. Deleted accounts are not counted."
+    },
+    "SystemInfo": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "The build version the health ping reports; \"dev\" for local builds."
+        },
+        "environment": {
+          "type": "string",
+          "description": "The ENVIRONMENT setting, e.g. \"development\" or \"production\"."
+        },
+        "schema_version": {
+          "type": "string",
+          "format": "int64",
+          "description": "The latest applied goose migration."
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this server process started.",
+          "x-nullable": true
+        }
+      },
+      "description": "SystemInfo describes the running server."
     },
     "UnitInput": {
       "type": "object",
@@ -1758,7 +2205,7 @@
         "unit_count": {
           "type": "integer",
           "format": "int32",
-          "description": "Number of units. The app API fills it everywhere; admin responses fill it only where units are included."
+          "description": "Number of units. Always filled, also in list responses where units is empty."
         }
       },
       "description": "Content is an article, book, podcast or video published by the senbilan team."
@@ -1819,6 +2266,32 @@
         }
       },
       "description": "Media is an uploaded file (profile photo, wish photo, message photo) referenced by id."
+    },
+    "TokenPair": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "access_expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "refresh_expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "is_new_user": {
+          "type": "boolean",
+          "description": "True when the user was created by this call (client should show onboarding)."
+        }
+      },
+      "description": "TokenPair is the result of every successful sign-in."
     },
     "Unit": {
       "type": "object",
@@ -1902,6 +2375,25 @@
         }
       },
       "required": ["field", "reason"],
+      "additionalProperties": false
+    },
+    "TokenPairEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/TokenPair"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
       "additionalProperties": false
     },
     "ListBroadcastsResponseEnvelope": {
@@ -2058,6 +2550,25 @@
       "required": ["success", "data", "request_id"],
       "additionalProperties": false
     },
+    "ListMediaResponseEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/ListMediaResponse"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
     "StatsEnvelope": {
       "type": "object",
       "description": "Success envelope wrapping the response data.",
@@ -2068,6 +2579,25 @@
         },
         "data": {
           "$ref": "#/definitions/Stats"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "SystemInfoEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/SystemInfo"
         },
         "request_id": {
           "type": "string",
@@ -2125,6 +2655,44 @@
         },
         "data": {
           "$ref": "#/definitions/AdminUser"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "ListUserSessionsResponseEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/ListUserSessionsResponse"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request id, echoed in the X-Request-Id header."
+        }
+      },
+      "required": ["success", "data", "request_id"],
+      "additionalProperties": false
+    },
+    "AdminSessionEnvelope": {
+      "type": "object",
+      "description": "Success envelope wrapping the response data.",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Always true."
+        },
+        "data": {
+          "$ref": "#/definitions/AdminSession"
         },
         "request_id": {
           "type": "string",

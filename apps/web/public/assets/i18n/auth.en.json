@@ -3,14 +3,13 @@
   "tagline": "Events, team, and access — managed in one place",
   "title": "Sign in",
   "subtitle": "Sign in to continue to Senbilan Manage",
-  "email": "Email",
+  "phone": "Phone",
   "password": "Password",
   "submit": "Sign in",
   "submitting": "Signing in…",
   "error": "Unable to sign in. Check your credentials and try again.",
-  "emailRequired": "Email is required",
+  "phoneRequired": "Phone is required",
   "passwordRequired": "Password is required",
   "showPassword": "Show password",
-  "hidePassword": "Hide password",
-  "demoHint": "Demo: admin@senbilan.dev / password123"
+  "hidePassword": "Hide password"
 }

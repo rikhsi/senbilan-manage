@@ -114,6 +114,7 @@ export class HttpAdminCatalogRepository extends AdminCatalogRepository {
         ...(query.status !== undefined ? { status: query.status as never } : {}),
         ...(query.plan !== undefined ? { plan: query.plan as never } : {}),
         ...(query.role !== undefined ? { role: query.role as never } : {}),
+        ...(query.includeDeleted !== undefined ? { include_deleted: query.includeDeleted } : {}),
         ...(query.cursor !== undefined ? { cursor: query.cursor } : {}),
         ...(query.limit !== undefined ? { limit: query.limit } : {}),
       }),

@@ -23,7 +23,8 @@
   padding: var(--app-space-3) var(--app-space-4);
   border-bottom: 1px solid var(--app-color-divider);
 
-  &:not(:has(*)) {
+  /* Hide when only an empty filters projection remains (no bulk / picker). */
+  &:not(:has(button, .app-data-table__bulk, .app-data-table__filters > *)) {
     display: none;
   }
 }
@@ -36,6 +37,10 @@
   gap: var(--app-space-2);
   align-items: center;
   min-width: 0;
+}
+
+.app-data-table__filters:not(:has(*)) {
+  display: none;
 }
 
 .app-data-table__bulk {

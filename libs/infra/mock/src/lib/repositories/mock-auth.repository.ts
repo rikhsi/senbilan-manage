@@ -10,6 +10,7 @@ import {
 import { type Session } from '@senbilan/core/domain';
 import { APP_CONFIG } from '@senbilan/shared/config';
 import { MockDataStore } from '../mock-data.store';
+import { DEMO_ADMIN_EMAIL } from '../fixtures/mock-db';
 
 /**
  * In-memory auth for `features.mockApi`.
@@ -23,8 +24,11 @@ export class MockAuthRepository extends AuthRepository {
   private readonly config = inject(APP_CONFIG);
 
   override async login(credentials: Credentials): Promise<AuthResult> {
-    const user = this.store.findUserByEmail(credentials.email);
-    if (!user || !this.store.assertDemoCredentials(credentials.email, credentials.password)) {
+    const phone = credentials.phone.trim();
+    const user =
+      this.store.findUserByEmail(phone.includes('@') ? phone : DEMO_ADMIN_EMAIL) ??
+      this.store.findUserByEmail(DEMO_ADMIN_EMAIL);
+    if (!user || !this.store.assertDemoCredentials(phone, credentials.password)) {
       throw new UnauthorizedError();
     }
     if (user.status === 'blocked') {

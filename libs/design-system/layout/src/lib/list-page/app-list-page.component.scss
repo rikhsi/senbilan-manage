@@ -1,0 +1,87 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+  min-height: 100%;
+  background: var(--app-color-surface);
+}
+
+.app-list-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: var(--app-space-4);
+
+  @include ds.up('md') {
+    padding: var(--app-space-5) var(--app-space-6);
+  }
+}
+
+.app-list-page__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  align-items: center;
+  justify-content: space-between;
+
+  &--with-title {
+    align-items: flex-start;
+  }
+
+  &:not(:has(.app-list-page__lead > *, .app-list-page__actions > *)) {
+    display: none;
+  }
+}
+
+.app-list-page__lead {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  min-width: 0;
+
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.app-list-page__title {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  @include ds.text('title');
+}
+
+.app-list-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  align-items: center;
+
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.app-list-page__toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  min-width: 0;
+
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.app-list-page__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  min-width: 0;
+}

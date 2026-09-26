@@ -1,6 +1,11 @@
 import { HttpErrorResponse, type HttpInterceptorFn, type HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthRepository, SessionStorage, UnauthorizedError } from '@senbilan/core/application';
+import {
+  AuthRepository,
+  AuthSessionPort,
+  SessionStorage,
+  UnauthorizedError,
+} from '@senbilan/core/application';
 import { APP_CONFIG } from '@senbilan/shared/config';
 import { catchError, from, switchMap, throwError } from 'rxjs';
 import { SKIP_AUTH } from '../http-context.tokens';
@@ -15,6 +20,7 @@ const withBearer = (req: HttpRequest<unknown>, token: string): HttpRequest<unkno
  * Refresh itself must use `SKIP_AUTH` to avoid recursion.
  * When `auth.refreshViaCookie` is true, refresh relies on httpOnly cookie
  * (withCredentials) and does not send a body refresh token from storage.
+ * If refresh fails, tokens are cleared and `AuthSessionPort` kicks the user out.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.context.get(SKIP_AUTH)) {
@@ -23,6 +29,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const storage = inject(SessionStorage);
   const auth = inject(AuthRepository);
+  const session = inject(AuthSessionPort, { optional: true });
   const cookieMode = inject(APP_CONFIG).auth.refreshViaCookie;
   const access = storage.getAccessToken();
   const authedReq = access ? withBearer(req, access) : req;
@@ -46,6 +53,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           })
           .catch((refreshError: unknown) => {
             storage.clear();
+            session?.invalidateLocalSession();
             throw refreshError instanceof Error
               ? refreshError
               : new UnauthorizedError({ cause: refreshError });

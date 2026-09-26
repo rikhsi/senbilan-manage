@@ -1,14 +1,16 @@
 import { type Routes } from '@angular/router';
-import { authGuard } from '@senbilan/shared/auth';
+import { authGuard, guestGuard } from '@senbilan/shared/auth';
+import { provideNgxMask } from 'ngx-mask';
 import { provideAuthI18n } from '@senbilan/features/auth';
 
 export const appRoutes: Routes = [
   {
     path: 'auth',
+    canMatch: [guestGuard(['/'])],
     children: [
       {
         path: 'login',
-        providers: [provideAuthI18n()],
+        providers: [provideAuthI18n(), provideNgxMask()],
         loadComponent: () =>
           import('./auth/login-page.component').then((m) => m.LoginPageComponent),
       },

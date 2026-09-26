@@ -1,4 +1,4 @@
-﻿# Senbilan Manage
+# Senbilan Manage
 
 Nx + Angular monorepo for **Senbilan Manage** — a web app and a Capacitor/Ionic mobile shell sharing Clean Architecture domain/application layers, a design system, vendor bridges, and feature libraries.
 
@@ -36,9 +36,18 @@ Deep docs: [Architecture](docs/ARCHITECTURE.md) · [Design system](docs/DESIGN-S
 
 ```sh
 npm ci
-npm start                 # nx serve web  → http://localhost:4200
-npm run start:mobile      # nx serve mobile
+npm start                 # nx serve web     → http://localhost:4200
+npm run start:mobile      # nx serve mobile  → http://localhost:4300
+npm run desktop           # Electron shell   → loads web on :4200 (start web first)
 ```
+
+| Host    | Dev port | Notes                                     |
+| ------- | -------- | ----------------------------------------- |
+| web     | `4200`   | Browser + Electron renderer               |
+| mobile  | `4300`   | Ionic/Capacitor preview                   |
+| desktop | —        | No HTTP server; opens Electron → web:4200 |
+
+Dev API calls use same-origin `/admin` and `/v1` paths; `proxy.conf.json` forwards them to `https://api.senbilan.uz` (no CORS on localhost). Production builds set `apiBaseUrl` to that host and call it directly.
 
 ### Mock API
 

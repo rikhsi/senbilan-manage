@@ -20,7 +20,7 @@ describe('AuthStore', () => {
     });
 
     const store = TestBed.inject(AuthStore);
-    await store.login({ email: 'admin@senbilan.dev', password: 'password123' });
+    await store.login({ phone: '+998901234567', password: 'password123' });
 
     expect(store.status()).toBe('authenticated');
     expect(store.user()?.id).toBe(session.user.id);
@@ -42,10 +42,32 @@ describe('AuthStore', () => {
     });
 
     const store = TestBed.inject(AuthStore);
-    await expect(store.login({ email: 'x@y.z', password: 'bad' })).rejects.toThrow(
+    await expect(store.login({ phone: '+998000000000', password: 'bad' })).rejects.toThrow(
       'auth.login.failed',
     );
     expect(store.status()).toBe('anonymous');
     expect(store.error()).toBe('auth.login.failed');
+  });
+
+  it('clearLocalSession drops session without calling logout', async () => {
+    const session = buildSession();
+    const logout = createMockUseCase(async () => undefined);
+
+    TestBed.configureTestingModule({
+      providers: [
+        AuthStore,
+        { provide: LoginUseCase, useValue: createMockUseCase(async () => session) },
+        { provide: LogoutUseCase, useValue: logout },
+        { provide: RestoreSessionUseCase, useValue: createMockUseCase(async () => null) },
+      ],
+    });
+
+    const store = TestBed.inject(AuthStore);
+    await store.login({ phone: '+998901234567', password: 'password123' });
+    store.clearLocalSession();
+
+    expect(store.status()).toBe('anonymous');
+    expect(store.session()).toBeNull();
+    expect(logout.calls).toHaveLength(0);
   });
 });

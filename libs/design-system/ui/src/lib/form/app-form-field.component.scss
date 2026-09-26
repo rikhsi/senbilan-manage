@@ -26,27 +26,59 @@
   font-weight: var(--app-font-weight-regular);
 }
 
+.app-form-field__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .app-form-field__control {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
+// Grid 0fr → 1fr expands height so following fields ease down instead of jumping.
+.app-form-field__message-slot {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--app-duration-normal) var(--app-ease-out),
+    opacity var(--app-duration-fast) var(--app-ease-out);
+
+  &--open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  @include ds.reduced-motion {
+    transition: none;
+  }
+}
+
+.app-form-field__message-slot-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
 .app-form-field__message {
   display: flex;
   gap: var(--app-space-1);
   align-items: flex-start;
+  margin: 0;
+  padding-top: var(--app-space-1-5);
   color: var(--app-color-text-tertiary);
   @include ds.text('caption');
   font-weight: var(--app-font-weight-regular);
 
   &--error {
     color: var(--app-color-danger);
-    animation: app-slide-up var(--app-duration-fast) var(--app-ease-out);
   }
 
   app-icon {
     margin-top: 1px;
+    flex-shrink: 0;
   }
 }
 

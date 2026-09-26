@@ -4,7 +4,7 @@
     "brand": "SenBilan"
   },
   "nav": {
-    "dashboard": "Boshqaruv paneli",
+    "dashboard": "Bosh sahifa",
     "users": "Foydalanuvchilar",
     "couples": "Juftliklar",
     "content": "Kontent",
@@ -27,6 +27,11 @@
     "edit": "Tahrirlash",
     "create": "Yaratish",
     "search": "Qidirish",
+    "all": "Hammasi",
+    "filters": "Filtrlar",
+    "filtersTitle": "Filtrlar",
+    "apply": "Qo‘llash",
+    "columns": "Ustunlar",
     "reset": "Tozalash",
     "retry": "Qayta urinish",
     "close": "Yopish",

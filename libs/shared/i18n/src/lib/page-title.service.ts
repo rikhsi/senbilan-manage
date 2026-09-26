@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';
 import { APP_CONFIG } from '@senbilan/shared/config';
-import { filter } from 'rxjs';
+import { filter, take } from 'rxjs';
 
 /**
  * Browser tab title: `"Page · AppName"`.
@@ -18,6 +18,7 @@ export class PageTitleService {
 
   private readonly routeKey = signal<string | null>(null);
   private readonly dynamicLabel = signal<string | null>(null);
+  private readonly pendingScopes = new Set<string>();
 
   constructor() {
     this.i18n.langChanges$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
@@ -63,8 +64,52 @@ export class PageTitleService {
       this.title.setTitle(brand);
       return;
     }
-    const page = this.i18n.translate(key);
-    const label = page === key ? brand : page;
-    this.title.setTitle(label === brand ? brand : `${label} · ${brand}`);
+    const page = this.translateRouteKey(key);
+    if (!page) {
+      this.title.setTitle(brand);
+      return;
+    }
+    this.title.setTitle(`${page} · ${brand}`);
+  }
+
+  /**
+   * Route titles are stored as `scope.key` (e.g. `auth.title`).
+   * Prefer scoped lookup so lazy scope JSON (flat keys) resolves correctly.
+   */
+  private translateRouteKey(key: string): string | null {
+    const dot = key.indexOf('.');
+    if (dot > 0) {
+      const scope = key.slice(0, dot);
+      const scopedKey = key.slice(dot + 1);
+      const scoped = this.i18n.translate(scopedKey, {}, scope);
+      if (scoped !== scopedKey) {
+        return scoped;
+      }
+      this.ensureScope(scope);
+    }
+    const fallback = this.i18n.translate(key);
+    if (fallback !== key) {
+      return fallback;
+    }
+    return null;
+  }
+
+  private ensureScope(scope: string): void {
+    if (this.pendingScopes.has(scope)) {
+      return;
+    }
+    this.pendingScopes.add(scope);
+    this.i18n
+      .load(scope)
+      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.pendingScopes.delete(scope);
+          this.apply();
+        },
+        error: () => {
+          this.pendingScopes.delete(scope);
+        },
+      });
   }
 }

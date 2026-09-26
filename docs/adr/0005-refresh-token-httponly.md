@@ -18,13 +18,22 @@ long-lived refresh credential should not be script-accessible.
   JavaScript (`AppConfig.auth.refreshViaCookie: true` by default).
 - Refresh flows live behind `AuthRepository.refresh()`; interceptors retry
   once on 401 after a successful refresh.
+- If refresh fails (global unrecovered 401), the interceptor clears
+  `SessionStorage` and calls `AuthSessionPort.invalidateLocalSession()` so the
+  UI drops the session and routes to login without a remote logout call.
 
 ## Consequences
 
+- Access tokens are persisted in `localStorage` via `BrowserSessionStorage`
+  (`APP_CONFIG.auth.accessTokenStorageKey`) so a reload can call
+  `RestoreSessionUseCase` without forcing login again.
+- When `refreshViaCookie` is **false** (current admin API body tokens), the
+  refresh token is also stored under `refreshTokenStorageKey`. When **true**,
+  JS never persists refresh — only the httpOnly cookie is used.
 - Dev/mock stacks simulate the cookie with `MockDataStore.httpOnlyRefreshCookie` and omit `refreshToken` from JS-facing `AuthTokens` when `refreshViaCookie` is true.
 - MSW handlers set `Set-Cookie: senbilan_refresh=…; HttpOnly` on login/refresh for HTTP+MSW stacks.
 - CSRF: cookie refresh endpoints must use SameSite and/or CSRF defenses on the
   backend; the web app origin must be an allowed credentialed origin.
-- XSS can still abuse the access token until expiry — keep CSP and sanitization
-  strict; do not “fix” XSS by moving refresh into `localStorage`.
+- XSS can still abuse tokens in `localStorage` until expiry — keep CSP and
+  sanitization strict; prefer httpOnly refresh in production when the API supports it.
 - Covered by unit tests on mock/HTTP auth adapters (`refreshViaCookie` mode).

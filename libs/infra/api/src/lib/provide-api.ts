@@ -31,9 +31,8 @@ import { HttpUserRepository } from './repositories/http-user.repository';
  * Registers HttpClient, interceptors (order: correlation → baseUrl → auth → timeout →
  * retry → errorNormalization → logging), ApiClient, and HTTP repository bindings.
  *
- * Compose with `provideMockApi()` after this call when `features.mockApi` is true
- * so mock repositories override the HTTP ones. Auth stays mock-bound until an
- * auth OpenAPI surface exists.
+ * Compose with `provideMockApi()` after this call so mock repositories can
+ * override HTTP bindings when `features.mockApi` is true.
  */
 export const provideApi = (): EnvironmentProviders =>
   makeEnvironmentProviders([

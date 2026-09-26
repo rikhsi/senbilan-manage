@@ -1,0 +1,14 @@
+{
+  "/admin": {
+    "target": "https://api.senbilan.uz",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "info"
+  },
+  "/v1": {
+    "target": "https://api.senbilan.uz",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "info"
+  }
+}

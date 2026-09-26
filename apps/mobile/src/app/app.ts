@@ -1,9 +1,10 @@
-﻿import { afterNextRender, ChangeDetectionStrategy, Component } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular';
+import { AppToastContainerComponent } from '@senbilan/design-system/ui';
 
 @Component({
   selector: 'mobile-root',
-  imports: [IonApp, IonRouterOutlet],
+  imports: [IonApp, IonRouterOutlet, AppToastContainerComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

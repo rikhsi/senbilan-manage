@@ -1,4 +1,4 @@
-﻿# Deployment
+# Deployment
 
 ## Build
 
@@ -19,7 +19,9 @@ Default configuration is **production** (optimization, hashing, budgets).
 | web    | `apps/web/src/environments/environment.ts`    | `environment.production.ts` |
 | mobile | `apps/mobile/src/environments/environment.ts` | `environment.production.ts` |
 
-Production must set `features.mockApi: false`, real `apiBaseUrl`, and Sentry flags as appropriate.
+Production must set `features.mockApi: false`, real `apiBaseUrl` (`https://api.senbilan.uz`), and Sentry flags as appropriate.
+
+Local `nx serve` uses empty `apiBaseUrl` + root `proxy.conf.json` so `/admin` and `/v1` are proxied (CORS workaround). The Vite proxy is **not** part of production artifacts.
 
 Root `.env.production` is for CI/tooling inject — **do not** commit secrets. Use `.env.local` locally (gitignored).
 

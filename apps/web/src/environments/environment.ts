@@ -1,10 +1,13 @@
 import { type AppConfig } from '@senbilan/shared/config';
 
-/** Development defaults — used by `nx serve` / `build:development`. */
+/** Development defaults — used by `nx serve` / `build:development`.
+ * `apiBaseUrl` is empty so requests stay same-origin (`/admin/...`, `/v1/...`)
+ * and are forwarded by `proxy.conf.json` (avoids CORS on localhost).
+ */
 export const environment: AppConfig = {
   production: false,
   appName: 'Senbilan Manage',
-  apiBaseUrl: 'https://api.senbilan.uz',
+  apiBaseUrl: '',
   defaultLocale: 'ru',
   availableLocales: ['ru', 'en', 'uz'],
   sentry: {
@@ -21,7 +24,7 @@ export const environment: AppConfig = {
   auth: {
     accessTokenStorageKey: 'senbilan.accessToken',
     refreshTokenStorageKey: 'senbilan.refreshToken',
-    refreshViaCookie: true,
+    refreshViaCookie: false,
     sessionIdleMs: 30 * 60 * 1000,
   },
 };

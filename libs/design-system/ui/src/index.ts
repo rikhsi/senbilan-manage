@@ -50,6 +50,8 @@ export { AppSelectComponent } from './lib/select/app-select.component';
 export { type SelectLabels, type SelectOption } from './lib/select/select.types';
 export { AppSearchInputComponent } from './lib/search/app-search-input.component';
 export { AppFilterBarComponent } from './lib/filter/app-filter-bar.component';
+export { AppListFiltersComponent } from './lib/filter/app-list-filters.component';
+export { type ListFiltersLabels } from './lib/filter/list-filters.types';
 
 // ---- data ---------------------------------------------------------------------
 export { AppDataTableComponent } from './lib/table/app-data-table.component';

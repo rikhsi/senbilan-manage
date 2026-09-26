@@ -82,6 +82,7 @@ export interface AdminListUsersQuery {
   readonly status?: string;
   readonly plan?: string;
   readonly role?: string;
+  readonly includeDeleted?: boolean;
   readonly cursor?: string;
   readonly limit?: number;
 }

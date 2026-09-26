@@ -37,6 +37,8 @@ export const appConfig: ApplicationConfig = {
       defaultLocale: environment.defaultLocale,
       availableLocales: environment.availableLocales,
       prodMode: environment.production,
+      // Eager auth scope from assets (avoids lazy feature import + title/validator races).
+      scopes: ['auth'],
     }),
     provideTheme(),
     provideObservability(),

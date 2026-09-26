@@ -8,7 +8,9 @@ import {
 } from '@senbilan/core/domain';
 import {
   createMockDb,
+  DEMO_ADMIN_EMAIL,
   DEMO_ADMIN_PASSWORD,
+  DEMO_ADMIN_PHONE,
   type MockDb,
   permissionDescriptors,
 } from './fixtures/mock-db';
@@ -96,8 +98,13 @@ export class MockDataStore {
     });
   }
 
-  assertDemoCredentials(email: string, password: string): boolean {
-    return this.findUserByEmail(email) !== undefined && password === DEMO_ADMIN_PASSWORD;
+  assertDemoCredentials(phone: string, password: string): boolean {
+    const normalised = phone.trim();
+    const isDemo =
+      normalised === DEMO_ADMIN_PHONE ||
+      normalised === DEMO_ADMIN_EMAIL ||
+      this.findUserByEmail(normalised) !== undefined;
+    return isDemo && password === DEMO_ADMIN_PASSWORD;
   }
 
   get permissionDescriptors() {

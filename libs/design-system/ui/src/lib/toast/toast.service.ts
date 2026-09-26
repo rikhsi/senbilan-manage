@@ -24,7 +24,7 @@ export interface Toast extends Required<Omit<ToastInput, 'action' | 'message'>> 
 }
 
 /**
- * Toast queue (signals). Rendered by AppToastContainerComponent placed once in the shell.
+ * Toast queue (signals). Rendered by `AppToastContainerComponent` once at the app root.
  * Keep it free of i18n: callers pass translated strings.
  */
 @Injectable({ providedIn: 'root' })

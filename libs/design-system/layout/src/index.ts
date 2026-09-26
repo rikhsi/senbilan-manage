@@ -24,6 +24,7 @@ export {
   type CommandPaletteItem,
   type NavigationItem,
 } from './lib/navigation.types';
+export { AppListPageComponent } from './lib/list-page/app-list-page.component';
 export { AppPageHeaderComponent } from './lib/page-header/app-page-header.component';
 export { AppShellComponent } from './lib/shell/app-shell.component';
 export { AppSidebarComponent } from './lib/sidebar/app-sidebar.component';

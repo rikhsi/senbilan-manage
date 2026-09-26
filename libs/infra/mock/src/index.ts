@@ -1,5 +1,6 @@
 export {
   DEMO_ADMIN_EMAIL,
+  DEMO_ADMIN_PHONE,
   DEMO_ADMIN_PASSWORD,
   createMockDb,
   permissionDescriptors,

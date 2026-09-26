@@ -90,6 +90,10 @@ Class names: BEM-ish kebab-case (`app-button__label`, `app-button--loading`).
 
 **Overlays:** modal / drawer (`AppModalService`), confirm dialog, toast, menu, sheet / action sheet
 
+**List filters:** `AppListFiltersComponent` — compact search + “Filters” drawer (bottom sheet on mobile), optional chips for applied filters. Project fields with `[filters]`, search with `[search]`, chips with `[chips]`. Keep applied state in route query params at the feature layer. Put column visibility toggles in the drawer (set `[columnPicker]="false"` on the table) so the table toolbar stays empty.
+
+**List pages:** `AppListPageComponent` (`@senbilan/design-system/layout`) — breadcrumbs + title + actions + toolbar + body. Prefer this over eyebrow/subtitle heroes on table screens.
+
 **Setup:** `provideDesignSystem()` (+ `provideVendors()` from `@senbilan/vendors/ui`) in each app `app.config.ts`.
 
 Full public list: `libs/design-system/ui/src/index.ts`.

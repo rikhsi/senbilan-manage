@@ -3,8 +3,8 @@ import { SessionStorage } from '@senbilan/core/application';
 
 /**
  * Access (and optional refresh) tokens live in process memory only.
- * Refresh is expected to be an httpOnly cookie in production; the in-memory
- * refresh slot exists for mock/dev backends that return a body token.
+ * Prefer `BrowserSessionStorage` in apps so reload can restore the session.
+ * Refresh is expected to be an httpOnly cookie when `refreshViaCookie` is true.
  */
 @Injectable()
 export class InMemorySessionStorage extends SessionStorage {
