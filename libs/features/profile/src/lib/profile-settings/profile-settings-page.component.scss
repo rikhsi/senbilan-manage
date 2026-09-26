@@ -33,9 +33,3 @@
   color: var(--app-color-text-primary);
   @include ds.text('body-strong');
 }
-
-.profile-settings__hint {
-  margin: 0;
-  color: var(--app-color-text-secondary);
-  @include ds.text('body-sm');
-}

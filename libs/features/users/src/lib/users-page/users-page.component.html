@@ -64,18 +64,15 @@
         {{ 'users.includeDeleted' | transloco }}
       </app-checkbox>
 
-      <div class="users-page__columns" role="group" [attr.aria-label]="'common.columns' | transloco">
-        <p class="users-page__columns-title">{{ 'common.columns' | transloco }}</p>
-        @for (column of hideableColumns(); track column.key) {
-          <app-checkbox
-            [checked]="!isColumnHidden(column.key)"
-            [disabled]="!canHideColumn(column.key)"
-            (checkedChange)="onColumnVisibilityChange(column.key, $event)"
-          >
-            {{ column.header }}
-          </app-checkbox>
-        }
-      </div>
+      <app-column-settings
+        [columns]="columnSettings()"
+        [hidden]="hiddenColumns()"
+        [order]="columnOrder()"
+        [groupLabel]="'common.columns' | transloco"
+        [dragLabel]="'common.moveColumn' | transloco"
+        (hiddenChange)="hiddenColumns.set($event)"
+        (orderChange)="columnOrder.set($event)"
+      />
     </div>
 
     <div chips class="users-page__chips">
@@ -101,7 +98,7 @@
   } @else {
     <app-data-table
       [rows]="rows()"
-      [columns]="columns()"
+      [columns]="orderedColumns()"
       [rowId]="rowId"
       [labels]="tableLabels()"
       [loading]="loading()"
@@ -114,11 +111,40 @@
       (retry)="refresh()"
     >
       <ng-template appCell="name" let-row>
-        <a [routerLink]="['/users', row.id]">{{ row.name || row.email || row.id }}</a>
+        <a class="users-page__cell-link" [routerLink]="['/users', row.id]">{{ displayName(row) }}</a>
+      </ng-template>
+      <ng-template appCell="email" let-row>
+        @if (mailHref(row.email); as href) {
+          <a class="users-page__cell-link" [href]="href">{{ row.email }}</a>
+        } @else {
+          —
+        }
+      </ng-template>
+      <ng-template appCell="phone" let-row>
+        @if (telHref(row.phone); as href) {
+          <a class="users-page__cell-link" [href]="href">{{ row.phone }}</a>
+        } @else {
+          —
+        }
       </ng-template>
       <ng-template appCell="status" let-row>
         <app-status [tone]="statusTone(row.status)">{{ statusLabel(row.status) }}</app-status>
       </ng-template>
+      <app-cursor-pagination
+        footer
+        [page]="page()"
+        [pageCount]="pageCount()"
+        [pageSize]="pageSize()"
+        [hasPrevious]="page() > 1"
+        [hasNext]="hasNext()"
+        [disabled]="loading()"
+        [labels]="pageLabels()"
+        [ariaLabel]="'common.pageSummary' | transloco: { page: page() }"
+        (previous)="previousPage()"
+        (next)="nextPage()"
+        (pageChange)="goToPage($event)"
+        (pageSizeChange)="onPageSize($event)"
+      />
     </app-data-table>
   }
 </app-list-page>

@@ -13,6 +13,7 @@ import {
 } from '@senbilan/design-system/ui';
 import { AuthStore } from '@senbilan/shared/auth';
 import { APP_CONFIG } from '@senbilan/shared/config';
+import { injectTranslocoReady } from '@senbilan/shared/i18n';
 import { disabled, form, FormField, required, submit } from '@senbilan/shared/ng';
 import { ShellStore, type ShellDensity } from '@senbilan/shared/shell';
 import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
@@ -35,6 +36,7 @@ import { type AppLocale, type SettingsProfileModel, type SettingsTab } from './s
 })
 export class SettingsPageComponent {
   private readonly i18n = inject(TranslocoService);
+  private readonly i18nReady = injectTranslocoReady();
   private readonly config = inject(APP_CONFIG, { optional: true });
   private readonly auth = inject(AuthStore);
   private readonly theme = inject(ThemeService);
@@ -45,25 +47,35 @@ export class SettingsPageComponent {
   protected readonly tab = signal<SettingsTab>('theme');
   protected readonly saving = signal(false);
 
-  protected readonly tabs = computed<readonly TabItem<SettingsTab>[]>(() => [
-    { id: 'theme', label: this.i18n.translate('settings.tabs.theme'), icon: 'palette' },
-    { id: 'language', label: this.i18n.translate('settings.tabs.language'), icon: 'globe' },
-    { id: 'density', label: this.i18n.translate('settings.tabs.density'), icon: 'sliders' },
-    { id: 'profile', label: this.i18n.translate('settings.tabs.profile'), icon: 'user' },
-  ]);
+  protected readonly tabs = computed<readonly TabItem<SettingsTab>[]>(() => {
+    this.i18nReady();
+    return [
+      { id: 'theme', label: this.i18n.translate('settings.tabs.theme'), icon: 'palette' },
+      { id: 'language', label: this.i18n.translate('settings.tabs.language'), icon: 'globe' },
+      { id: 'density', label: this.i18n.translate('settings.tabs.density'), icon: 'sliders' },
+      { id: 'profile', label: this.i18n.translate('settings.tabs.profile'), icon: 'user' },
+    ];
+  });
 
-  protected readonly themeOptions = computed<readonly RadioOption<ThemeMode>[]>(() => [
-    { value: 'light', label: this.i18n.translate('settings.theme.light') },
-    { value: 'dark', label: this.i18n.translate('settings.theme.dark') },
-    { value: 'system', label: this.i18n.translate('settings.theme.system') },
-  ]);
+  protected readonly themeOptions = computed<readonly RadioOption<ThemeMode>[]>(() => {
+    this.i18nReady();
+    return [
+      { value: 'light', label: this.i18n.translate('settings.theme.light') },
+      { value: 'dark', label: this.i18n.translate('settings.theme.dark') },
+      { value: 'system', label: this.i18n.translate('settings.theme.system') },
+    ];
+  });
 
-  protected readonly densityOptions = computed<readonly RadioOption<ShellDensity>[]>(() => [
-    { value: 'comfortable', label: this.i18n.translate('settings.density.comfortable') },
-    { value: 'compact', label: this.i18n.translate('settings.density.compact') },
-  ]);
+  protected readonly densityOptions = computed<readonly RadioOption<ShellDensity>[]>(() => {
+    this.i18nReady();
+    return [
+      { value: 'comfortable', label: this.i18n.translate('settings.density.comfortable') },
+      { value: 'compact', label: this.i18n.translate('settings.density.compact') },
+    ];
+  });
 
   protected readonly languageOptions = computed<readonly RadioOption<AppLocale>[]>(() => {
+    this.i18nReady();
     const locales = this.config?.availableLocales ?? (['ru', 'en', 'uz'] as const);
     return locales.map((locale) => ({
       value: locale,

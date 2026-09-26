@@ -1,4 +1,3 @@
-export { AppBottomNavComponent } from './lib/bottom-nav/app-bottom-nav.component';
 export { AppBreadcrumbsComponent } from './lib/breadcrumbs/app-breadcrumbs.component';
 export {
   AppCommandPaletteComponent,
@@ -6,6 +5,9 @@ export {
 } from './lib/command-palette/app-command-palette.component';
 export { AppContentContainerComponent } from './lib/content/app-content-container.component';
 export { type ContentWidth } from './lib/content/content.types';
+export { AppDetailFieldsComponent } from './lib/detail-page/app-detail-fields.component';
+export { AppDetailPageComponent } from './lib/detail-page/app-detail-page.component';
+export { type DetailField } from './lib/detail-page/detail-page.types';
 export { AppHeaderComponent } from './lib/header/app-header.component';
 export {
   LAYOUT_CAN_ACCESS,

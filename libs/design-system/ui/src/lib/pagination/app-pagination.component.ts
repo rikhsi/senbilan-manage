@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { AppIconComponent } from '@senbilan/design-system/icons';
-import { AppInputDirective } from '../form/app-input.directive';
+import { AppPaginationMenuComponent } from './app-pagination-menu.component';
 import { type PaginationLabels } from './pagination.types';
 
 export type { PaginationLabels } from './pagination.types';
@@ -11,23 +11,18 @@ export type { PaginationLabels } from './pagination.types';
  */
 @Component({
   selector: 'app-pagination',
-  imports: [AppIconComponent, AppInputDirective],
+  imports: [AppIconComponent, AppPaginationMenuComponent],
   template: `
     <div class="app-pagination__summary">{{ labels().summary }}</div>
 
     <div class="app-pagination__size">
-      <label class="app-pagination__size-label" [attr.for]="sizeId">{{ labels().pageSize }}</label>
-      <select
-        appInput
-        [id]="sizeId"
-        class="app-pagination__size-select"
+      <span class="app-pagination__size-label">{{ labels().pageSize }}</span>
+      <app-pagination-menu
+        [label]="labels().pageSize"
         [value]="pageSize()"
-        (change)="onSizeChange($event)"
-      >
-        @for (option of pageSizeOptions(); track option) {
-          <option [value]="option" [selected]="option === pageSize()">{{ option }}</option>
-        }
-      </select>
+        [options]="pageSizeOptions()"
+        (valueChange)="onSizeChange($event)"
+      />
     </div>
 
     <nav class="app-pagination__pages" [attr.aria-label]="ariaLabel() || null">
@@ -91,16 +86,12 @@ export type { PaginationLabels } from './pagination.types';
   host: { class: 'app-pagination' },
 })
 export class AppPaginationComponent {
-  private static counter = 0;
-
   readonly page = model(1);
   readonly pageSize = model(20);
   readonly total = input.required<number>();
   readonly pageSizeOptions = input<readonly number[]>([10, 20, 50, 100]);
   readonly labels = input.required<PaginationLabels>();
   readonly ariaLabel = input('');
-
-  protected readonly sizeId = `app-pagination-size-${AppPaginationComponent.counter++}`;
 
   readonly pages = computed(() =>
     Math.max(1, Math.ceil(this.total() / Math.max(1, this.pageSize()))),
@@ -139,8 +130,10 @@ export class AppPaginationComponent {
     }
   }
 
-  protected onSizeChange(event: Event): void {
-    const size = Number((event.target as HTMLSelectElement).value);
+  protected onSizeChange(size: number): void {
+    if (size === this.pageSize()) {
+      return;
+    }
     this.pageSize.set(size);
     this.page.set(1);
   }

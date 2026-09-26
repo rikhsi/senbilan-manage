@@ -1,7 +1,23 @@
-<div class="user-detail">
-  <a app-button variant="ghost" icon="arrow-left" routerLink="/users">
-    {{ 'users.back' | transloco }}
-  </a>
+<app-detail-page [breadcrumbs]="breadcrumbs()">
+  <ng-container actions>
+    @if (detail()) {
+      @if (showBlock()) {
+        <button app-button type="button" variant="secondary" size="md" [loading]="busy()" (click)="block()">
+          {{ 'users.block' | transloco }}
+        </button>
+      }
+      @if (showUnblock()) {
+        <button app-button type="button" variant="secondary" size="md" [loading]="busy()" (click)="unblock()">
+          {{ 'users.unblock' | transloco }}
+        </button>
+      }
+      @if (showDelete()) {
+        <button app-button type="button" variant="danger" size="md" [loading]="busy()" (click)="remove()">
+          {{ 'users.delete' | transloco }}
+        </button>
+      }
+    }
+  </ng-container>
 
   @if (error() && !loading()) {
     <app-empty-state
@@ -14,57 +30,11 @@
         {{ 'common.retry' | transloco }}
       </button>
     </app-empty-state>
-  } @else if (detail(); as data) {
-    <header class="user-detail__header">
-      <div>
-        <p class="user-detail__eyebrow">{{ 'users.detailEyebrow' | transloco }}</p>
-        <h1 class="user-detail__title">
-          {{ data.user.name || data.user.email || data.user.id }}
-        </h1>
-        <p class="user-detail__subtitle">{{ data.user.email || data.user.phone || '—' }}</p>
-      </div>
-      <app-status>{{ data.user.status || '—' }}</app-status>
-    </header>
-
-    <section class="user-detail__grid">
-      <div class="user-detail__field">
-        <span>{{ 'users.phone' | transloco }}</span>
-        <strong>{{ data.user.phone || '—' }}</strong>
-      </div>
-      <div class="user-detail__field">
-        <span>{{ 'users.role' | transloco }}</span>
-        <strong>{{ data.user.role || '—' }}</strong>
-      </div>
-      <div class="user-detail__field">
-        <span>{{ 'users.plan' | transloco }}</span>
-        <strong>{{ data.user.plan || '—' }}</strong>
-      </div>
-      <div class="user-detail__field">
-        <span>{{ 'users.sessions' | transloco }}</span>
-        <strong>{{ data.activeSessions }}</strong>
-      </div>
-      <div class="user-detail__field">
-        <span>{{ 'users.devices' | transloco }}</span>
-        <strong>{{ data.pushDevices }}</strong>
-      </div>
-      <div class="user-detail__field">
-        <span>{{ 'users.couple' | transloco }}</span>
-        <strong>{{ data.coupleId || '—' }}</strong>
-      </div>
-    </section>
-
-    <div class="user-detail__actions">
-      <button app-button type="button" variant="secondary" [loading]="busy()" (click)="block()">
-        {{ 'users.block' | transloco }}
-      </button>
-      <button app-button type="button" variant="secondary" [loading]="busy()" (click)="unblock()">
-        {{ 'users.unblock' | transloco }}
-      </button>
-      <button app-button type="button" variant="danger" [loading]="busy()" (click)="remove()">
-        {{ 'users.delete' | transloco }}
-      </button>
-    </div>
+  } @else if (isDeleted()) {
+    <app-empty-state icon="user-x" [title]="'users.deleted' | transloco" />
   } @else if (loading()) {
-    <p class="user-detail__loading">{{ 'common.loading' | transloco }}</p>
+    <app-detail-fields [fields]="[]" [loading]="true" />
+  } @else if (detail()) {
+    <app-detail-fields [fields]="fields()" />
   }
-</div>
+</app-detail-page>

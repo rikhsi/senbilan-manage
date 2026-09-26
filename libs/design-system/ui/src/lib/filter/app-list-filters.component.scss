@@ -18,6 +18,18 @@
 .app-list-filters__search {
   flex: 1 1 12rem;
   min-width: 0;
+
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.app-list-filters__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--app-space-2);
+  align-items: stretch;
+  margin-inline-start: auto;
 }
 
 .app-list-filters__trigger {
@@ -33,7 +45,6 @@
   flex-shrink: 0;
   gap: var(--app-space-2);
   align-items: stretch;
-  margin-inline-start: auto;
 
   &:not(:has(*)) {
     display: none;
@@ -131,11 +142,24 @@
 .app-list-filters__footer {
   display: flex;
   flex-shrink: 0;
-  gap: var(--app-space-2);
-  justify-content: flex-end;
-  padding: var(--app-space-3) var(--app-space-4);
+  gap: var(--app-space-3);
+  padding: var(--app-space-4);
   border-top: 1px solid var(--app-color-border);
   background: var(--app-color-surface);
+
+  > .app-button {
+    flex: 1 1 0;
+    min-height: var(--app-size-control-md);
+  }
+
+  @include ds.down('md') {
+    flex-direction: column-reverse;
+    @include ds.safe-area-bottom(var(--app-space-4));
+
+    > .app-button {
+      width: 100%;
+    }
+  }
 }
 
 @include ds.reduced-motion {

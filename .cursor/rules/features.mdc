@@ -12,6 +12,8 @@ alwaysApply: false
 - No hardcoded UI strings — Transloco scopes (`users.*`, …).
 - Lists/details: TanStack Query. Ephemeral UI: Signals. Cross-app client state: shared SignalStores.
 - Forms: DS field controls + i18n validation messages.
-- Tables: `AppDataTableComponent` + column defs.
+- Tables: `AppListPageComponent` + `AppDataTableComponent` + column defs. Match the users list: refresh in the toolbar (`[end]`), `[columnPicker]="false"`, status via `AppStatus`, primary column is the underlined link. Column visibility and order live in the filter drawer via `AppColumnSettingsComponent` (drag the grip to reorder). The table fills the card; extra columns scroll inside it. Put `AppCursorPaginationComponent` in the table `footer` slot (page picker, previous / next, and page size). Page size and page use the pagination menu, not a native select. The picker lists pages whose cursors are already known. Lists are cursor-based: reset to the first page when filters change.
+- Details: `AppDetailPageComponent` + `AppDetailFieldsComponent`. Breadcrumbs only — no eyebrow, subtitle, or description. Primary cell is a primary underlined link; the page frame is full width and the crumb hugs its text. While the record is loading, pass `[loading]="true"` so the field sheet shows a skeleton instead of a blank body.
+- Metric tiles: `AppStatCardComponent` in a wide grid, same surface and icon chip as the dashboard. When a screen’s structure is the one to keep, new modules copy it.
 - Export feature routes/providers from `src/index.ts` only.
 - No types/models/constants inside page/drawer components — sibling `*.model.ts` (or maps/metrics files).

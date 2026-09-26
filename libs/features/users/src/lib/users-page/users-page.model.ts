@@ -50,13 +50,17 @@ export const usersListQueryToParams = (state: UsersListQueryState): Params => ({
   deleted: state.includeDeleted ? '1' : null,
 });
 
-export const usersListQueryToApi = (state: UsersListQueryState): AdminListUsersQuery => ({
+export const usersListQueryToApi = (
+  state: UsersListQueryState,
+  paging: { readonly limit: number; readonly cursor?: string | null } = { limit: 20 },
+): AdminListUsersQuery => ({
   ...(state.q ? { q: state.q } : {}),
   ...(state.status ? { status: state.status } : {}),
   ...(state.role ? { role: state.role } : {}),
   ...(state.plan ? { plan: state.plan } : {}),
   ...(state.includeDeleted ? { includeDeleted: true } : {}),
-  limit: 50,
+  ...(paging.cursor ? { cursor: paging.cursor } : {}),
+  limit: paging.limit,
 });
 
 /** Drawer badge / chips — excludes free-text search. */
@@ -110,6 +114,13 @@ export const removeUsersFilterChip = (
   }
 };
 
+export const isUserBlocked = (status: string): boolean =>
+  status.trim().toUpperCase().includes('BLOCKED');
+
+/** Swagger sets `deleted_at` only after the account is deleted. */
+export const isUserDeleted = (deletedAt: string | null | undefined): boolean =>
+  typeof deletedAt === 'string' && deletedAt.trim().length > 0;
+
 /** Map wire / domain status codes to i18n keys. */
 export const userStatusLabelKey = (status: string): string => {
   const normalized = status.trim().toUpperCase();
@@ -137,6 +148,147 @@ export const userRoleLabelKey = (role: string): string => {
     return 'users.roleAll';
   }
   return 'users.roleUnknown';
+};
+
+export const USERS_OPTIONAL_COLUMN_KEYS = [
+  'id',
+  'telegramId',
+  'language',
+  'planExpiresAt',
+  'coupleId',
+  'createdAt',
+  'deletedAt',
+] as const;
+
+const USERS_HIDEABLE_COLUMN_KEYS = new Set<string>([
+  'email',
+  'phone',
+  'status',
+  'role',
+  'plan',
+  ...USERS_OPTIONAL_COLUMN_KEYS,
+]);
+
+const USERS_COLUMN_KEYS = new Set<string>(['name', ...USERS_HIDEABLE_COLUMN_KEYS]);
+
+export const DEFAULT_HIDDEN_USER_COLUMNS: readonly string[] = [...USERS_OPTIONAL_COLUMN_KEYS];
+
+const USERS_LIST_SESSION_KEY = 'senbilan.users.list';
+
+export interface UsersListSessionState {
+  readonly query: UsersListQueryState;
+  readonly hiddenColumns: readonly string[];
+  readonly columnOrder: readonly string[];
+}
+
+export interface UsersListSessionStorage {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+}
+
+export const isUsersListQueryEmpty = (state: UsersListQueryState): boolean =>
+  state.q === '' &&
+  state.status === '' &&
+  state.role === '' &&
+  state.plan === '' &&
+  !state.includeDeleted;
+
+export const usersListUrlHasQuery = (params: ParamMap): boolean =>
+  params.has('q') ||
+  params.has('status') ||
+  params.has('role') ||
+  params.has('plan') ||
+  params.has('deleted');
+
+export const sanitizeUsersListQuery = (
+  value: Partial<UsersListQueryState> | null | undefined,
+): UsersListQueryState => ({
+  q: typeof value?.q === 'string' ? value.q.trim() : '',
+  status: typeof value?.status === 'string' && STATUSES.has(value.status) ? value.status : '',
+  role: typeof value?.role === 'string' && ROLES.has(value.role) ? value.role : '',
+  plan: typeof value?.plan === 'string' && PLANS.has(value.plan) ? value.plan : '',
+  includeDeleted: value?.includeDeleted === true,
+});
+
+export const sanitizeHiddenUserColumns = (value: unknown): readonly string[] => {
+  if (!Array.isArray(value)) {
+    return [...DEFAULT_HIDDEN_USER_COLUMNS];
+  }
+  return value.filter(
+    (item): item is string => typeof item === 'string' && USERS_HIDEABLE_COLUMN_KEYS.has(item),
+  );
+};
+
+export const sanitizeUserColumnOrder = (value: unknown): readonly string[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.filter(
+    (item): item is string => typeof item === 'string' && USERS_COLUMN_KEYS.has(item),
+  );
+};
+
+export const readUsersListSession = (
+  storage: UsersListSessionStorage,
+): UsersListSessionState | null => {
+  try {
+    const raw = storage.getItem(USERS_LIST_SESSION_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') {
+      return null;
+    }
+    const record = parsed as {
+      query?: Partial<UsersListQueryState>;
+      hiddenColumns?: unknown;
+      columnOrder?: unknown;
+    };
+    if (!record.query || typeof record.query !== 'object') {
+      return null;
+    }
+    return {
+      query: sanitizeUsersListQuery(record.query),
+      hiddenColumns: sanitizeHiddenUserColumns(record.hiddenColumns),
+      columnOrder: sanitizeUserColumnOrder(record.columnOrder),
+    };
+  } catch {
+    return null;
+  }
+};
+
+export const writeUsersListSession = (
+  storage: UsersListSessionStorage,
+  state: UsersListSessionState,
+): void => {
+  try {
+    storage.setItem(USERS_LIST_SESSION_KEY, JSON.stringify(state));
+  } catch {
+    // Quota or private mode — the in-memory filters still apply for this visit.
+  }
+};
+
+export const usersListBrowserSession = (): UsersListSessionStorage | null => {
+  try {
+    return typeof sessionStorage === 'undefined' ? null : sessionStorage;
+  } catch {
+    return null;
+  }
+};
+
+export const userLanguageLabelKey = (language: string): string | null => {
+  const normalized = language.trim().toUpperCase();
+  if (normalized.includes('UZ')) {
+    return 'users.languageUz';
+  }
+  if (normalized.includes('RU')) {
+    return 'users.languageRu';
+  }
+  if (!language || normalized.includes('UNSPECIFIED')) {
+    return null;
+  }
+  return 'users.languageUnknown';
 };
 
 export const userPlanLabelKey = (plan: string): string => {

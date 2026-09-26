@@ -1,0 +1,16 @@
+{
+  "title": "Рассылки",
+  "detailTitle": "Рассылка",
+  "emptyTitle": "Рассылок нет",
+  "errorTitle": "Не удалось загрузить рассылки",
+  "errorHint": "Попробуйте ещё раз.",
+  "name": "Текст",
+  "status": "Статус",
+  "statusDraft": "Черновик",
+  "statusQueued": "В очереди",
+  "statusSending": "Отправляется",
+  "statusSent": "Отправлена",
+  "createdAt": "Создана",
+  "sentAt": "Отправлена",
+  "id": "ID"
+}

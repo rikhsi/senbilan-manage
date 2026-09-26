@@ -9,9 +9,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
           <p class="app-page-header__eyebrow">{{ eyebrow() }}</p>
         }
         <h1 class="app-page-header__title">{{ title() }}</h1>
-        @if (description()) {
-          <p class="app-page-header__description">{{ description() }}</p>
-        }
       </div>
       <div class="app-page-header__actions">
         <ng-content select="[actions]" />
@@ -24,6 +21,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class AppPageHeaderComponent {
   readonly title = input.required<string>();
-  readonly description = input('');
   readonly eyebrow = input('');
 }

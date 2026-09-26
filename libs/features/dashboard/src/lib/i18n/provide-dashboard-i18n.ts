@@ -1,11 +1,8 @@
-import { provideTranslocoScope } from '@jsverse/transloco';
+import { provideInlineTranslocoScope } from '@senbilan/shared/i18n';
 
 export const provideDashboardI18n = () =>
-  provideTranslocoScope({
-    scope: 'dashboard',
-    loader: {
-      en: () => import('./en.json'),
-      ru: () => import('./ru.json'),
-      uz: () => import('./uz.json'),
-    },
+  provideInlineTranslocoScope('dashboard', {
+    en: () => import('./en.json'),
+    ru: () => import('./ru.json'),
+    uz: () => import('./uz.json'),
   });

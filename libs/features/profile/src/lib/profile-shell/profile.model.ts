@@ -12,12 +12,6 @@ export interface ProfileNavItem {
 
 export const PROFILE_NAV_ITEMS: readonly ProfileNavItem[] = [
   {
-    id: 'info',
-    labelKey: 'profile.nav.info',
-    route: 'info',
-    icon: 'user',
-  },
-  {
     id: 'settings',
     labelKey: 'profile.nav.settings',
     route: 'settings',

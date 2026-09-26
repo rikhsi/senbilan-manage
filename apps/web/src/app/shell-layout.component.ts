@@ -6,8 +6,10 @@ import {
   inject,
   type OnInit,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
+import { filter } from 'rxjs';
 import { type PermissionKey } from '@senbilan/core/domain';
 import { AppShellComponent, type NavigationItem } from '@senbilan/design-system/layout';
 import { AppConfirmDialogService, AppModalService } from '@senbilan/design-system/ui';
@@ -58,8 +60,22 @@ export class ShellLayoutComponent implements OnInit {
   protected readonly navItems = computed(() => this.filterNav(WEB_SHELL_NAV));
 
   ngOnInit(): void {
-    const dispose = this.palette.registerMany(this.buildCommands());
-    this.destroyRef.onDestroy(dispose);
+    let dispose: (() => void) | null = null;
+    const sync = (): void => {
+      if (!this.commandsReady()) {
+        return;
+      }
+      dispose?.();
+      dispose = this.palette.registerMany(this.buildCommands());
+    };
+    sync();
+    this.i18n.events$
+      .pipe(
+        filter((event) => event.type === 'translationLoadSuccess'),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => sync());
+    this.destroyRef.onDestroy(() => dispose?.());
   }
 
   protected go(path: string): void {
@@ -84,6 +100,11 @@ export class ShellLayoutComponent implements OnInit {
     }
     await this.auth.logout();
     void this.router.navigateByUrl('/auth/login');
+  }
+
+  private commandsReady(): boolean {
+    const map = this.i18n.getTranslation(this.i18n.getActiveLang());
+    return typeof map['nav.dashboard'] === 'string' && typeof map['common.profile'] === 'string';
   }
 
   private buildCommands(): readonly Command[] {

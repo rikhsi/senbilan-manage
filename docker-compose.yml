@@ -1,0 +1,14 @@
+# Server runtime. GitLab CI pulls the image; locally: docker compose up --build
+services:
+  web:
+    image: ${CI_REGISTRY_IMAGE:-senbilan-manage}:${IMAGE_TAG:-local}
+    build:
+      context: .
+    ports:
+      - '${WEB_PORT:-8080}:80'
+    environment:
+      API_BASE_URL: ${API_BASE_URL:-https://api.senbilan.uz}
+      SENTRY_ENABLED: ${SENTRY_ENABLED:-false}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-production}
+    restart: unless-stopped

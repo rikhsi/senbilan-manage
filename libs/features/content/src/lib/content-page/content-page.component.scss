@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.content-page__filter-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}
+
+.content-page__chips {
+  display: contents;
+}
+
+.content-page__cell-link {
+  color: var(--app-color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--app-color-primary);
+  text-underline-offset: 0.15em;
+}

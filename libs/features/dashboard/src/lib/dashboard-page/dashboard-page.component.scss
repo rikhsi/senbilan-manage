@@ -3,53 +3,12 @@
 :host {
   display: block;
   min-width: 0;
-}
-
-.dashboard-page {
-  display: flex;
-  flex-direction: column;
-  gap: var(--app-space-6);
-  padding: var(--app-space-6) var(--app-space-4);
-  max-width: 80rem;
-  margin-inline: auto;
-  box-sizing: border-box;
-
-  @include ds.up('md') {
-    padding: var(--app-space-8) var(--app-space-6);
-  }
-}
-
-.dashboard-page__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--app-space-4);
-}
-
-.dashboard-page__eyebrow {
-  margin: 0 0 var(--app-space-2);
-  color: var(--app-color-primary);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  @include ds.text('caption-strong');
-}
-
-.dashboard-page__title {
-  margin: 0;
-  color: var(--app-color-text-primary);
-  @include ds.text('display');
-}
-
-.dashboard-page__subtitle {
-  margin: var(--app-space-2) 0 0;
-  color: var(--app-color-text-secondary);
-  @include ds.text('body');
+  min-height: 100%;
 }
 
 .dashboard-page__grid {
   display: grid;
   gap: var(--app-space-4);
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   animation: app-fade-in var(--app-duration-normal) var(--app-ease-out);
 }

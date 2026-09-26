@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.broadcasts-page__cell-link {
+  color: var(--app-color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--app-color-primary);
+  text-underline-offset: 0.15em;
+}

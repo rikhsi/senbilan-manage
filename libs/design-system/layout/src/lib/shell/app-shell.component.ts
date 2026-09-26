@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, model, output } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ViewportService } from '@senbilan/design-system/ui';
-import { AppBottomNavComponent } from '../bottom-nav/app-bottom-nav.component';
 import { AppCommandPaletteComponent } from '../command-palette/app-command-palette.component';
 import { AppHeaderComponent } from '../header/app-header.component';
 import { type BreadcrumbItem, type NavigationItem } from '../navigation.types';
@@ -9,13 +8,7 @@ import { AppSidebarComponent } from '../sidebar/app-sidebar.component';
 
 @Component({
   selector: 'app-shell',
-  imports: [
-    RouterOutlet,
-    AppSidebarComponent,
-    AppHeaderComponent,
-    AppBottomNavComponent,
-    AppCommandPaletteComponent,
-  ],
+  imports: [RouterOutlet, AppSidebarComponent, AppHeaderComponent, AppCommandPaletteComponent],
   template: `
     <div
       class="app-shell"
@@ -42,10 +35,6 @@ import { AppSidebarComponent } from '../sidebar/app-sidebar.component';
           <ng-content />
           <router-outlet />
         </main>
-
-        @if (viewport.isCompact()) {
-          <app-bottom-nav [items]="navItems()" />
-        }
       </div>
 
       @if (viewport.isCompact()) {

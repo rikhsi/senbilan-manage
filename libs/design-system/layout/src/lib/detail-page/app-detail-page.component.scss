@@ -1,0 +1,78 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+  min-height: 100%;
+  background: var(--app-color-surface);
+}
+
+.app-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: var(--app-space-4);
+
+  @include ds.up('md') {
+    padding: var(--app-space-5) var(--app-space-6);
+  }
+}
+
+.app-detail-page__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  &:not(:has(.app-detail-page__lead > *, .app-detail-page__actions > *)) {
+    display: none;
+  }
+}
+
+.app-detail-page__lead {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.app-detail-page__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  align-items: center;
+  min-width: 0;
+}
+
+.app-detail-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  align-items: center;
+
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.app-detail-page__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  width: 100%;
+  min-width: 0;
+}

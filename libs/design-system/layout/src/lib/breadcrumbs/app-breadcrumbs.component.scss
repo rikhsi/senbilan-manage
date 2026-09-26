@@ -1,7 +1,9 @@
 @use 'ds' as ds;
 
 :host {
-  display: block;
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
 }
 

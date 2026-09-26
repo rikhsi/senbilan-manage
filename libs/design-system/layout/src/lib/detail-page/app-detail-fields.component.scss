@@ -1,0 +1,50 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.app-detail-fields {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  background: var(--app-color-surface-elevated);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.app-detail-fields__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--app-space-1);
+  align-items: start;
+  min-width: 0;
+  padding: var(--app-space-4) var(--app-space-5);
+  border-bottom: 1px solid var(--app-color-divider);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  @include ds.up('sm') {
+    grid-template-columns: minmax(11rem, 32%) minmax(0, 1fr);
+    gap: var(--app-space-6);
+    align-items: baseline;
+  }
+}
+
+.app-detail-fields__label {
+  margin: 0;
+  color: var(--app-color-text-tertiary);
+  @include ds.text('caption-strong');
+}
+
+.app-detail-fields__value {
+  margin: 0;
+  color: var(--app-color-text-primary);
+  overflow-wrap: anywhere;
+  @include ds.text('body');
+}

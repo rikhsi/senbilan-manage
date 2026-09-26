@@ -1,11 +1,8 @@
-import { provideTranslocoScope } from '@jsverse/transloco';
+import { provideInlineTranslocoScope } from '@senbilan/shared/i18n';
 
 export const provideRolesI18n = () =>
-  provideTranslocoScope({
-    scope: 'roles',
-    loader: {
-      en: () => import('./en.json'),
-      ru: () => import('./ru.json'),
-      uz: () => import('./uz.json'),
-    },
+  provideInlineTranslocoScope('roles', {
+    en: () => import('./en.json'),
+    ru: () => import('./ru.json'),
+    uz: () => import('./uz.json'),
   });

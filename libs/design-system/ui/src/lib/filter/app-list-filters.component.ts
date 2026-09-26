@@ -38,6 +38,8 @@ import { type ListFiltersLabels } from './list-filters.types';
 })
 export class AppListFiltersComponent {
   readonly open = model(false);
+  /** Hide the Filters button when the list has no drawer fields. */
+  readonly showFilters = input(true);
   /** Count shown on the Filters button (drawer filters only — usually exclude search `q`). */
   readonly activeCount = input(0);
   readonly labels = input.required<ListFiltersLabels>();

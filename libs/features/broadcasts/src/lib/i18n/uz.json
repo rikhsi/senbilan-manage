@@ -1,0 +1,16 @@
+{
+  "title": "Xabarlar",
+  "detailTitle": "Xabar",
+  "emptyTitle": "Xabarlar yo‘q",
+  "errorTitle": "Xabarlarni yuklab bo‘lmadi",
+  "errorHint": "Qayta urinib ko‘ring.",
+  "name": "Matn",
+  "status": "Holat",
+  "statusDraft": "Qoralama",
+  "statusQueued": "Navbatda",
+  "statusSending": "Yuborilmoqda",
+  "statusSent": "Yuborilgan",
+  "createdAt": "Yaratilgan",
+  "sentAt": "Yuborilgan",
+  "id": "ID"
+}

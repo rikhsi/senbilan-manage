@@ -16,7 +16,7 @@
   max-height: 100svh;
   padding: var(--app-space-4) var(--app-space-3);
   border-right: 1px solid var(--app-color-border);
-  background: var(--app-color-surface);
+  background: var(--app-color-primary-muted);
   overflow: hidden;
   position: sticky;
   top: 0;
@@ -127,7 +127,7 @@
   }
 
   &--active {
-    background: var(--app-color-primary-muted);
+    background: var(--app-color-primary-container);
     color: var(--app-color-primary);
   }
 }

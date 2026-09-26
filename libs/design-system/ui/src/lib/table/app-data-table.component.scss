@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  max-width: 100%;
   background: var(--app-color-surface-elevated);
   border-radius: var(--app-radius-lg);
   box-shadow: var(--app-shadow-sm);
@@ -77,6 +78,8 @@
 // ---- table ------------------------------------------------------------------
 .app-data-table__scroller {
   position: relative;
+  min-width: 0;
+  max-width: 100%;
   overflow: auto;
   @include ds.thin-scrollbar;
 
@@ -87,6 +90,7 @@
 
 .app-data-table__table {
   width: 100%;
+  min-width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   @include ds.text('body-sm');
@@ -143,14 +147,13 @@
 }
 
 .app-data-table__th-label {
-  @include ds.truncate;
+  white-space: nowrap;
 }
 
 .app-data-table__sort {
   display: inline-flex;
   gap: var(--app-space-1);
   align-items: center;
-  max-width: 100%;
   height: var(--app-size-control-sm);
   padding: 0 var(--app-space-1);
   margin: 0 calc(-1 * var(--app-space-1));
@@ -238,6 +241,7 @@
   height: var(--app-layout-table-row-height);
   padding: var(--app-space-1) var(--app-space-3);
   color: var(--app-color-text-primary);
+  white-space: nowrap;
   vertical-align: middle;
   background: var(--app-color-surface-elevated);
   border-bottom: 1px solid var(--app-color-divider);
@@ -260,6 +264,7 @@
     text-align: end;
     box-shadow: -8px 0 8px -8px var(--app-color-shadow-ink-soft);
   }
+
   .app-data-table__table--fixed & {
     overflow: hidden;
   }
@@ -267,7 +272,10 @@
 
 .app-data-table__text {
   display: block;
-  @include ds.truncate;
+  max-width: calc(var(--app-space-16) * 6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-data-table__body tr:last-child .app-data-table__td {

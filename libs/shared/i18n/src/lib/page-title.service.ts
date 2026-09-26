@@ -3,7 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';
 import { APP_CONFIG } from '@senbilan/shared/config';
-import { filter, take } from 'rxjs';
+import { filter } from 'rxjs';
+import { readLoadedTranslation } from './transloco-ready';
 
 /**
  * Browser tab title: `"Page · AppName"`.
@@ -18,7 +19,6 @@ export class PageTitleService {
 
   private readonly routeKey = signal<string | null>(null);
   private readonly dynamicLabel = signal<string | null>(null);
-  private readonly pendingScopes = new Set<string>();
 
   constructor() {
     this.i18n.langChanges$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
@@ -73,43 +73,12 @@ export class PageTitleService {
   }
 
   /**
-   * Route titles are stored as `scope.key` (e.g. `auth.title`).
-   * Prefer scoped lookup so lazy scope JSON (flat keys) resolves correctly.
+   * Route titles are stored as `scope.key` (e.g. `media.detailTitle`).
+   * Read the loaded map only. `translate()` logs a missing key, and
+   * `load(scope)` cannot see the feature's inline loader.
    */
   private translateRouteKey(key: string): string | null {
-    const dot = key.indexOf('.');
-    if (dot > 0) {
-      const scope = key.slice(0, dot);
-      const scopedKey = key.slice(dot + 1);
-      const scoped = this.i18n.translate(scopedKey, {}, scope);
-      if (scoped !== scopedKey) {
-        return scoped;
-      }
-      this.ensureScope(scope);
-    }
-    const fallback = this.i18n.translate(key);
-    if (fallback !== key) {
-      return fallback;
-    }
-    return null;
-  }
-
-  private ensureScope(scope: string): void {
-    if (this.pendingScopes.has(scope)) {
-      return;
-    }
-    this.pendingScopes.add(scope);
-    this.i18n
-      .load(scope)
-      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.pendingScopes.delete(scope);
-          this.apply();
-        },
-        error: () => {
-          this.pendingScopes.delete(scope);
-        },
-      });
+    const page = readLoadedTranslation(this.i18n, key);
+    return page.length > 0 ? page : null;
   }
 }

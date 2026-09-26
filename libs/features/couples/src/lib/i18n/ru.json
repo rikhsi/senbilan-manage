@@ -1,0 +1,33 @@
+{
+  "title": "Пары",
+  "detailTitle": "Пара",
+  "emptyTitle": "Пар нет",
+  "errorTitle": "Не удалось загрузить пары",
+  "errorHint": "Попробуйте ещё раз.",
+  "creator": "Создатель",
+  "partner": "Партнёр",
+  "nameMissing": "Пользователь ещё не указал имя",
+  "phone": "Телефон",
+  "status": "Статус",
+  "statusWaiting": "Ожидает",
+  "statusPaired": "В паре",
+  "createdAt": "Создана",
+  "id": "ID",
+  "unpair": "Разъединить",
+  "unpairConfirmTitle": "Разъединить пару?",
+  "unpairConfirmMessage": "Партнёр выйдет из пары. Создатель и контент останутся.",
+  "unpaired": "Пара разъединена",
+  "counts": {
+    "events": "События",
+    "lists": "Списки",
+    "wishes": "Желания",
+    "goals": "Цели",
+    "album_photos": "Фото альбома",
+    "documents": "Документы",
+    "letters": "Письма",
+    "messages": "Сообщения",
+    "cards": "Открытки",
+    "contacts": "Контакты",
+    "shelf_items": "Полка"
+  }
+}

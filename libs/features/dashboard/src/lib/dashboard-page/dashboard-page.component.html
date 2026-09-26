@@ -1,22 +1,16 @@
-<div class="dashboard-page">
-  <header class="dashboard-page__header">
-    <div>
-      <p class="dashboard-page__eyebrow">{{ 'dashboard.eyebrow' | transloco }}</p>
-      <h1 class="dashboard-page__title">{{ 'dashboard.title' | transloco }}</h1>
-      <p class="dashboard-page__subtitle">{{ 'dashboard.subtitle' | transloco }}</p>
-    </div>
-    <button
-      app-button
-      type="button"
-      variant="secondary"
-      size="sm"
-      icon="refresh"
-      [loading]="loading()"
-      (click)="reload()"
-    >
-      {{ 'common.retry' | transloco }}
-    </button>
-  </header>
+<app-list-page [breadcrumbs]="breadcrumbs()">
+  <button
+    actions
+    app-button
+    type="button"
+    variant="secondary"
+    size="md"
+    icon="refresh"
+    [loading]="loading()"
+    (click)="reload()"
+  >
+    {{ 'common.retry' | transloco }}
+  </button>
 
   @if (error() && !loading()) {
     <app-empty-state
@@ -48,4 +42,4 @@
       }
     </section>
   }
-</div>
+</app-list-page>

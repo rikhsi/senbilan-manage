@@ -92,7 +92,11 @@ Class names: BEM-ish kebab-case (`app-button__label`, `app-button--loading`).
 
 **List filters:** `AppListFiltersComponent` — compact search + “Filters” drawer (bottom sheet on mobile), optional chips for applied filters. Project fields with `[filters]`, search with `[search]`, chips with `[chips]`. Keep applied state in route query params at the feature layer. Put column visibility toggles in the drawer (set `[columnPicker]="false"` on the table) so the table toolbar stays empty.
 
-**List pages:** `AppListPageComponent` (`@senbilan/design-system/layout`) — breadcrumbs + title + actions + toolbar + body. Prefer this over eyebrow/subtitle heroes on table screens.
+**List pages:** `AppListPageComponent` — breadcrumbs and actions, then the table. No eyebrow or description.
+
+**Detail pages:** `AppDetailPageComponent` + `AppDetailFieldsComponent` — the same top row (dashboard / list / record), actions on the right, fields in the body. Reuse this for every detail route. Breadcrumbs are only as wide as their labels; the frame is full width.
+
+**Metric cards:** `AppStatCardComponent` — label, large value, tinted icon chip on the same surface as the dashboard. Lay them out in a wide grid so the label fits. New modules reuse this card.
 
 **Setup:** `provideDesignSystem()` (+ `provideVendors()` from `@senbilan/vendors/ui`) in each app `app.config.ts`.
 

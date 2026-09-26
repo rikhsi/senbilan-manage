@@ -1,0 +1,9 @@
+{
+  "title": "Tizim",
+  "errorTitle": "Tizim ma’lumotini yuklab bo‘lmadi",
+  "errorHint": "Qayta urinib ko‘ring.",
+  "version": "Versiya",
+  "environment": "Muhit",
+  "schema": "Sxema",
+  "startedAt": "Ishga tushgan"
+}

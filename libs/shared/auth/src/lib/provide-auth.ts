@@ -49,7 +49,7 @@ const authUseCaseProviders: Provider[] = [
  * `AuthRepository`, `SessionStorage`, and `Clock` must already be provided
  * (infra adapters).
  *
- * Also wires `AuthSessionPort` so a failed 401 refresh clears `AuthStore`
+ * Also wires `AuthSessionPort` so any authenticated 401 clears `AuthStore`
  * and navigates to login (tokens are already cleared by the interceptor).
  */
 export const provideAuth = (): EnvironmentProviders =>

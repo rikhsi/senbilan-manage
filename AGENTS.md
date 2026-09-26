@@ -105,12 +105,17 @@ Tags on every project: `layer:*` + `kind:*` — keep them accurate when generati
 
 ---
 
-## 6. Tables & lists
+## 6. Tables, lists, and details
 
-- Use `AppDataTableComponent` + `ColumnDef` / cell directives from `@senbilan/design-system/ui`.
+- Table screens use `AppListPageComponent` from `@senbilan/design-system/layout`: breadcrumbs, then actions, then `AppDataTableComponent`. Cursor lists put `AppCursorPaginationComponent` in the table footer (page picker, previous, next, page size — custom menus, not native selects) and return to the first page when filters change. The page picker lists every page whose cursor is already known. Column show/hide and drag order use `AppColumnSettingsComponent` in the filter drawer; keep the table `columnPicker` off.
+- Detail screens use `AppDetailPageComponent` and `AppDetailFieldsComponent`. The trail is dashboard / list / record name. Put record actions in the `actions` slot. Pass `[loading]="true"` while the record is loading.
+- Do not add an eyebrow, subtitle, or description under the breadcrumb. The crumb is only as wide as its label. The page frame itself is full width.
+- Profile and other shell pages use the same list frame, without a hero block.
+- Dashboard metric tiles use `AppStatCardComponent` in a wide grid (same surface and icon chip). New metric screens copy that card, they do not invent another.
 - Server-driven lists: **TanStack Query** for data + pagination/sort/filter state as query key inputs.
 - Labels (`DataTableLabels`, empty states) from i18n.
 - Row actions via `AppRowActionsDirective` / menu — not ad-hoc icon rows with hardcoded colors.
+- The name (or primary) column is an underlined primary link to the detail route. Row click opens the same route and ignores clicks on other links.
 
 ---
 

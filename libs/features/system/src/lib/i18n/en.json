@@ -1,0 +1,9 @@
+{
+  "title": "System",
+  "errorTitle": "Could not load system info",
+  "errorHint": "Try again.",
+  "version": "Version",
+  "environment": "Environment",
+  "schema": "Schema",
+  "startedAt": "Started"
+}

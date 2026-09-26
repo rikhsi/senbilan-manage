@@ -2,22 +2,26 @@
   <div class="app-list-filters__search">
     <ng-content select="[search]" />
   </div>
-  <button
-    app-button
-    type="button"
-    variant="secondary"
-    size="md"
-    icon="filter"
-    class="app-list-filters__trigger"
-    (click)="openPanel()"
-  >
-    {{ labels().filters }}
-    @if (activeCount() > 0) {
-      <app-badge tone="primary" size="sm" [pill]="true">{{ activeCount() }}</app-badge>
+  <div class="app-list-filters__actions">
+    @if (showFilters()) {
+      <button
+        app-button
+        type="button"
+        variant="secondary"
+        size="md"
+        icon="filter"
+        class="app-list-filters__trigger"
+        (click)="openPanel()"
+      >
+        {{ labels().filters }}
+        @if (activeCount() > 0) {
+          <app-badge tone="primary" size="sm" [pill]="true">{{ activeCount() }}</app-badge>
+        }
+      </button>
     }
-  </button>
-  <div class="app-list-filters__end">
-    <ng-content select="[end]" />
+    <div class="app-list-filters__end">
+      <ng-content select="[end]" />
+    </div>
   </div>
 </div>
 
@@ -51,10 +55,10 @@
         <ng-content select="[filters]" />
       </div>
       <footer class="app-list-filters__footer">
-        <button app-button type="button" variant="ghost" size="sm" (click)="onReset()">
+        <button app-button type="button" variant="secondary" size="md" (click)="onReset()">
           {{ labels().reset }}
         </button>
-        <button app-button type="button" variant="primary" size="sm" (click)="onApply()">
+        <button app-button type="button" variant="primary" size="md" (click)="onApply()">
           {{ labels().apply }}
         </button>
       </footer>

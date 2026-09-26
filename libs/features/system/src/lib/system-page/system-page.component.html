@@ -1,0 +1,27 @@
+<app-detail-page [breadcrumbs]="breadcrumbs">
+  <button
+    actions
+    app-button
+    type="button"
+    variant="secondary"
+    size="md"
+    icon="refresh"
+    [loading]="loading()"
+    (click)="reload()"
+  >
+    {{ 'common.retry' | transloco }}
+  </button>
+
+  @if (error() && !loading()) {
+    <app-empty-state
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'system.errorTitle' | transloco"
+      [description]="'system.errorHint' | transloco"
+    >
+      <button app-button variant="primary" type="button" (click)="reload()">{{ 'common.retry' | transloco }}</button>
+    </app-empty-state>
+  } @else if (info()) {
+    <app-detail-fields [fields]="fields()" />
+  }
+</app-detail-page>

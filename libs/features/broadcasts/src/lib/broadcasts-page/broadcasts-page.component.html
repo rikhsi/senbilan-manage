@@ -1,0 +1,82 @@
+<app-list-page [breadcrumbs]="breadcrumbs">
+  <app-list-filters
+    toolbar
+    [open]="columnsOpen()"
+    [activeCount]="0"
+    [labels]="filterLabels()"
+    (openChange)="columnsOpen.set($event)"
+    (reset)="resetColumns()"
+  >
+    <button
+      end
+      app-button
+      type="button"
+      variant="secondary"
+      size="md"
+      icon="refresh"
+      [loading]="loading()"
+      (click)="reload()"
+    >
+      {{ 'common.retry' | transloco }}
+    </button>
+    <app-column-settings
+      filters
+      [columns]="columnSettings()"
+      [hidden]="hiddenColumns()"
+      [order]="columnOrder()"
+      [divided]="false"
+      [showTitle]="false"
+      [groupLabel]="'common.columns' | transloco"
+      [dragLabel]="'common.moveColumn' | transloco"
+      (hiddenChange)="hiddenColumns.set($event)"
+      (orderChange)="columnOrder.set($event)"
+    />
+  </app-list-filters>
+
+  @if (error() && !loading()) {
+    <app-empty-state
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'broadcasts.errorTitle' | transloco"
+      [description]="'broadcasts.errorHint' | transloco"
+    >
+      <button app-button variant="primary" type="button" (click)="reload()">{{ 'common.retry' | transloco }}</button>
+    </app-empty-state>
+  } @else {
+    <app-data-table
+      [rows]="rows()"
+      [columns]="orderedColumns()"
+      [hiddenColumns]="hiddenColumns()"
+      [rowId]="rowId"
+      [labels]="tableLabels()"
+      [loading]="loading()"
+      [error]="error() ? ('broadcasts.errorHint' | transloco) : null"
+      [rowClickable]="true"
+      [columnPicker]="false"
+      (rowClick)="onRowClick($event)"
+      (retry)="reload()"
+    >
+      <ng-template appCell="title" let-row>
+        <a class="broadcasts-page__cell-link" [routerLink]="['/broadcasts', row.id]">{{ text(row.title) }}</a>
+      </ng-template>
+      <ng-template appCell="status" let-row>
+        <app-status [tone]="statusTone(row.status)">{{ statusLabel(row.status) }}</app-status>
+      </ng-template>
+      <app-cursor-pagination
+        footer
+        [page]="page()"
+        [pageCount]="pageCount()"
+        [pageSize]="pageSize()"
+        [hasPrevious]="page() > 1"
+        [hasNext]="hasNext()"
+        [disabled]="loading()"
+        [labels]="pageLabels()"
+        [ariaLabel]="'common.pageSummary' | transloco: { page: page() }"
+        (previous)="previousPage()"
+        (next)="nextPage()"
+        (pageChange)="goToPage($event)"
+        (pageSizeChange)="onPageSize($event)"
+      />
+    </app-data-table>
+  }
+</app-list-page>

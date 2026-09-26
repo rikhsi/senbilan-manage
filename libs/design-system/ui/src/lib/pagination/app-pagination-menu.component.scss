@@ -1,0 +1,90 @@
+@use 'ds' as ds;
+
+:host {
+  display: inline-flex;
+}
+
+.app-pagination-menu__trigger {
+  display: inline-flex;
+  gap: var(--app-space-1);
+  align-items: center;
+  justify-content: space-between;
+  min-width: var(--app-size-control-lg);
+  height: var(--app-size-control-sm);
+  padding: 0 var(--app-space-2);
+  color: var(--app-color-text-primary);
+  background: var(--app-color-surface);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-sm);
+  @include ds.text('body-sm');
+  @include ds.tabular-numbers;
+  @include ds.focus-reset;
+
+  &:hover:not(:disabled) {
+    border-color: var(--app-color-border-strong);
+  }
+
+  &:focus-visible,
+  :host.app-pagination-menu--open & {
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-color-primary) 20%, transparent);
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: var(--app-state-disabled-opacity);
+  }
+}
+
+.app-pagination-menu__value {
+  flex: 1;
+  text-align: start;
+}
+
+.app-pagination-menu__chevron {
+  flex-shrink: 0;
+  color: var(--app-color-icon-muted);
+  transition: transform var(--app-duration-fast) var(--app-ease-out);
+
+  :host.app-pagination-menu--open & {
+    transform: rotate(180deg);
+  }
+}
+
+.app-pagination-menu__list {
+  max-height: min(16rem, 50dvh);
+  padding: var(--app-space-1);
+  margin: 0;
+  overflow: auto;
+  list-style: none;
+  background: var(--app-color-surface-elevated);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-shadow-md);
+  outline: none;
+  @include ds.thin-scrollbar;
+}
+
+.app-pagination-menu__option {
+  display: flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--app-size-control-sm);
+  padding: 0 var(--app-space-2);
+  color: var(--app-color-text-primary);
+  cursor: pointer;
+  border-radius: var(--app-radius-sm);
+  @include ds.text('body-sm');
+  @include ds.tabular-numbers;
+
+  &--active {
+    background: var(--app-color-surface-muted);
+  }
+
+  &--selected {
+    color: var(--app-color-primary);
+    font-weight: var(--app-font-weight-medium);
+  }
+}

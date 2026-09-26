@@ -1,0 +1,115 @@
+<app-list-page [breadcrumbs]="breadcrumbs">
+  <app-list-filters
+    toolbar
+    [open]="filtersOpen()"
+    [activeCount]="filterCount()"
+    [labels]="filterLabels()"
+    (openChange)="onFiltersOpenChange($event)"
+    (apply)="applyFilters()"
+    (reset)="resetFilters()"
+  >
+    <button
+      end
+      app-button
+      type="button"
+      variant="secondary"
+      size="md"
+      icon="refresh"
+      [loading]="loading()"
+      (click)="reload()"
+    >
+      {{ 'common.retry' | transloco }}
+    </button>
+
+    <div filters class="content-page__filter-fields">
+      <app-form-field [label]="'content.status' | transloco">
+        <app-select
+          [options]="statusOptions()"
+          [labels]="selectLabels()"
+          [ngModel]="draft().status"
+          (ngModelChange)="onDraftStatus($event)"
+        />
+      </app-form-field>
+      <app-form-field [label]="'content.kind' | transloco">
+        <app-select
+          [options]="kindOptions()"
+          [labels]="selectLabels()"
+          [ngModel]="draft().kind"
+          (ngModelChange)="onDraftKind($event)"
+        />
+      </app-form-field>
+      <app-form-field [label]="'content.language' | transloco">
+        <app-select
+          [options]="languageOptions()"
+          [labels]="selectLabels()"
+          [ngModel]="draft().language"
+          (ngModelChange)="onDraftLanguage($event)"
+        />
+      </app-form-field>
+      <app-column-settings
+        [columns]="columnSettings()"
+        [hidden]="hiddenColumns()"
+        [order]="columnOrder()"
+        [groupLabel]="'common.columns' | transloco"
+        [dragLabel]="'common.moveColumn' | transloco"
+        (hiddenChange)="hiddenColumns.set($event)"
+        (orderChange)="columnOrder.set($event)"
+      />
+    </div>
+
+    <div chips class="content-page__chips">
+      @for (chip of chips(); track chip.id) {
+        <app-tag [removable]="true" [removeLabel]="'common.reset' | transloco" (remove)="removeChip(chip.id)">
+          {{ chip.label }}
+        </app-tag>
+      }
+    </div>
+  </app-list-filters>
+
+  @if (error() && !loading()) {
+    <app-empty-state
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'content.errorTitle' | transloco"
+      [description]="'content.errorHint' | transloco"
+    >
+      <button app-button variant="primary" type="button" (click)="reload()">{{ 'common.retry' | transloco }}</button>
+    </app-empty-state>
+  } @else {
+    <app-data-table
+      [rows]="rows()"
+      [columns]="orderedColumns()"
+      [hiddenColumns]="hiddenColumns()"
+      [rowId]="rowId"
+      [labels]="tableLabels()"
+      [loading]="loading()"
+      [error]="error() ? ('content.errorHint' | transloco) : null"
+      [rowClickable]="true"
+      [columnPicker]="false"
+      (rowClick)="onRowClick($event)"
+      (retry)="reload()"
+    >
+      <ng-template appCell="title" let-row>
+        <a class="content-page__cell-link" [routerLink]="['/content', row.id]">{{ text(row.title) }}</a>
+      </ng-template>
+      <ng-template appCell="status" let-row>
+        <app-status [tone]="statusTone(row.status)">{{ statusLabel(row.status) }}</app-status>
+      </ng-template>
+      <app-cursor-pagination
+        footer
+        [page]="page()"
+        [pageCount]="pageCount()"
+        [pageSize]="pageSize()"
+        [hasPrevious]="page() > 1"
+        [hasNext]="hasNext()"
+        [disabled]="loading()"
+        [labels]="pageLabels()"
+        [ariaLabel]="'common.pageSummary' | transloco: { page: page() }"
+        (previous)="previousPage()"
+        (next)="nextPage()"
+        (pageChange)="goToPage($event)"
+        (pageSizeChange)="onPageSize($event)"
+      />
+    </app-data-table>
+  }
+</app-list-page>

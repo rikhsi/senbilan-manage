@@ -1,0 +1,23 @@
+{
+  "title": "Media",
+  "detailTitle": "File",
+  "emptyTitle": "No files",
+  "errorTitle": "Could not load media",
+  "errorHint": "Try again.",
+  "purpose": "Purpose",
+  "contentType": "Type",
+  "status": "Status",
+  "statusPending": "Pending",
+  "statusReady": "Ready",
+  "size": "Size",
+  "createdAt": "Created",
+  "owner": "Owner",
+  "couple": "Couple",
+  "id": "ID",
+  "width": "Width",
+  "height": "Height",
+  "delete": "Delete",
+  "deleteConfirmTitle": "Delete this file?",
+  "deleteConfirmMessage": "The file and photos that use it will be removed.",
+  "deleted": "File deleted"
+}

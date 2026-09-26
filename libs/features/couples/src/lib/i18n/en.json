@@ -1,0 +1,33 @@
+{
+  "title": "Couples",
+  "detailTitle": "Couple",
+  "emptyTitle": "No couples",
+  "errorTitle": "Could not load couples",
+  "errorHint": "Try again.",
+  "creator": "Creator",
+  "partner": "Partner",
+  "nameMissing": "This user has not set a name yet",
+  "phone": "Phone",
+  "status": "Status",
+  "statusWaiting": "Waiting",
+  "statusPaired": "Paired",
+  "createdAt": "Created",
+  "id": "ID",
+  "unpair": "Unpair",
+  "unpairConfirmTitle": "Unpair this couple?",
+  "unpairConfirmMessage": "The partner leaves. The creator and content stay.",
+  "unpaired": "Couple unpaired",
+  "counts": {
+    "events": "Events",
+    "lists": "Lists",
+    "wishes": "Wishes",
+    "goals": "Goals",
+    "album_photos": "Album photos",
+    "documents": "Documents",
+    "letters": "Letters",
+    "messages": "Messages",
+    "cards": "Cards",
+    "contacts": "Contacts",
+    "shelf_items": "Shelf"
+  }
+}

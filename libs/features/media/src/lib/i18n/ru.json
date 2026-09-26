@@ -1,0 +1,23 @@
+{
+  "title": "Медиа",
+  "detailTitle": "Файл",
+  "emptyTitle": "Файлов нет",
+  "errorTitle": "Не удалось загрузить медиа",
+  "errorHint": "Попробуйте ещё раз.",
+  "purpose": "Назначение",
+  "contentType": "Тип",
+  "status": "Статус",
+  "statusPending": "Ожидает",
+  "statusReady": "Готов",
+  "size": "Размер",
+  "createdAt": "Создан",
+  "owner": "Владелец",
+  "couple": "Пара",
+  "id": "ID",
+  "width": "Ширина",
+  "height": "Высота",
+  "delete": "Удалить",
+  "deleteConfirmTitle": "Удалить файл?",
+  "deleteConfirmMessage": "Файл и связанные с ним фото будут удалены.",
+  "deleted": "Файл удалён"
+}

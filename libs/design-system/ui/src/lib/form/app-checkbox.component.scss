@@ -48,19 +48,25 @@
   }
 
   :host.app-checkbox--checked &,
-  .app-checkbox__input:indeterminate ~ & {
+  .app-checkbox__input:indeterminate ~ .app-checkbox__label & {
     background: var(--app-color-primary);
     border-color: var(--app-color-primary);
   }
 
-  .app-checkbox__input:focus-visible ~ & {
+  .app-checkbox__input:focus-visible ~ .app-checkbox__label & {
     @include ds.focus-ring;
   }
 }
 
 .app-checkbox__label {
+  display: inline-flex;
+  gap: inherit;
+  align-items: center;
   cursor: inherit;
   user-select: none;
+}
+
+.app-checkbox__text {
   @include ds.text('body');
 
   &:empty {

@@ -7,9 +7,9 @@ import { firstValueFrom } from 'rxjs';
  * Loads root locale files from `assets/i18n/{lang}.json` and feature scopes
  * from `assets/i18n/{scope}.{lang}.json` (e.g. `common.ru.json`).
  *
- * Feature libraries should ship their own scoped JSON next to the app assets
- * (or copy them into `apps/<app>/public/assets/i18n/`) and register the scope
- * via `provideTranslocoScope('users')` — this loader resolves them by name.
+ * Eager scopes (`common`, `auth`, …) live in `apps/<app>/public/assets/i18n/`.
+ * Feature screens register colocated JSON with `provideInlineTranslocoScope`
+ * so titles resolve before a `transloco` pipe is in the template.
  */
 @Injectable()
 export class AssetsTranslocoLoader implements TranslocoLoader {

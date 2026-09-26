@@ -30,14 +30,16 @@ import { APP_CONTROL, nextControlId, type AppControl } from './app-control';
       (change)="onToggle($event)"
       (blur)="onTouched()"
     />
-    <span class="app-checkbox__box" aria-hidden="true">
-      @if (indeterminate()) {
-        <app-icon name="minus" size="xs" />
-      } @else if (checked()) {
-        <app-icon name="check" size="xs" />
-      }
-    </span>
-    <label class="app-checkbox__label" [attr.for]="id()"><ng-content /></label>
+    <label class="app-checkbox__label" [attr.for]="id()">
+      <span class="app-checkbox__box" aria-hidden="true">
+        @if (indeterminate()) {
+          <app-icon name="minus" size="xs" />
+        } @else if (checked()) {
+          <app-icon name="check" size="xs" />
+        }
+      </span>
+      <span class="app-checkbox__text"><ng-content /></span>
+    </label>
   `,
   styleUrl: './app-checkbox.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

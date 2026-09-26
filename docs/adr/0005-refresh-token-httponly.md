@@ -16,11 +16,11 @@ long-lived refresh credential should not be script-accessible.
 - **Refresh token**: delivered and rotated as an **httpOnly Secure cookie**;
   clients call refresh with `withCredentials` and do not read the cookie from
   JavaScript (`AppConfig.auth.refreshViaCookie: true` by default).
-- Refresh flows live behind `AuthRepository.refresh()`; interceptors retry
-  once on 401 after a successful refresh.
-- If refresh fails (global unrecovered 401), the interceptor clears
-  `SessionStorage` and calls `AuthSessionPort.invalidateLocalSession()` so the
-  UI drops the session and routes to login without a remote logout call.
+- Refresh flows live behind `AuthRepository.refresh()` and run when the app
+  restores a session. The HTTP interceptor does not retry a failed call.
+- Any authenticated request that returns 401 clears `SessionStorage` and calls
+  `AuthSessionPort.invalidateLocalSession()` so the UI drops the session and
+  routes to login without a remote logout call. Login and refresh use `SKIP_AUTH`.
 
 ## Consequences
 

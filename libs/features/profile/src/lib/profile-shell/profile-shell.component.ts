@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AppIconComponent } from '@senbilan/design-system/icons';
+import { AppListPageComponent, type BreadcrumbItem } from '@senbilan/design-system/layout';
 import { AppButtonComponent, AppConfirmDialogService } from '@senbilan/design-system/ui';
 import { AuthStore } from '@senbilan/shared/auth';
 import { PROFILE_NAV_ITEMS } from './profile.model';
@@ -13,6 +14,7 @@ import { PROFILE_NAV_ITEMS } from './profile.model';
     RouterLink,
     RouterLinkActive,
     TranslocoPipe,
+    AppListPageComponent,
     AppIconComponent,
     AppButtonComponent,
   ],
@@ -27,6 +29,10 @@ export class ProfileShellComponent {
   private readonly confirm = inject(AppConfirmDialogService);
 
   protected readonly navItems = PROFILE_NAV_ITEMS;
+  protected readonly breadcrumbs: readonly BreadcrumbItem[] = [
+    { labelKey: 'nav.dashboard', route: '/dashboard' },
+    { labelKey: 'nav.profile' },
+  ];
 
   protected async onLogout(): Promise<void> {
     const ok = await this.confirm.ask({

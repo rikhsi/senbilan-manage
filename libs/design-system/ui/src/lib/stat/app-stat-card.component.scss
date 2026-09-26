@@ -3,11 +3,11 @@
 
 :host {
   display: flex;
-  gap: var(--app-space-3);
-  align-items: flex-start;
+  gap: var(--app-space-4);
+  align-items: center;
   justify-content: space-between;
   min-width: 0;
-  padding: var(--app-space-4) var(--app-space-5);
+  padding: var(--app-space-6);
   @include ds.surface;
 }
 
@@ -15,19 +15,18 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--app-space-1);
+  gap: var(--app-space-2);
   min-width: 0;
 }
 
 .app-stat-card__label {
   color: var(--app-color-text-secondary);
-  @include ds.text('body-sm');
-  @include ds.truncate;
+  @include ds.text('body');
 }
 
 .app-stat-card__value {
   color: var(--app-color-text-primary);
-  @include ds.text('h2');
+  @include ds.text('h1');
   @include ds.tabular-numbers;
 }
 
@@ -59,8 +58,8 @@
   display: grid;
   flex-shrink: 0;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--app-space-12);
+  height: var(--app-space-12);
   border-radius: var(--app-radius-md);
   @include tones.container-tones;
 }

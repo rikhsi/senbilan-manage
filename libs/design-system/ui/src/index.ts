@@ -72,8 +72,16 @@ export {
   type SortDirection,
   type SortState,
 } from './lib/table/data-table.types';
+export { AppCursorPaginationComponent } from './lib/pagination/app-cursor-pagination.component';
+export {
+  AppColumnSettingsComponent,
+  type ColumnSetting,
+} from './lib/table/app-column-settings.component';
 export { AppPaginationComponent } from './lib/pagination/app-pagination.component';
-export { type PaginationLabels } from './lib/pagination/pagination.types';
+export {
+  type CursorPaginationLabels,
+  type PaginationLabels,
+} from './lib/pagination/pagination.types';
 export { AppChartComponent } from './lib/chart/app-chart.component';
 export { type AppChartType, type ChartPalette, readChartPalette } from './lib/chart/chart.types';
 

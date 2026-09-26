@@ -1,0 +1,16 @@
+{
+  "title": "Broadcasts",
+  "detailTitle": "Broadcast",
+  "emptyTitle": "No broadcasts",
+  "errorTitle": "Could not load broadcasts",
+  "errorHint": "Try again.",
+  "name": "Text",
+  "status": "Status",
+  "statusDraft": "Draft",
+  "statusQueued": "Queued",
+  "statusSending": "Sending",
+  "statusSent": "Sent",
+  "createdAt": "Created",
+  "sentAt": "Sent",
+  "id": "ID"
+}

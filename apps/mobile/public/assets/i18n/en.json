@@ -18,7 +18,9 @@
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar",
     "openMenu": "Open navigation",
-    "closeMenu": "Close navigation"
+    "closeMenu": "Close navigation",
+    "media": "Media",
+    "system": "System"
   },
   "common": {
     "save": "Save",
@@ -29,6 +31,12 @@
     "search": "Search",
     "reset": "Reset",
     "retry": "Retry",
+    "previous": "Previous",
+    "back": "Back",
+    "next": "Next",
+    "pageSize": "Per page",
+    "page": "Page",
+    "pageSummary": "Page {{page}}",
     "close": "Close",
     "actions": "Actions",
     "loading": "Loading…",

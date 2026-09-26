@@ -1,6 +1,6 @@
 import { HttpContextToken } from '@angular/common/http';
 
-/** Skip Authorization header and 401 refresh handling (login, refresh, public assets). */
+/** Skip Authorization header and 401 session logout (login, refresh, public assets). */
 export const SKIP_AUTH = new HttpContextToken<boolean>(() => false);
 
 export interface RetryPolicy {

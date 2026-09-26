@@ -34,7 +34,7 @@ import { AppSkeletonComponent } from '../skeleton/app-skeleton.component';
     </div>
     @if (icon(); as name) {
       <div class="app-stat-card__icon" [attr.data-tone]="tone()">
-        <app-icon [name]="name" size="md" />
+        <app-icon [name]="name" size="lg" />
       </div>
     }
   `,

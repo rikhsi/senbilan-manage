@@ -1,0 +1,74 @@
+@use 'ds' as ds;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.app-column-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+
+  &--divided {
+    padding-top: var(--app-space-2);
+    border-top: 1px solid var(--app-color-border);
+  }
+}
+
+.app-column-settings__title {
+  margin: 0;
+  color: var(--app-color-text-secondary);
+  @include ds.text('caption-strong');
+}
+
+.app-column-settings__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-column-settings__row {
+  display: flex;
+  gap: var(--app-space-2);
+  align-items: center;
+  min-width: 0;
+  padding: var(--app-space-1);
+  border-radius: var(--app-radius-md);
+
+  &--drag {
+    opacity: var(--app-state-disabled-opacity);
+  }
+
+  &--over {
+    background: var(--app-color-surface-muted);
+  }
+}
+
+.app-column-settings__grip {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--app-size-control-sm);
+  height: var(--app-size-control-sm);
+  padding: 0;
+  color: var(--app-color-text-tertiary);
+  touch-action: none;
+  cursor: grab;
+  background: transparent;
+  border: 0;
+  border-radius: var(--app-radius-sm);
+  @include ds.focus-reset;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.app-column-settings__grip-label {
+  @include ds.visually-hidden;
+}

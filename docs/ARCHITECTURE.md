@@ -105,7 +105,7 @@ Default: `APP_CONFIG.auth.refreshViaCookie: true` ([ADR 0005](adr/0005-refresh-t
 - Access token → `SessionStorage` (in-memory / browser persist)
 - Refresh token → httpOnly cookie (HTTP) or mock cookie jar (`MockDataStore`) — **never** mirrored into JS storage when cookie mode is on
 - Interceptor / `HttpAuthRepository.refresh()` send empty body + `withCredentials`
-- On **401**: single-flight refresh; if refresh fails → `SessionStorage.clear()` + `AuthSessionPort.invalidateLocalSession()` (clear `AuthStore`, navigate to `/auth/login`). Remote logout is **not** called.
+- On **401** from any authenticated request: `SessionStorage.clear()` + `AuthSessionPort.invalidateLocalSession()` (clear `AuthStore`, navigate to `/auth/login`). Remote logout is **not** called. Login and refresh opt out with `SKIP_AUTH`. Session restore on startup still uses `RefreshSessionUseCase`.
 
 ## Documentation duty (humans & AI)
 

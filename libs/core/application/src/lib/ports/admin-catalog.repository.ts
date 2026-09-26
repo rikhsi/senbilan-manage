@@ -42,11 +42,20 @@ export interface AdminUserDetailSnapshot {
   readonly updatedAt: string | null;
 }
 
+/** A couple member. The list API does not mark a role; the first member is the creator. */
+export interface AdminCoupleMember {
+  readonly id: string;
+  readonly name: string;
+  readonly phone: string;
+}
+
 export interface AdminCoupleSummary {
   readonly id: string;
   readonly status: string;
-  readonly creatorName: string;
-  readonly partnerName: string;
+  /** First member. A waiting couple has only this person. */
+  readonly creator: AdminCoupleMember | null;
+  /** Second member. Absent until someone joins. */
+  readonly partner: AdminCoupleMember | null;
   readonly createdAt: string | null;
 }
 
@@ -58,9 +67,12 @@ export interface AdminCoupleDetailSnapshot {
 export interface AdminContentSummary {
   readonly id: string;
   readonly title: string;
+  readonly description: string;
+  readonly url: string;
   readonly kind: string;
   readonly status: string;
   readonly language: string;
+  readonly publishedAt: string | null;
   readonly updatedAt: string | null;
 }
 
@@ -70,6 +82,26 @@ export interface AdminBroadcastSummary {
   readonly status: string;
   readonly createdAt: string | null;
   readonly sentAt: string | null;
+}
+
+export interface AdminMediaSummary {
+  readonly id: string;
+  readonly ownerId: string;
+  readonly coupleId: string;
+  readonly purpose: string;
+  readonly contentType: string;
+  readonly sizeBytes: string;
+  readonly width: number;
+  readonly height: number;
+  readonly status: string;
+  readonly createdAt: string | null;
+}
+
+export interface AdminSystemSnapshot {
+  readonly version: string;
+  readonly environment: string;
+  readonly schemaVersion: string;
+  readonly startedAt: string | null;
 }
 
 export interface AdminCursorPage<T> {
@@ -83,6 +115,29 @@ export interface AdminListUsersQuery {
   readonly plan?: string;
   readonly role?: string;
   readonly includeDeleted?: boolean;
+  readonly cursor?: string;
+  readonly limit?: number;
+}
+
+export interface AdminListCouplesQuery {
+  readonly status?: string;
+  readonly cursor?: string;
+  readonly limit?: number;
+}
+
+export interface AdminListContentsQuery {
+  readonly status?: string;
+  readonly kind?: string;
+  readonly language?: string;
+  readonly cursor?: string;
+  readonly limit?: number;
+}
+
+export interface AdminListMediaQuery {
+  readonly ownerId?: string;
+  readonly coupleId?: string;
+  readonly purpose?: string;
+  readonly status?: string;
   readonly cursor?: string;
   readonly limit?: number;
 }
@@ -108,7 +163,7 @@ export abstract class AdminCatalogRepository {
   abstract setUserRole(userId: string, role: string): Promise<AdminUserSummary>;
 
   abstract listCouples(
-    query?: { cursor?: string; limit?: number },
+    query?: AdminListCouplesQuery,
     signal?: AbortSignal,
   ): Promise<AdminCursorPage<AdminCoupleSummary>>;
 
@@ -116,13 +171,7 @@ export abstract class AdminCatalogRepository {
   abstract unpairCouple(coupleId: string): Promise<AdminCoupleSummary>;
 
   abstract listContents(
-    query?: {
-      cursor?: string;
-      limit?: number;
-      kind?: string;
-      status?: string;
-      language?: string;
-    },
+    query?: AdminListContentsQuery,
     signal?: AbortSignal,
   ): Promise<AdminCursorPage<AdminContentSummary>>;
 
@@ -134,4 +183,13 @@ export abstract class AdminCatalogRepository {
   ): Promise<AdminCursorPage<AdminBroadcastSummary>>;
 
   abstract getBroadcast(broadcastId: string, signal?: AbortSignal): Promise<AdminBroadcastSummary>;
+
+  abstract listMedia(
+    query?: AdminListMediaQuery,
+    signal?: AbortSignal,
+  ): Promise<AdminCursorPage<AdminMediaSummary>>;
+
+  abstract deleteMedia(mediaId: string): Promise<void>;
+
+  abstract getSystem(signal?: AbortSignal): Promise<AdminSystemSnapshot>;
 }

@@ -1,0 +1,16 @@
+<app-detail-page [breadcrumbs]="breadcrumbs()">
+  @if (error() && !loading()) {
+    <app-empty-state
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'content.errorTitle' | transloco"
+      [description]="'content.errorHint' | transloco"
+    >
+      <button app-button variant="primary" type="button" (click)="reload()">{{ 'common.retry' | transloco }}</button>
+    </app-empty-state>
+  } @else if (loading()) {
+    <app-detail-fields [fields]="[]" [loading]="true" />
+  } @else if (detail()) {
+    <app-detail-fields [fields]="fields()" />
+  }
+</app-detail-page>

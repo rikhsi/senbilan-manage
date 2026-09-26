@@ -65,7 +65,12 @@
       "@senbilan/features/permissions": ["./libs/features/permissions/src/index.ts"],
       "@senbilan/features/settings": ["./libs/features/settings/src/index.ts"],
       "@senbilan/features/notifications": ["./libs/features/notifications/src/index.ts"],
-      "@senbilan/features/profile": ["./libs/features/profile/src/index.ts"]
+      "@senbilan/features/profile": ["./libs/features/profile/src/index.ts"],
+      "@senbilan/features/couples": ["./libs/features/couples/src/index.ts"],
+      "@senbilan/features/content": ["./libs/features/content/src/index.ts"],
+      "@senbilan/features/broadcasts": ["./libs/features/broadcasts/src/index.ts"],
+      "@senbilan/features/media": ["./libs/features/media/src/index.ts"],
+      "@senbilan/features/system": ["./libs/features/system/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "dist"]

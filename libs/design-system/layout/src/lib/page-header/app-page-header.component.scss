@@ -14,8 +14,10 @@
 }
 
 .app-page-header__text {
+  flex: 0 1 auto;
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
-  flex: 1;
 }
 
 .app-page-header__eyebrow {
@@ -30,13 +32,6 @@
   margin: 0;
   color: var(--app-color-text-primary);
   @include ds.text('title');
-}
-
-.app-page-header__description {
-  margin: var(--app-space-2) 0 0;
-  color: var(--app-color-text-secondary);
-  @include ds.text('body');
-  max-width: 42rem;
 }
 
 .app-page-header__actions {

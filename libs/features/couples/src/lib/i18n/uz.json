@@ -1,0 +1,33 @@
+{
+  "title": "Juftliklar",
+  "detailTitle": "Juftlik",
+  "emptyTitle": "Juftliklar yo‘q",
+  "errorTitle": "Juftliklarni yuklab bo‘lmadi",
+  "errorHint": "Qayta urinib ko‘ring.",
+  "creator": "Yaratuvchi",
+  "partner": "Hamkor",
+  "nameMissing": "Foydalanuvchi hali ism kiritmagan",
+  "phone": "Telefon",
+  "status": "Holat",
+  "statusWaiting": "Kutilmoqda",
+  "statusPaired": "Juftlashgan",
+  "createdAt": "Yaratilgan",
+  "id": "ID",
+  "unpair": "Ajratish",
+  "unpairConfirmTitle": "Juftlikni ajratilsinmi?",
+  "unpairConfirmMessage": "Hamkor chiqadi. Yaratuvchi va kontent qoladi.",
+  "unpaired": "Juftlik ajratildi",
+  "counts": {
+    "events": "Tadbirlar",
+    "lists": "Ro‘yxatlar",
+    "wishes": "Istaklar",
+    "goals": "Maqsadlar",
+    "album_photos": "Albom suratlari",
+    "documents": "Hujjatlar",
+    "letters": "Xatlar",
+    "messages": "Xabarlar",
+    "cards": "Tabriklar",
+    "contacts": "Kontaktlar",
+    "shelf_items": "Javon"
+  }
+}

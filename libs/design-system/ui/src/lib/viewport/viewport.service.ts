@@ -35,7 +35,7 @@ export class ViewportService {
   readonly isMobile = computed(() => this.kind() === 'mobile');
   readonly isTablet = computed(() => this.kind() === 'tablet');
   readonly isDesktop = computed(() => this.kind() === 'desktop');
-  /** Mobile or tablet — compact navigation (bottom nav / drawer). */
+  /** Mobile or tablet — compact navigation (drawer). */
   readonly isCompact = computed(() => !this.isDesktop());
 
   readonly canHover = toSignal(

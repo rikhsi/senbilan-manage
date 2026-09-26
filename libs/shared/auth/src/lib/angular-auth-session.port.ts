@@ -4,7 +4,7 @@ import { AuthSessionPort } from '@senbilan/core/application';
 import { AuthStore } from './auth.store';
 
 /**
- * Clears {@link AuthStore} and routes to login after a failed 401 refresh.
+ * Clears {@link AuthStore} and routes to login after any authenticated 401.
  * Remote logout is intentionally skipped — tokens are already invalid.
  */
 @Injectable()

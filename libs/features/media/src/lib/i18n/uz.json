@@ -1,0 +1,23 @@
+{
+  "title": "Media",
+  "detailTitle": "Fayl",
+  "emptyTitle": "Fayllar yo‘q",
+  "errorTitle": "Mediani yuklab bo‘lmadi",
+  "errorHint": "Qayta urinib ko‘ring.",
+  "purpose": "Maqsad",
+  "contentType": "Turi",
+  "status": "Holat",
+  "statusPending": "Kutilmoqda",
+  "statusReady": "Tayyor",
+  "size": "Hajm",
+  "createdAt": "Yaratilgan",
+  "owner": "Egasi",
+  "couple": "Juftlik",
+  "id": "ID",
+  "width": "Eni",
+  "height": "Bo‘yi",
+  "delete": "O‘chirish",
+  "deleteConfirmTitle": "Fayl o‘chirilsinmi?",
+  "deleteConfirmMessage": "Fayl va unga bog‘langan suratlar o‘chadi.",
+  "deleted": "Fayl o‘chirildi"
+}

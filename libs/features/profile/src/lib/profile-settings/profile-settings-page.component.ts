@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AppRadioGroupComponent, type RadioOption } from '@senbilan/design-system/ui';
 import { APP_CONFIG } from '@senbilan/shared/config';
-import { type AppLocale } from '@senbilan/shared/i18n';
+import { injectTranslocoReady, type AppLocale } from '@senbilan/shared/i18n';
 import { ShellStore, type ShellDensity } from '@senbilan/shared/shell';
 import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
 
@@ -15,22 +15,30 @@ import { ThemeService, type ThemeMode } from '@senbilan/shared/theme';
 })
 export class ProfileSettingsPageComponent {
   private readonly i18n = inject(TranslocoService);
+  private readonly i18nReady = injectTranslocoReady();
   private readonly config = inject(APP_CONFIG, { optional: true });
   private readonly theme = inject(ThemeService);
   private readonly shell = inject(ShellStore);
 
-  protected readonly themeOptions = computed<readonly RadioOption<ThemeMode>[]>(() => [
-    { value: 'light', label: this.i18n.translate('profile.settings.theme.light') },
-    { value: 'dark', label: this.i18n.translate('profile.settings.theme.dark') },
-    { value: 'system', label: this.i18n.translate('profile.settings.theme.system') },
-  ]);
+  protected readonly themeOptions = computed<readonly RadioOption<ThemeMode>[]>(() => {
+    this.i18nReady();
+    return [
+      { value: 'light', label: this.i18n.translate('profile.settings.theme.light') },
+      { value: 'dark', label: this.i18n.translate('profile.settings.theme.dark') },
+      { value: 'system', label: this.i18n.translate('profile.settings.theme.system') },
+    ];
+  });
 
-  protected readonly densityOptions = computed<readonly RadioOption<ShellDensity>[]>(() => [
-    { value: 'comfortable', label: this.i18n.translate('profile.settings.density.comfortable') },
-    { value: 'compact', label: this.i18n.translate('profile.settings.density.compact') },
-  ]);
+  protected readonly densityOptions = computed<readonly RadioOption<ShellDensity>[]>(() => {
+    this.i18nReady();
+    return [
+      { value: 'comfortable', label: this.i18n.translate('profile.settings.density.comfortable') },
+      { value: 'compact', label: this.i18n.translate('profile.settings.density.compact') },
+    ];
+  });
 
   protected readonly languageOptions = computed<readonly RadioOption<AppLocale>[]>(() => {
+    this.i18nReady();
     const locales = this.config?.availableLocales ?? (['ru', 'en', 'uz'] as const);
     return locales.map((locale) => ({
       value: locale,

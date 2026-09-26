@@ -3,23 +3,32 @@ import {
   type AdminBroadcastSummary,
   type AdminContentSummary,
   type AdminCoupleDetailSnapshot,
+  type AdminCoupleMember,
   type AdminCoupleSummary,
   type AdminCursorPage,
+  type AdminListContentsQuery,
+  type AdminListCouplesQuery,
+  type AdminListMediaQuery,
   type AdminListUsersQuery,
+  type AdminMediaSummary,
   type AdminStatsSnapshot,
+  type AdminSystemSnapshot,
   type AdminUserDetailSnapshot,
   type AdminUserSummary,
 } from '@senbilan/core/application';
 import {
   type AdminCoupleSummary as WireCouple,
+  type AdminMedia,
   type AdminUser,
   type Broadcast,
   BroadcastService,
   type Content,
   ContentService,
   CoupleService,
+  MediaService,
   type Stats,
   StatsService,
+  type SystemInfo,
   UserService,
 } from '@senbilan/infra/openapi';
 import { firstValueFrom } from 'rxjs';
@@ -64,13 +73,26 @@ const mapStats = (stats: Stats): AdminStatsSnapshot => ({
   contentPublished: num(stats.content_published),
 });
 
+const mapCoupleMember = (user: AdminUser | null | undefined): AdminCoupleMember | null => {
+  if (!user) {
+    return null;
+  }
+  const id = str(user.id);
+  const name = str(user.name);
+  const phone = str(user.phone);
+  if (id.length === 0 && name.trim().length === 0 && phone.trim().length === 0) {
+    return null;
+  }
+  return { id, name, phone };
+};
+
 const mapCouple = (couple: WireCouple | null | undefined): AdminCoupleSummary => {
   const members = couple?.members ?? [];
   return {
     id: str(couple?.id),
     status: str(couple?.status),
-    creatorName: str(members[0]?.name),
-    partnerName: str(members[1]?.name),
+    creator: mapCoupleMember(members[0]),
+    partner: mapCoupleMember(members[1]),
     createdAt: couple?.created_at ?? null,
   };
 };
@@ -78,9 +100,12 @@ const mapCouple = (couple: WireCouple | null | undefined): AdminCoupleSummary =>
 const mapContent = (content: Content | null | undefined): AdminContentSummary => ({
   id: str(content?.id),
   title: str(content?.title),
+  description: str(content?.description),
+  url: str(content?.url),
   kind: str(content?.kind),
   status: str(content?.status),
   language: str(content?.language),
+  publishedAt: content?.published_at ?? null,
   updatedAt: content?.updated_at ?? null,
 });
 
@@ -92,6 +117,26 @@ const mapBroadcast = (item: Broadcast | null | undefined): AdminBroadcastSummary
   sentAt: item?.sent_at ?? null,
 });
 
+const mapMedia = (item: AdminMedia | null | undefined): AdminMediaSummary => ({
+  id: str(item?.id),
+  ownerId: str(item?.owner_id),
+  coupleId: str(item?.couple_id),
+  purpose: str(item?.purpose),
+  contentType: str(item?.content_type),
+  sizeBytes: str(item?.size_bytes),
+  width: item?.width ?? 0,
+  height: item?.height ?? 0,
+  status: str(item?.status),
+  createdAt: item?.created_at ?? null,
+});
+
+const mapSystem = (info: SystemInfo | null | undefined): AdminSystemSnapshot => ({
+  version: str(info?.version),
+  environment: str(info?.environment),
+  schemaVersion: str(info?.schema_version),
+  startedAt: info?.started_at ?? null,
+});
+
 @Injectable()
 export class HttpAdminCatalogRepository extends AdminCatalogRepository {
   private readonly statsApi = inject(StatsService);
@@ -99,6 +144,7 @@ export class HttpAdminCatalogRepository extends AdminCatalogRepository {
   private readonly couplesApi = inject(CoupleService);
   private readonly contentApi = inject(ContentService);
   private readonly broadcastsApi = inject(BroadcastService);
+  private readonly mediaApi = inject(MediaService);
 
   override async getStats(): Promise<AdminStatsSnapshot> {
     const envelope = await firstValueFrom(this.statsApi.getStats());
@@ -176,10 +222,11 @@ export class HttpAdminCatalogRepository extends AdminCatalogRepository {
   }
 
   override async listCouples(
-    query: { cursor?: string; limit?: number } = {},
+    query: AdminListCouplesQuery = {},
   ): Promise<AdminCursorPage<AdminCoupleSummary>> {
     const envelope = await firstValueFrom(
       this.couplesApi.listCouples({
+        ...(query.status ? { status: query.status } : {}),
         ...(query.cursor !== undefined ? { cursor: query.cursor } : {}),
         ...(query.limit !== undefined ? { limit: query.limit } : {}),
       }),
@@ -206,21 +253,15 @@ export class HttpAdminCatalogRepository extends AdminCatalogRepository {
   }
 
   override async listContents(
-    query: {
-      cursor?: string;
-      limit?: number;
-      kind?: string;
-      status?: string;
-      language?: string;
-    } = {},
+    query: AdminListContentsQuery = {},
   ): Promise<AdminCursorPage<AdminContentSummary>> {
     const envelope = await firstValueFrom(
       this.contentApi.listContents({
         ...(query.cursor !== undefined ? { cursor: query.cursor } : {}),
         ...(query.limit !== undefined ? { limit: query.limit } : {}),
-        ...(query.kind !== undefined ? { kind: query.kind as never } : {}),
-        ...(query.status !== undefined ? { status: query.status as never } : {}),
-        ...(query.language !== undefined ? { language: query.language as never } : {}),
+        ...(query.kind ? { kind: query.kind as never } : {}),
+        ...(query.status ? { status: query.status as never } : {}),
+        ...(query.language ? { language: query.language as never } : {}),
       }),
     );
     const data = envelope.data;
@@ -254,5 +295,34 @@ export class HttpAdminCatalogRepository extends AdminCatalogRepository {
   override async getBroadcast(broadcastId: string): Promise<AdminBroadcastSummary> {
     const envelope = await firstValueFrom(this.broadcastsApi.getBroadcast(broadcastId));
     return mapBroadcast(envelope.data);
+  }
+
+  override async listMedia(
+    query: AdminListMediaQuery = {},
+  ): Promise<AdminCursorPage<AdminMediaSummary>> {
+    const envelope = await firstValueFrom(
+      this.mediaApi.listMedia({
+        ...(query.ownerId ? { owner_id: query.ownerId } : {}),
+        ...(query.coupleId ? { couple_id: query.coupleId } : {}),
+        ...(query.purpose ? { purpose: query.purpose } : {}),
+        ...(query.status ? { status: query.status } : {}),
+        ...(query.cursor !== undefined ? { cursor: query.cursor } : {}),
+        ...(query.limit !== undefined ? { limit: query.limit } : {}),
+      }),
+    );
+    const data = envelope.data;
+    return {
+      items: (data?.media ?? []).map(mapMedia),
+      nextCursor: data?.next_cursor ? data.next_cursor : null,
+    };
+  }
+
+  override async deleteMedia(mediaId: string): Promise<void> {
+    await firstValueFrom(this.mediaApi.deleteMedia(mediaId, {}));
+  }
+
+  override async getSystem(): Promise<AdminSystemSnapshot> {
+    const envelope = await firstValueFrom(this.statsApi.getSystemInfo());
+    return mapSystem(envelope.data);
   }
 }

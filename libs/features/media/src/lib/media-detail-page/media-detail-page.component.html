@@ -1,0 +1,24 @@
+<app-detail-page [breadcrumbs]="breadcrumbs()">
+  <ng-container actions>
+    @if (detail()) {
+      <button app-button type="button" variant="danger" size="md" [loading]="busy()" (click)="remove()">
+        {{ 'media.delete' | transloco }}
+      </button>
+    }
+  </ng-container>
+
+  @if (error() && !loading()) {
+    <app-empty-state
+      icon="alert-triangle"
+      tone="danger"
+      [title]="'media.errorTitle' | transloco"
+      [description]="'media.errorHint' | transloco"
+    >
+      <button app-button variant="primary" type="button" (click)="reload()">{{ 'common.retry' | transloco }}</button>
+    </app-empty-state>
+  } @else if (loading()) {
+    <app-detail-fields [fields]="[]" [loading]="true" />
+  } @else if (detail()) {
+    <app-detail-fields [fields]="fields()" />
+  }
+</app-detail-page>
